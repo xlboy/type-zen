@@ -35,10 +35,10 @@ export const grammarTemplate = {
         `type name3= true`,
       ],
     },
-    union: [`type name  = ${expressionTemplate.union[0]}`],
+    union: [
+      `type name  = ${expressionTemplate.union[0]}`,
+      `type name2 = ${expressionTemplate.union[1]};`,
+    ],
   },
   expression: expressionTemplate,
 };
-
-type ccc = (| 1) | 1;
-type c2 = (123 extends 121 ? 1 : 2 extends 2 ? 3 : 4) | 1 | true | "sss";

@@ -4,13 +4,15 @@
 // import lexer from './moo-lexer'
 const lexer = require('./moo-lexer')
 
-const Null = () => null;
+const n = () => null;
 %}
 
 @lexer lexer
 @include "./statement.ne"
+@include "./common.ne"
 
-main ->  s_main
+main ->  _ s_block {% ([, block]) => block %}
+    | _ {% n %}
 
 # # Obligatory whitespace
 # __ -> (newline | %whitespace | %spaces | multilineComment):+ {% () => null %}

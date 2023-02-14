@@ -18,40 +18,22 @@ function getNonNullArgs(args: NearleyArgs): moo.Token[] {
   return nonNullArgs;
 }
 
-const parser = new nearley.Parser(nearley.Grammar.fromCompiled(langGrammar as any));
+const parser = new nearley.Parser(
+  nearley.Grammar.fromCompiled(langGrammar as any)
+);
 
 try {
-  console.log(grammarTemplate.typeDef.union[0]);
+  const content = `type name  = "123123dsfsdf";
+  type age = 111;
+  `
+  console.log(content);
 
+  parser.feed(content);
 
-  parser.feed(grammarTemplate.typeDef.union[0]);
-  const results = getNonNullArgs(parser.results);
-  results;
+  if (parser.results.length !== 0) {
+    const results = getNonNullArgs(parser.results[0]);
+    results;
+  }
 } catch (error) {
   console.error(error);
 }
-
-type sss = 1;
-
-type sss2 = 222 | (sss extends number ? 1 : 2);
-
-type c2 = 123 extends 121 ? 1 : 2 extends 2 ? 3 : 4 | 1 | true | "sss";
-
-type newFnType = new (a: number, b: string) => number;
-
-interface PolymorphicType {
-  (a: number): void;
-  new (a: number, b: number): void;
-
-  name: string;
-  getName(): string;
-};
-
-
-const polymorphicData: PolymorphicType = {} as any
-
-polymorphicData.getName();
-polymorphicData.name;
-new polymorphicData(1,2);
-polymorphicData(1);
-

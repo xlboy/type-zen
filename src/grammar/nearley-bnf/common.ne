@@ -1,8 +1,7 @@
 @lexer lexer
 
+blockSeparator -> (";" | %ws):*  {% n %}
 
-lineEnd -> (%newLine | ";"):* {% Null %}
+id -> %identifier {% id %}
 
-id -> %identifier
-
-_ -> %ws:* {% Null %}
+_ -> %ws:* {% n %}
