@@ -1,7 +1,8 @@
-@preprocessor typescript
+# @preprocessor typescript
 
 @{%
-import lexer from './moo-lexer'
+// import lexer from './moo-lexer'
+const lexer = require('./moo-lexer')
 
 const Null = () => null;
 %}
@@ -9,7 +10,7 @@ const Null = () => null;
 @lexer lexer
 @include "./statement.ne"
 
-main ->  statement:+
+main ->  s_main
 
 # # Obligatory whitespace
 # __ -> (newline | %whitespace | %spaces | multilineComment):+ {% () => null %}

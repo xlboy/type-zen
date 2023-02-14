@@ -1,3 +1,19 @@
+const expressionTemplate = {
+  condition: [
+    `true == false`,
+    `true == 1`,
+    `true == "1"`,
+    `123 == "123"`,
+    `123 == 121 ? 1 : 2 == 2 ? 3 : 4`,
+    `(123 == 121 ? 1 : 2) == 2`,
+  ],
+  union: [
+    `"n" | 1 | true`,
+    `| 1 | true | "sss"`,
+    `123 == 121 ? 1 : 2 == 2 ? 3 : 4 | 1 | true | "sss"`,
+    `(123 == 121 ? 1 : 2 == 2 ? 3 : 4) | 1 | true | "sss"`,
+  ],
+};
 export const grammarTemplate = {
   typeDef: {
     literal: {
@@ -19,21 +35,10 @@ export const grammarTemplate = {
         `type name3= true`,
       ],
     },
+    union: [`type name  = ${expressionTemplate.union[0]}`],
   },
-  expression: {
-    condition: [
-      `true == false`,
-      `true == 1`,
-      `true == "1"`,
-      `123 == "123"`,
-      `123 == 121 ? 1 : 2 == 2 ? 3 : 4`,
-      `(123 == 121 ? 1 : 2) == 2 ? 3 : 4`,
-    ],
-    union: [
-      `"n" | 1 | true`,
-      `| 1 | true | "sss"`,
-      `123 == 121 ? 1 : 2 == 2 ? 3 : 4 | 1 | true | "sss"`,
-      `(123 == 121 ? 1 : 2 == 2 ? 3 : 4) | 1 | true | "sss"`,
-    ]
-  }
+  expression: expressionTemplate,
 };
+
+type ccc = (| 1) | 1;
+type c2 = (123 extends 121 ? 1 : 2 extends 2 ? 3 : 4) | 1 | true | "sss";

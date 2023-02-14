@@ -1,4 +1,4 @@
-import moo from "moo";
+const moo = require("moo");
 
 const lexer = moo.compile({
   ws: { match: /\s/, lineBreaks: true },
@@ -14,7 +14,7 @@ const lexer = moo.compile({
   never: "never",
   type: "type",
   interface: "interface",
-  extends: ["extends", "=="],
+  extend: ["extends", "=="],
   assignment: "=",
   lParan: "(",
   rParan: ")",
@@ -27,9 +27,9 @@ const lexer = moo.compile({
   or: "|",
   if: "if",
   else: "else",
-
-
+  "?": "?",
+  "colon": ":",
   identifier: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
 });
 
-export default lexer;
+module.exports = lexer;
