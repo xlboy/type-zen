@@ -1,9 +1,6 @@
 const expressionTemplate = {
   condition: [
-    `true == false`,
-    `true == 1`,
-    `true == "1"`,
-    `123 == "123"`,
+   
     `123 == 121 ? 1 : 2 == 2 ? 3 : 4`,
     `(123 == 121 ? 1 : 2) == 2`,
   ],
@@ -41,4 +38,11 @@ export const grammarTemplate = {
     ],
   },
   expression: expressionTemplate,
+  condition: [
+    `true == false`,
+    `(true) == 1`,
+    `true == "1"`,
+    `123 == "123"`,
+    `"mm" extends true`
+  ]
 };

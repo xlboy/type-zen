@@ -7,5 +7,6 @@
     "**/.history/**",
   ],
   "vitest.commandLine": "pnpm exec vitest --api.host 127.0.0.1",
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "commentTranslate.multiLineMerge": true
 }

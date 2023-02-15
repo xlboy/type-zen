@@ -1,3 +1,5 @@
 @lexer lexer
 
-t_ParanSurround[X]  -> ("(" _ $X _ ")"):? | $X 
+t_paranSurround[X]  -> "(" _ $X _ ")" {% args => args[2] %}
+
+t_bracketSurround[X] -> "[" _ $X _ "]" {% args => args[2] %}

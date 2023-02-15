@@ -1,5 +1,5 @@
 import nearley from "nearley";
-const langGrammar = require("./lang.js");
+const langGrammar = require("./__lang.auto-generated__.js");
 import { grammarTemplate } from "./template";
 
 type NearleyArgs = (moo.Token | NearleyArgs | null)[];
@@ -23,9 +23,9 @@ const parser = new nearley.Parser(
 );
 
 try {
-  const content = `type name  = "123123dsfsdf";
-  type age = 111;
-  `
+  // const content = `type ppp = false | "11" | 'dfdf'`;
+  const content = `type ppp = | [true, 2, 3, 5, ""]`;
+  // const content = `type ppp = 1`;
   console.log(content);
 
   parser.feed(content);
