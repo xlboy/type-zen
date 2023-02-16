@@ -1,13 +1,14 @@
+import zod from "zod";
 import { AST } from "../types";
 import { ExpressionBase } from "./types";
-import zod from "zod";
 
-export { ValueKeywordExpression };
+export { IdentifierExpression };
 
 type Schema = [value: string];
-class ValueKeywordExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.ValueKeyword;
+class IdentifierExpression extends ExpressionBase<Schema> {
   public schema: zod.Schema<Schema> = zod.tuple([zod.string()]);
+  public kind = AST.SyntaxKind.E.Identifier;
+
   private value: string;
 
   constructor(pos: AST.Position, args: Schema) {
@@ -20,8 +21,6 @@ class ValueKeywordExpression extends ExpressionBase<Schema> {
   }
 
   public toString(): string {
-    return `${this.value}Keyword`;
+    return this.kind;
   }
-
-  // static schema
 }

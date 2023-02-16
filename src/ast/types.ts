@@ -1,4 +1,4 @@
-export { ASTBase, AST };
+export { AST };
 
 namespace AST {
   export interface Position {
@@ -10,30 +10,15 @@ namespace AST {
     // Expression
     export enum E {
       Union = "ValueDeclaration",
-      ValueKeyword = "ValueKeyword"
+      ValueKeyword = "ValueKeyword",
+      Identifier = "Identifier",
+      StringLiteral = "StringLiteral",
+      NumberLiteral = "NumberLiteral",
+      
     }
     // Statement
     export enum S {
       TypeDeclaration = "TypeDeclaration",
     }
   }
-}
-
-abstract class ASTBase {
-  public pos: AST.Position;
-  protected abstract kind: AST.SyntaxKind.E | AST.SyntaxKind.S;
-
-  constructor(pos: AST.Position) {
-    this.pos = pos;
-  }
-
-  /**
-   * @returns 返回编译后的代码
-   */
-  public abstract compile(): string;
-
-  /**
-   * @returns 返回节点的名称
-   */
-  public abstract toString(): string;
 }

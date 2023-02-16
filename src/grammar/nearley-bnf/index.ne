@@ -1,5 +1,9 @@
+@preprocessor typescript
+
 @{%
-const lexer = require('./moo-lexer')
+import lexer  from './moo-lexer'
+import ast from '../../ast'
+import { toASTNode } from './utils'
 
 const n = () => null;
 %}
@@ -8,6 +12,6 @@ const n = () => null;
 @include "./statement.ne"
 @include "./common.ne"
 
-main ->  null {% d => "" %}
+main ->  null {% n %}
     | _ s_block {% ([, block]) => block %}
     | _ {% n %}

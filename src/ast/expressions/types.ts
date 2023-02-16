@@ -1,9 +1,10 @@
-import { AST, ASTBase } from "../types";
+import { ASTBase } from "../base";
+import { AST } from "../types";
 
 export { ExpressionBase };
 
-abstract class ExpressionBase extends ASTBase {
-  constructor(pos: AST.Position) {
-    super(pos);
+abstract class ExpressionBase<S> extends ASTBase<S> {
+  constructor(pos: AST.Position, args: S) {
+    super(pos, args);
   }
 }

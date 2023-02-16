@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ne:build": "nearleyc src/grammar/nearley-bnf/index.ne -o src/grammar/__lang.auto-generated__.js",
+    "ne:build": "nearleyc src/grammar/nearley-bnf/index.ne -o src/grammar/__lang.auto-generated__.ts",
     "ne:watch": "tsx scripts/watch-lang-ne",
-    "ne:test": "nearley-test src/grammar/__lang.auto-generated__.js",
+    "ne:test": "nearley-test src/grammar/__lang.auto-generated__.ts",
     "ne:rand": "nearley-railroad src/grammar/nearley-bnf/statement.ne -o grammar.html"
   },
   "keywords": [],

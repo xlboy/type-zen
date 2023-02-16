@@ -2,6 +2,6 @@
 
 blockSeparator -> (";" | %ws):*  {% n %}
 
-id -> %identifier {% id %}
+id -> %identifier {% toASTNode(ast.IdentifierExpression) %}
 
 _ -> %ws:* {% n %}
