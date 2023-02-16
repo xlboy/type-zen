@@ -12,12 +12,12 @@ var grammar = {
     {"name": "e_main", "symbols": ["e_union"], "postprocess": id},
     {"name": "e_main", "symbols": ["e_value"], "postprocess": id},
     {"name": "e_condition", "symbols": ["e_value", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_value", "_", {"literal":"?"}, "_", "e_value", "_", {"literal":":"}, "_", "e_value"]},
+    {"name": "e_value", "symbols": [(lexer.has("valueKeyword") ? {type: "valueKeyword"} : valueKeyword)], "postprocess": id},
     {"name": "e_value", "symbols": ["e_literal"], "postprocess": id},
     {"name": "e_value", "symbols": ["e_condition"], "postprocess": id},
     {"name": "e_value$macrocall$2", "symbols": ["e_value"]},
     {"name": "e_value$macrocall$1", "symbols": [{"literal":"("}, "_", "e_value$macrocall$2", "_", {"literal":")"}], "postprocess": args => args[2]},
     {"name": "e_value", "symbols": ["e_value$macrocall$1"], "postprocess": id},
-    {"name": "e_literal$subexpression$1", "symbols": [(lexer.has("boolean") ? {type: "boolean"} : boolean)]},
     {"name": "e_literal$subexpression$1", "symbols": [(lexer.has("string") ? {type: "string"} : string)]},
     {"name": "e_literal$subexpression$1", "symbols": [(lexer.has("number") ? {type: "number"} : number)]},
     {"name": "e_literal", "symbols": ["e_literal$subexpression$1"], "postprocess":  args => ({
@@ -60,7 +60,7 @@ var grammar = {
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1$subexpression$1"]},
     {"name": "s_block$ebnf$1$subexpression$2", "symbols": ["s_main", "blockSeparator"]},
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1", "s_block$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "s_block", "symbols": ["s_block$ebnf$1"]},
+    {"name": "s_block", "symbols": ["s_block$ebnf$1"], "postprocess": args => args[0][0]},
     {"name": "s_main", "symbols": ["s_typeDef"], "postprocess": id},
     {"name": "s_typeDef", "symbols": [{"literal":"type"}, "_", "id", "_", {"literal":"="}, "_", "e_main"], "postprocess":  (args) => ({
             type: "typeDef",

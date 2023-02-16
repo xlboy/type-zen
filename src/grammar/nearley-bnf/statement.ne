@@ -3,7 +3,7 @@
 @include "./expression.ne"
 @include "./common.ne"
 
-s_block -> (s_main blockSeparator):+
+s_block -> (s_main blockSeparator):+ {% args => args[0][0] %}
 
 s_main ->  s_typeDef {% id %}
 
