@@ -75,7 +75,7 @@ const grammar: Grammar = {
     {"name": "e_union$subexpression$1$ebnf$1$subexpression$2", "symbols": ["_", {"literal":"|"}, "_", "e_value"]},
     {"name": "e_union$subexpression$1$ebnf$1", "symbols": ["e_union$subexpression$1$ebnf$1", "e_union$subexpression$1$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "e_union$subexpression$1", "symbols": ["e_value", "e_union$subexpression$1$ebnf$1"], "postprocess": args => [args[0], ...args[1].map(item => item[3])]},
-    {"name": "e_union", "symbols": ["e_union$ebnf$1", "e_union$subexpression$1"], "postprocess": toASTNode(ast.UnionExpression)},
+    {"name": "e_union", "symbols": ["e_union$ebnf$1", "e_union$subexpression$1"], "postprocess": args => toASTNode(ast.UnionExpression)(args[1])},
     {"name": "blockSeparator$ebnf$1", "symbols": []},
     {"name": "blockSeparator$ebnf$1$subexpression$1", "symbols": [{"literal":";"}]},
     {"name": "blockSeparator$ebnf$1$subexpression$1", "symbols": [(lexer.has("ws") ? {type: "ws"} : ws)]},

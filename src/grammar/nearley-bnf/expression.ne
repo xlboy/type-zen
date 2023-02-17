@@ -31,6 +31,6 @@ e_union -> ("|" _):?
 
         | e_value (_ "|" _ e_value):+ {% args => [args[0], ...args[1].map(item => item[3])] %}
     )
-    {% toASTNode(ast.UnionExpression) %}
+    {% args => toASTNode(ast.UnionExpression)(args[1]) %}
 
 

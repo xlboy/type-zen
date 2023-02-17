@@ -9,7 +9,7 @@ export function toASTNode(
   // token 之所以可能为 null，是因为它“本来的内容”是“无意义字符”（↓
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
   //  ↑）
-  // 
+  //
   type NearleyArg = ASTBase | moo.Token | null;
   return (args: Array<NearleyArg>) => {
     const cleanArgs = cleanseArgs(args);
@@ -37,6 +37,7 @@ export function toASTNode(
       start: { line: 0, col: 0 },
       end: { line: 0, col: 0 },
     };
+    
     const firstArg = args[0];
     const lastArg = args[args.length - 1];
 
@@ -51,9 +52,10 @@ export function toASTNode(
       pos.end = lastArg.pos.end;
     } else {
       pos.end.line = lastArg.line + lastArg.lineBreaks;
-      const lastLine = lastArg.text.includes("\n")
-        ? lastArg.text.slice(lastArg.text.lastIndexOf("\n") + 1)
-        : lastArg.text;
+
+      const lastLine = lastArg.value.includes("\n")
+        ? lastArg.value.slice(lastArg.value.lastIndexOf("\n") + 1)
+        : lastArg.value;
       pos.end.col = lastArg.col + lastLine.length;
     }
 

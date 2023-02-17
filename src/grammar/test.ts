@@ -27,6 +27,7 @@ try {
   // const content = `type ppp = | [string, true, 2, 3, 5, ""]`;
   const content = `type ppp =        string
   ;;;;;;;type ppp_2 =    "nnnnn"
+  type u = | [1, true, "str", boolean, never];
   `;
   // console.log(content);
 
