@@ -2,7 +2,7 @@
 
 @{%
 import lexer  from './moo-lexer'
-import ast from '../../ast'
+import * as ast from '../ast'
 import { toASTNode } from './utils'
 
 const n = () => null;

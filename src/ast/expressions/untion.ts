@@ -4,15 +4,17 @@ import { ExpressionBase } from "./types";
 
 export { UnionExpression };
 
-type Schema = Array<ExpressionBase<any>>;
+type Schema = Array<ExpressionBase>;
+const schema: zod.Schema<Schema> = zod.array(zod.instanceof(ExpressionBase));
+
 class UnionExpression extends ExpressionBase<Schema> {
-  public schema: zod.Schema<Schema> = zod.array(zod.any());
   public kind = AST.SyntaxKind.E.Union;
 
-  private values: Array<ExpressionBase<any>>;
+  private values: Array<ExpressionBase>;
 
   constructor(pos: AST.Position, args: Schema) {
-    super(pos, args);
+    super(pos);
+    this.checkArgs(args, schema);
     this.values = args;
   }
 

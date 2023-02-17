@@ -11,7 +11,8 @@ declare var ws: any;
 declare var identifier: any;
 
 import lexer  from './moo-lexer'
-import ast from '../../ast'
+import * as ast from '../ast'
+import { toASTNode } from './utils'
 
 const n = () => null;
 
@@ -48,19 +49,14 @@ const grammar: Grammar = {
     {"name": "e_main", "symbols": ["e_union"], "postprocess": id},
     {"name": "e_main", "symbols": ["e_value"], "postprocess": id},
     {"name": "e_condition", "symbols": ["e_value", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_value", "_", {"literal":"?"}, "_", "e_value", "_", {"literal":":"}, "_", "e_value"]},
-    {"name": "e_value", "symbols": [(lexer.has("valueKeyword") ? {type: "valueKeyword"} : valueKeyword)], "postprocess": id},
+    {"name": "e_value", "symbols": [(lexer.has("valueKeyword") ? {type: "valueKeyword"} : valueKeyword)], "postprocess": toASTNode(ast.ValueKeywordExpression)},
     {"name": "e_value", "symbols": ["e_literal"], "postprocess": id},
     {"name": "e_value", "symbols": ["e_condition"], "postprocess": id},
     {"name": "e_value$macrocall$2", "symbols": ["e_value"]},
     {"name": "e_value$macrocall$1", "symbols": [{"literal":"("}, "_", "e_value$macrocall$2", "_", {"literal":")"}], "postprocess": args => args[2]},
     {"name": "e_value", "symbols": ["e_value$macrocall$1"], "postprocess": id},
-    {"name": "e_literal$subexpression$1", "symbols": [(lexer.has("string") ? {type: "string"} : string)]},
-    {"name": "e_literal$subexpression$1", "symbols": [(lexer.has("number") ? {type: "number"} : number)]},
-    {"name": "e_literal", "symbols": ["e_literal$subexpression$1"], "postprocess":  args => ({
-            type: 'literal',
-            value: args[0][0],
-        })    
-        },
+    {"name": "e_literal", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": toASTNode(ast.StringLiteralExpression)},
+    {"name": "e_literal", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": toASTNode(ast.NumberLiteralExpression)},
     {"name": "e_union$ebnf$1$subexpression$1", "symbols": [{"literal":"|"}, "_"]},
     {"name": "e_union$ebnf$1", "symbols": ["e_union$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_union$ebnf$1", "symbols": [], "postprocess": () => null},
@@ -79,16 +75,13 @@ const grammar: Grammar = {
     {"name": "e_union$subexpression$1$ebnf$1$subexpression$2", "symbols": ["_", {"literal":"|"}, "_", "e_value"]},
     {"name": "e_union$subexpression$1$ebnf$1", "symbols": ["e_union$subexpression$1$ebnf$1", "e_union$subexpression$1$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "e_union$subexpression$1", "symbols": ["e_value", "e_union$subexpression$1$ebnf$1"], "postprocess": args => [args[0], ...args[1].map(item => item[3])]},
-    {"name": "e_union", "symbols": ["e_union$ebnf$1", "e_union$subexpression$1"], "postprocess":  args => ({
-            type: 'union',
-            value: args[1],
-        }) },
+    {"name": "e_union", "symbols": ["e_union$ebnf$1", "e_union$subexpression$1"], "postprocess": toASTNode(ast.UnionExpression)},
     {"name": "blockSeparator$ebnf$1", "symbols": []},
     {"name": "blockSeparator$ebnf$1$subexpression$1", "symbols": [{"literal":";"}]},
     {"name": "blockSeparator$ebnf$1$subexpression$1", "symbols": [(lexer.has("ws") ? {type: "ws"} : ws)]},
     {"name": "blockSeparator$ebnf$1", "symbols": ["blockSeparator$ebnf$1", "blockSeparator$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "blockSeparator", "symbols": ["blockSeparator$ebnf$1"], "postprocess": n},
-    {"name": "id", "symbols": [(lexer.has("identifier") ? {type: "identifier"} : identifier)], "postprocess": id},
+    {"name": "id", "symbols": [(lexer.has("identifier") ? {type: "identifier"} : identifier)], "postprocess": toASTNode(ast.IdentifierExpression)},
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", (lexer.has("ws") ? {type: "ws"} : ws)], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": n},
@@ -96,13 +89,9 @@ const grammar: Grammar = {
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1$subexpression$1"]},
     {"name": "s_block$ebnf$1$subexpression$2", "symbols": ["s_main", "blockSeparator"]},
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1", "s_block$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "s_block", "symbols": ["s_block$ebnf$1"], "postprocess": args => args[0][0]},
+    {"name": "s_block", "symbols": ["s_block$ebnf$1"], "postprocess": args => args[0].map(item => item[0])},
     {"name": "s_main", "symbols": ["s_typeDef"], "postprocess": id},
-    {"name": "s_typeDef", "symbols": [{"literal":"type"}, "_", "id", "_", {"literal":"="}, "_", "e_main"], "postprocess":  (args) => ({
-            type: "typeDef",
-            id: args[2],
-            value: args[6]
-        }) },
+    {"name": "s_typeDef", "symbols": [{"literal":"type"}, "_", "id", "_", {"literal":"="}, "_", "e_main"], "postprocess": toASTNode(ast.TypeDeclaration)},
     {"name": "main", "symbols": [], "postprocess": n},
     {"name": "main", "symbols": ["_", "s_block"], "postprocess": ([, block]) => block},
     {"name": "main", "symbols": ["_"], "postprocess": n}

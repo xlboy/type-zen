@@ -6,13 +6,9 @@ export { ASTBase };
 abstract class ASTBase<S = any> {
   public pos: AST.Position;
   public abstract kind: AST.SyntaxKind.E | AST.SyntaxKind.S;
-  public abstract schema: zod.Schema<S>;
-  private args: S;
 
-  constructor(pos: AST.Position, args: S) {
+  constructor(pos: AST.Position) {
     this.pos = pos;
-    this.args = args;
-    this.checkArgs();
   }
 
   /**
@@ -25,7 +21,7 @@ abstract class ASTBase<S = any> {
    */
   public abstract toString(): string;
 
-  public checkArgs() {
-    this.schema.parse(this.args);
+  protected checkArgs(args: S, schema: zod.Schema<S>) {
+    schema.parse(args);
   }
 }

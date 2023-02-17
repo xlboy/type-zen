@@ -1,18 +1,16 @@
+import moo from "moo";
 import { AST } from "../types";
 import { ExpressionBase } from "./types";
-import zod from "zod";
 
 export { ValueKeywordExpression };
 
-type Schema = [value: string];
-class ValueKeywordExpression extends ExpressionBase<Schema> {
+class ValueKeywordExpression extends ExpressionBase {
   public kind = AST.SyntaxKind.E.ValueKeyword;
-  public schema: zod.Schema<Schema> = zod.tuple([zod.string()]);
   private value: string;
 
-  constructor(pos: AST.Position, args: Schema) {
-    super(pos, args);
-    [this.value] = args;
+  constructor(pos: AST.Position, [mooToken]: [token: moo.Token]) {
+    super(pos);
+    this.value = mooToken.value;
   }
 
   public compile(): string {
@@ -22,6 +20,4 @@ class ValueKeywordExpression extends ExpressionBase<Schema> {
   public toString(): string {
     return `${this.value}Keyword`;
   }
-
-  // static schema
 }

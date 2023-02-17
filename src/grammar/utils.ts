@@ -9,7 +9,7 @@ export function toASTNode(
   // token 之所以可能为 null，是因为它“本来的内容”是“无意义字符”（↓
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
   //  ↑）
-  // 这些
+  // 
   type NearleyArg = ASTBase | moo.Token | null;
   return (args: Array<NearleyArg>) => {
     const cleanArgs = cleanseArgs(args);
@@ -18,7 +18,7 @@ export function toASTNode(
 
     try {
       const pos = getPosRange(cleanArgs);
-      return new nodeConstructor(pos, args);
+      return new nodeConstructor(pos, cleanArgs);
     } catch (error) {
       console.error(error);
     }
@@ -40,14 +40,14 @@ export function toASTNode(
     const firstArg = args[0];
     const lastArg = args[args.length - 1];
 
-    if (isContainsASTBaseClass(firstArg)) {
+    if (isASTBaseInstance(firstArg)) {
       pos.start = firstArg.pos.start;
     } else {
       pos.start.col = firstArg.col;
       pos.start.line = firstArg.line;
     }
 
-    if (isContainsASTBaseClass(lastArg)) {
+    if (isASTBaseInstance(lastArg)) {
       pos.end = lastArg.pos.end;
     } else {
       pos.end.line = lastArg.line + lastArg.lineBreaks;
@@ -59,7 +59,7 @@ export function toASTNode(
 
     return pos;
 
-    function isContainsASTBaseClass(arg: any): arg is ASTBase {
+    function isASTBaseInstance(arg: any): arg is ASTBase {
       return arg instanceof ASTBase;
     }
   }

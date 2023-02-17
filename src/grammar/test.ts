@@ -1,5 +1,5 @@
 import nearley from "nearley";
-import langGrammar from './__lang.auto-generated__'
+import langGrammar from "./__lang.auto-generated__";
 import { grammarTemplate } from "./template";
 
 type NearleyArgs = (moo.Token | NearleyArgs | null)[];
@@ -25,15 +25,17 @@ const parser = new nearley.Parser(
 try {
   // const content = `type ppp = false | "11" | 'dfdf'`;
   // const content = `type ppp = | [string, true, 2, 3, 5, ""]`;
-  const content = `type ppp = string`;
-  // const content = ``;
-  console.log(content);
+  const content = `type ppp =        string
+  ;;;;;;;type ppp_2 =    "nnnnn"
+  `;
+  // console.log(content);
 
   parser.feed(content);
 
   if (parser.results.length !== 0) {
-    const results = getNonNullArgs(parser.results[0]);
-    results;
+    for (const result of parser.results[0]) {
+      console.log(`结果： ${result.compile()}`);
+    }
   }
 } catch (error) {
   console.error(error);

@@ -9,7 +9,7 @@ namespace AST {
   export namespace SyntaxKind {
     // Expression
     export enum E {
-      Union = "ValueDeclaration",
+      Union = "Untion",
       ValueKeyword = "ValueKeyword",
       Identifier = "Identifier",
       StringLiteral = "StringLiteral",
