@@ -6,6 +6,7 @@ e_main -> e_bracketSurround {% id %}
     | e_union {% id %}
     | e_value {% id %}
     | e_typeReference {% id %}
+    | e_condition {% id %}
     
 e_typeReference -> id _ ("<" 
         (_ e_main (_ "," _ e_main):* {% args => [args[1], ...args[2].map(item => item[3])] %}) 
@@ -14,7 +15,7 @@ e_typeReference -> id _ ("<"
 e_bracketSurround -> "(" _ e_main _ ")" {% toASTNode(ast.BracketSurroundExpression) %}
 
 e_condition -> 
-    e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main
+    e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main {% toASTNode(ast.ConditionExpression) %}
 
 e_value -> %valueKeyword {% toASTNode(ast.ValueKeywordExpression) %} 
     | e_literal {% id %} 
