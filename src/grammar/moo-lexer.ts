@@ -15,6 +15,7 @@ const lexer = moo.compile({
     "never",
     "any",
     "symbol",
+    "void",
     ...["true", "false", "boolean"],
   ],
   // 字符串字面量，包围符号为“双引号、单引号、反引号”
@@ -27,7 +28,7 @@ const lexer = moo.compile({
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
-      keyword: ["if", "else", "in"],
+      keyword: ["if", "else", "in", "void"],
     }),
   },
   // 又能作为标识符，又能作为关键字的关键字

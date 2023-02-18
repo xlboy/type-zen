@@ -14,7 +14,8 @@ namespace AST {
       Identifier = "Identifier",
       StringLiteral = "StringLiteral",
       NumberLiteral = "NumberLiteral",
-      TypeReference = "TypeReference"
+      TypeReference = "TypeReference",
+      BracketSurround = "BracketSurround",
     }
     // Statement
     export enum S {

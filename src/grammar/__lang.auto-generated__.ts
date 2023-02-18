@@ -46,6 +46,7 @@ interface Grammar {
 const grammar: Grammar = {
   Lexer: lexer,
   ParserRules: [
+    {"name": "e_main", "symbols": ["e_bracketSurround"], "postprocess": id},
     {"name": "e_main", "symbols": ["e_union"], "postprocess": id},
     {"name": "e_main", "symbols": ["e_value"], "postprocess": id},
     {"name": "e_main", "symbols": ["e_typeReference"], "postprocess": id},
@@ -57,13 +58,11 @@ const grammar: Grammar = {
     {"name": "e_typeReference$ebnf$1", "symbols": ["e_typeReference$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_typeReference$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_typeReference", "symbols": ["id", "_", "e_typeReference$ebnf$1"], "postprocess": args => toASTNode(ast.TypeReferenceExpression)([args[0], ...(args[2] || [])])},
-    {"name": "e_condition", "symbols": ["e_value", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_value", "_", {"literal":"?"}, "_", "e_value", "_", {"literal":":"}, "_", "e_value"]},
+    {"name": "e_bracketSurround", "symbols": [{"literal":"("}, "_", "e_main", "_", {"literal":")"}], "postprocess": toASTNode(ast.BracketSurroundExpression)},
+    {"name": "e_condition", "symbols": ["e_main", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_main", "_", {"literal":"?"}, "_", "e_main", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_value", "symbols": [(lexer.has("valueKeyword") ? {type: "valueKeyword"} : valueKeyword)], "postprocess": toASTNode(ast.ValueKeywordExpression)},
     {"name": "e_value", "symbols": ["e_literal"], "postprocess": id},
     {"name": "e_value", "symbols": ["e_condition"], "postprocess": id},
-    {"name": "e_value$macrocall$2", "symbols": ["e_value"]},
-    {"name": "e_value$macrocall$1", "symbols": [{"literal":"("}, "_", "e_value$macrocall$2", "_", {"literal":")"}], "postprocess": args => args[2]},
-    {"name": "e_value", "symbols": ["e_value$macrocall$1"], "postprocess": id},
     {"name": "e_literal", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": toASTNode(ast.StringLiteralExpression)},
     {"name": "e_literal", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": toASTNode(ast.NumberLiteralExpression)},
     {"name": "e_union$ebnf$1$subexpression$1", "symbols": [{"literal":"|"}, "_"]},
