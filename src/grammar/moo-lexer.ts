@@ -16,6 +16,7 @@ const lexer = moo.compile({
     "any",
     "symbol",
     "void",
+    "unknown",
     ...["true", "false", "boolean"],
   ],
   // 字符串字面量，包围符号为“双引号、单引号、反引号”
