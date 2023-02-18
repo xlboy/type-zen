@@ -17,7 +17,7 @@ describe("valid", () => {
     });
   });
 
-  it("should return AST", () => {
+  it("ast node", () => {
     forFn((id) => {
       const nodes = new Parser(`type ${id} = 1`).toAST();
 

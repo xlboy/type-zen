@@ -18,7 +18,7 @@ describe("number", () => {
       });
     });
 
-    it("should return AST", () => {
+    it("ast node", () => {
       forFn((numberLiteral) => {
         const contents = ["type b1 =       ", numberLiteral, ";;;;;;;;;;"];
         const contentStr = contents.join("");
@@ -71,7 +71,7 @@ describe("string", () => {
       });
     });
 
-    it("should return AST", () => {
+    it("ast node", () => {
       forFn((stringLiteral) => {
         const contents = ["type ssss =", stringLiteral];
         const contentStr = contents.join("");

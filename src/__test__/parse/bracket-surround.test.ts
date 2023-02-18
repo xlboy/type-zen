@@ -13,7 +13,7 @@ describe("valid", () => {
       }
     });
 
-    it("should return AST", () => {
+    it("ast node", () => {
       for (const id of identifiers) {
         const nodes = new Parser(`type a = ${id}`).toAST();
 
@@ -38,7 +38,7 @@ describe("valid", () => {
         }
       });
 
-      it("should return AST", () => {
+      it("ast node", () => {
         for (const str of strings) {
           const nodes = new Parser(`type a = ${str}`).toAST();
 
@@ -62,7 +62,7 @@ describe("valid", () => {
         }
       });
 
-      it("should return AST", () => {
+      it("ast node", () => {
         for (const num of numbers) {
           const nodes = new Parser(`type a = ${num}`).toAST();
 
