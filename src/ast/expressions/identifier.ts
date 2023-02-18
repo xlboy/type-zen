@@ -1,4 +1,4 @@
-import moo from 'moo';
+import moo from "moo";
 import { AST } from "../types";
 import { ExpressionBase } from "./base";
 

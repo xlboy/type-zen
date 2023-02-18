@@ -4,10 +4,10 @@ import { ExpressionBase } from "../expressions/base";
 import { AST } from "../types";
 import { StatementBase } from "./base";
 
-export { TypeDeclaration };
+export { TypeDeclarationStatement };
 
-class TypeDeclaration extends StatementBase<
-  zod.infer<typeof TypeDeclaration.schema>
+class TypeDeclarationStatement extends StatementBase<
+  zod.infer<typeof TypeDeclarationStatement.schema>
 > {
   static readonly schema = zod.tuple([
     zod.any(),
@@ -17,15 +17,16 @@ class TypeDeclaration extends StatementBase<
   ]);
 
   public kind = AST.SyntaxKind.S.TypeDeclaration;
-  private identifier: IdentifierExpression;
-  private value: ExpressionBase;
+
+  public identifier: IdentifierExpression;
+  public value: ExpressionBase;
 
   constructor(
     pos: AST.Position,
-    args: zod.infer<typeof TypeDeclaration.schema>
+    args: zod.infer<typeof TypeDeclarationStatement.schema>
   ) {
     super(pos);
-    this.checkArgs(args, TypeDeclaration.schema);
+    this.checkArgs(args, TypeDeclarationStatement.schema);
     [, this.identifier, , this.value] = args;
   }
 

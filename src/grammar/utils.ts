@@ -1,8 +1,8 @@
-import { ASTBase, AST } from "../ast";
+import * as ast from "../ast";
 
 export function toASTNode(
-  nodeConstructor: ASTBase & {
-    new (pos: AST.Position, args: any[]): void;
+  nodeConstructor: ast.Base & {
+    new (pos: ast.Type.Position, args: any[]): void;
   }
 ) {
   // `args` 是 `nearley` 扫描到的 token 集合
@@ -10,7 +10,7 @@ export function toASTNode(
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
   //  ↑）
   //
-  type NearleyArg = ASTBase | moo.Token | null;
+  type NearleyArg = ast.Base | moo.Token | null;
   return (args: Array<NearleyArg>) => {
     const cleanArgs = cleanseArgs(args);
 
@@ -33,8 +33,8 @@ export function toASTNode(
     return args.filter((arg) => arg !== null) as Array<CleanArg>;
   }
 
-  function getPosRange(args: Array<CleanArg>): AST.Position {
-    const pos: AST.Position = {
+  function getPosRange(args: Array<CleanArg>): ast.Type.Position {
+    const pos: ast.Type.Position = {
       start: { line: 0, col: 0 },
       end: { line: 0, col: 0 },
     };
@@ -62,8 +62,8 @@ export function toASTNode(
 
     return pos;
 
-    function isASTBaseInstance(arg: any): arg is ASTBase {
-      return arg instanceof ASTBase;
+    function isASTBaseInstance(arg: any): arg is ast.Base {
+      return arg instanceof ast.Base;
     }
   }
 }

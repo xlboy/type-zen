@@ -14,7 +14,7 @@ type Schema1 = [
 
 type Schema2 = [identifier: IdentifierExpression];
 
-const schema: zod.Schema<Schema1 | Schema2> = zod
+const schema = zod
   .tuple([zod.instanceof(IdentifierExpression)])
   .or(
     zod.tuple([

@@ -27,21 +27,20 @@ const lexer = moo.compile({
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
-      keyword: [
-        "if",
-        "else",
-        "type",
-        "interface",
-        "namespace",
-        "keyof",
-        "in",
-        "as",
-        "is",
-        "out",
-        "infer",
-      ],
+      keyword: ["if", "else", "in"],
     }),
   },
+  // 又能作为标识符，又能作为关键字的关键字
+  multifunctionalKeyword: [
+    "interface",
+    "namespace",
+    "keyof",
+    "type",
+    "as",
+    "is",
+    "out",
+    "infer",
+  ],
 });
 
 export default lexer;

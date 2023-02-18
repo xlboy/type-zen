@@ -1,9 +1,5 @@
 const expressionTemplate = {
-  condition: [
-   
-    `123 == 121 ? 1 : 2 == 2 ? 3 : 4`,
-    `(123 == 121 ? 1 : 2) == 2`,
-  ],
+  condition: [`123 == 121 ? 1 : 2 == 2 ? 3 : 4`, `(123 == 121 ? 1 : 2) == 2`],
   union: [
     `"n" | 1 | true`,
     `| 1 | true | "sss"`,
@@ -43,6 +39,30 @@ export const grammarTemplate = {
     `(true) == 1`,
     `true == "1"`,
     `123 == "123"`,
-    `"mm" extends true`
-  ]
+    `"mm" extends true`,
+  ],
 };
+
+type A = 1 extends number
+  ? string extends ""
+    ? true extends boolean
+      ? true
+      : never
+    : "no"
+  : "a" extends boolean
+  ? true
+  : false;
+
+
+type tsppA = `
+  type A = 
+    if (1 == number) {
+      if (string == "") {
+        return true == boolean ? true : never;
+      } else {
+        return "no"
+      }
+    } else {
+      return "a" == boolean ? true : false;
+    }
+`

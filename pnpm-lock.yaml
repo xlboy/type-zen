@@ -10,6 +10,7 @@ specifiers:
   randexp: ^0.5.3
   tsx: ^3.12.3
   typescript: ^4.9.5
+  vite: ^4.1.2
   vitest: ^0.28.4
   zod: ^3.20.6
 
@@ -23,6 +24,7 @@ devDependencies:
   randexp: 0.5.3
   tsx: 3.12.3
   typescript: 4.9.5
+  vite: 4.1.2_@types+node@18.13.0
   vitest: 0.28.4
   zod: 3.20.6
 
@@ -980,7 +982,7 @@ packages:
       picocolors: 1.0.0
       source-map: 0.6.1
       source-map-support: 0.5.21
-      vite: 4.1.1_@types+node@18.13.0
+      vite: 4.1.2_@types+node@18.13.0
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -991,8 +993,8 @@ packages:
       - terser
     dev: true
 
-  /vite/4.1.1_@types+node@18.13.0:
-    resolution: {integrity: sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==}
+  /vite/4.1.2_@types+node@18.13.0:
+    resolution: {integrity: sha512-MWDb9Rfy3DI8omDQySbMK93nQqStwbsQWejXRY2EBzEWKmLAXWb1mkI9Yw2IJrc+oCvPCI1Os5xSSIBYY6DEAw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -1068,7 +1070,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.1
       tinyspy: 1.1.1
-      vite: 4.1.1_@types+node@18.13.0
+      vite: 4.1.2_@types+node@18.13.0
       vite-node: 0.28.4_@types+node@18.13.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:

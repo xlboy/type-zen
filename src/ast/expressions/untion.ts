@@ -4,8 +4,8 @@ import { ExpressionBase } from "./base";
 
 export { UnionExpression };
 
-type Schema = Array<ExpressionBase>;
-const schema: zod.Schema<Schema> = zod.array(zod.instanceof(ExpressionBase));
+const schema = zod.array(zod.instanceof(ExpressionBase));
+type Schema = zod.infer<typeof schema>;
 
 class UnionExpression extends ExpressionBase<Schema> {
   public kind = AST.SyntaxKind.E.Union;
