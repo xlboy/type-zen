@@ -1,6 +1,6 @@
 import zod from "zod";
 import { AST } from "../types";
-import { ExpressionBase } from "./types";
+import { ExpressionBase } from "./base";
 
 export { UnionExpression };
 

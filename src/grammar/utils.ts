@@ -16,8 +16,9 @@ export function toASTNode(
 
     if (cleanArgs.length === 0) return;
 
+    const pos = getPosRange(cleanArgs);
+
     try {
-      const pos = getPosRange(cleanArgs);
       return new nodeConstructor(pos, cleanArgs);
     } catch (error) {
       console.error(error);
@@ -37,7 +38,7 @@ export function toASTNode(
       start: { line: 0, col: 0 },
       end: { line: 0, col: 0 },
     };
-    
+
     const firstArg = args[0];
     const lastArg = args[args.length - 1];
 

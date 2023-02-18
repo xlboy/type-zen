@@ -1,6 +1,6 @@
 import moo from "moo";
 import { AST } from "../types";
-import { ExpressionBase } from "./types";
+import { ExpressionBase } from "./base";
 
 export { ValueKeywordExpression };
 
@@ -18,6 +18,6 @@ class ValueKeywordExpression extends ExpressionBase {
   }
 
   public toString(): string {
-    return `${this.value}Keyword`;
+    return `${this.value[0].toLocaleUpperCase()}${this.value.substring(1)}Keyword`;
   }
 }

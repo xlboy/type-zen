@@ -25,10 +25,13 @@ const parser = new nearley.Parser(
 try {
   // const content = `type ppp = false | "11" | 'dfdf'`;
   // const content = `type ppp = | [string, true, 2, 3, 5, ""]`;
-  const content = `type ppp =        string
-  ;;;;;;;type ppp_2 =    "nnnnn"
-  type u = | [1, true, "str", boolean, never];
-  `;
+  // const content = `type ppp =        string
+  // ;;;;;;;type ppp_2 =    "nnnnn"
+  // type u2 = 11 | "fa" | true;
+  // type u = | [1, true, "str", boolean, never];
+  // `;
+  const content = `type aaaa = SSSwcgj<true | false, | [wdwdd<sss>  , false], true>`;
+  // const content = `type aaaa = SSSwcgj<string>`;
   // console.log(content);
 
   parser.feed(content);
@@ -41,3 +44,7 @@ try {
 } catch (error) {
   console.error(error);
 }
+
+type aaa<aa, a> = 1;
+
+type ddd = aaa<123123, 123123>;

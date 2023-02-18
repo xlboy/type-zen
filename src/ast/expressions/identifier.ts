@@ -1,6 +1,6 @@
 import moo from 'moo';
 import { AST } from "../types";
-import { ExpressionBase } from "./types";
+import { ExpressionBase } from "./base";
 
 export { IdentifierExpression };
 

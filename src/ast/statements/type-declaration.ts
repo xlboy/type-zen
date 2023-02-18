@@ -1,8 +1,8 @@
 import zod from "zod";
 import { IdentifierExpression } from "../expressions/identifier";
-import { ExpressionBase } from "../expressions/types";
+import { ExpressionBase } from "../expressions/base";
 import { AST } from "../types";
-import { StatementBase } from "./types";
+import { StatementBase } from "./base";
 
 export { TypeDeclaration };
 
