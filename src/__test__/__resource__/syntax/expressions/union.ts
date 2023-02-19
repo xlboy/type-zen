@@ -11,6 +11,7 @@ const unionTemplate = {
       "string | number | boolean | null | undefined | void | never",
       "string | number | boolean | null | undefined | void | never | unknown",
       "string | number | boolean | null | undefined | void | never | unknown | any",
+      "sss<ddd> | 123123 | true | 'sdfsdf' | null | undefined | void | ddd<dd<d<dd<dd>>>>",
     ],
     extended: [
       "|[string]",
