@@ -36,6 +36,7 @@ describe("number", () => {
         } as ast.Type.Position);
 
         expect(node.value).instanceOf(ast.NumberLiteralExpression);
+        expect(node.value.kind).toBe(ast.Type.SyntaxKind.E.NumberLiteral);
         expect(node.value.compile()).toBe(numberLiteral);
       });
     });
@@ -89,6 +90,7 @@ describe("string", () => {
         } as ast.Type.Position);
 
         expect(node.value).instanceOf(ast.StringLiteralExpression);
+        expect(node.value.kind).toBe(ast.Type.SyntaxKind.E.StringLiteral);
         expect(node.value.compile()).toBe(stringLiteral);
       });
     });
