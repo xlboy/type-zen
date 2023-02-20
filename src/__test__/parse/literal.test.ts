@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { NearleyError, Parser } from "../../api/parser";
 import * as resource from "../__resource__";
-import * as ast from "../../ast";
 
 describe("number", () => {
   it("error throw: UnexpectedInput", () => {
