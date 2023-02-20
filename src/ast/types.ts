@@ -16,7 +16,8 @@ namespace AST {
       NumberLiteral = "NumberLiteral",
       TypeReference = "TypeReference",
       BracketSurround = "BracketSurround",
-      Condition = "Condition"
+      Condition = "Condition",
+      TypeDeclarationArgs = "TypeDeclarationArgs",
     }
     // Statement
     export enum S {

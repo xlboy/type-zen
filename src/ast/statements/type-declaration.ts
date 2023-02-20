@@ -3,35 +3,40 @@ import { IdentifierExpression } from "../expressions/identifier";
 import { ExpressionBase } from "../expressions/base";
 import { AST } from "../types";
 import { StatementBase } from "./base";
+import { TypeDeclarationArgsExpression } from "../expressions/type-declaration-args";
 
 export { TypeDeclarationStatement };
 
-class TypeDeclarationStatement extends StatementBase<
-  zod.infer<typeof TypeDeclarationStatement.schema>
-> {
-  static readonly schema = zod.tuple([
-    zod.any(),
-    zod.instanceof(IdentifierExpression),
-    zod.any(),
-    zod.instanceof(ExpressionBase),
-  ]);
+const schema = zod.tuple([
+  zod.any() /* type */,
+  zod.instanceof(IdentifierExpression),
+  zod.instanceof(TypeDeclarationArgsExpression).or(zod.undefined()),
+  zod.instanceof(ExpressionBase),
+]);
 
+type Schema = zod.infer<typeof schema>;
+
+class TypeDeclarationStatement extends StatementBase<Schema> {
   public kind = AST.SyntaxKind.S.TypeDeclaration;
 
   public identifier: IdentifierExpression;
   public value: ExpressionBase;
+  public arguments: TypeDeclarationArgsExpression | null;
 
-  constructor(
-    pos: AST.Position,
-    args: zod.infer<typeof TypeDeclarationStatement.schema>
-  ) {
+  constructor(pos: AST.Position, args: Schema) {
     super(pos);
-    this.checkArgs(args, TypeDeclarationStatement.schema);
+    // this.checkArgs(args, schema);
     [, this.identifier, , this.value] = args;
+
+    if (args[2]) {
+      this.arguments = args[2];
+    }
   }
 
   public compile(): string {
-    return `type ${this.identifier.compile()} = ${this.value.compile()};`;
+    return `type ${this.identifier.compile()}${
+      this.arguments?.compile() || ""
+    } = ${this.value.compile()};`;
   }
 
   public toString(): string {

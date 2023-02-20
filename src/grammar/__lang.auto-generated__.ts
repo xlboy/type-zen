@@ -99,8 +99,37 @@ const grammar: Grammar = {
     {"name": "s_block$ebnf$1$subexpression$2", "symbols": ["s_main", "blockSeparator"]},
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1", "s_block$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "s_block", "symbols": ["s_block$ebnf$1"], "postprocess": args => args[0].map(item => item[0])},
-    {"name": "s_main", "symbols": ["s_typeDef"], "postprocess": id},
-    {"name": "s_typeDef", "symbols": [{"literal":"type"}, "_", "id", "_", {"literal":"="}, "_", "e_main"], "postprocess": toASTNode(ast.TypeDeclarationStatement)},
+    {"name": "s_main", "symbols": ["s_typeDecl"], "postprocess": id},
+    {"name": "s_typeDecl$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments", "_"]},
+    {"name": "s_typeDecl$ebnf$1", "symbols": ["s_typeDecl$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl", "symbols": [{"literal":"type"}, "_", "id", "_", "s_typeDecl$ebnf$1", {"literal":"="}, "_", "e_main"], "postprocess": args => toASTNode(ast.TypeDeclarationStatement)([args[0], args[2], args[4]?.[0] || undefined, args.at(-1)])},
+    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":":"}]},
+    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":"extends"}]},
+    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "_", "e_main"]},
+    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": ["s_typeDecl_arguments$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"="}, "_", "e_main"]},
+    {"name": "s_typeDecl_arguments$ebnf$2", "symbols": ["s_typeDecl_arguments$ebnf$2$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments$ebnf$3", "symbols": []},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":":"}]},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":"extends"}]},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "_", "e_main"]},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"="}, "_", "e_main"]},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "_", "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2"]},
+    {"name": "s_typeDecl_arguments$ebnf$3", "symbols": ["s_typeDecl_arguments$ebnf$3", "s_typeDecl_arguments$ebnf$3$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "s_typeDecl_arguments", "symbols": [{"literal":"<"}, "_", "id", "_", "s_typeDecl_arguments$ebnf$1", "s_typeDecl_arguments$ebnf$2", "s_typeDecl_arguments$ebnf$3", "_", {"literal":">"}], "postprocess":  args => {
+            const firstArg = { id: args[2], type: args[4]?.at(-1), default: args[5]?.at(-1) };
+            const restArgs = args[6].map(arg => {
+                return { id: arg[3], type: arg[5]?.at(-1), default: arg[6]?.at(-1) };
+            });
+            return toASTNode(ast.TypeDeclarationArgsExpression)([args[0], [firstArg, ...restArgs], args.at(-1)])
+        } },
     {"name": "main", "symbols": [], "postprocess": n},
     {"name": "main", "symbols": ["_", "s_block"], "postprocess": ([, block]) => block},
     {"name": "main", "symbols": ["_"], "postprocess": n}
