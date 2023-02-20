@@ -6,21 +6,26 @@ export { createSource, createNode, assertSource, mergeString };
 
 interface TestSource<N> {
   content: string;
-  nodes: Array<TestNode<N>>;
+  nodes: Array<TestNode<any>>;
 }
 
-type TestNode<T> = {
-  instance: T & any;
-  output?: string;
-} & {
-  [K in keyof T & string as K extends "toString" | "compile"
+type InsidePrototype<T> = {
+  [K in keyof T as K extends "toString" | "compile"
     ? never
     : K]?: T[K] extends ast.Base
-    ? TestNode<T[K]>
+    ? TestNode<T[K] & any>
     : T[K] extends Function
     ? never
+    : NonNullable<T[K]> extends ast.Base[]
+    ? Array<TestNode<any>>
     : T[K];
 };
+type TestNode<T> = {
+  instance: T;
+  output?: string;
+} & (T extends { prototype: infer P }
+  ? InsidePrototype<P>
+  : InsidePrototype<T>);
 
 function createSource<N>(source: TestSource<N>): typeof source {
   return source;
@@ -43,23 +48,43 @@ function assertSource<T>(source: TestSource<T>) {
 function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
   expect(node).instanceOf(info.instance);
 
-  if ("output" in info) {
-    expect(node.compile()).toBe(info.output);
-  }
-
-  if ("pos" in info) {
-    expect(node.pos).toMatchObject(info.pos!);
-  }
-
-  if ("kind" in info) {
-    expect(node.kind).toBe(info.kind);
-  }
-
-  expect(node.compile()).toBe(info.output);
-
   for (const key in info) {
-    if ((node as any)[key] instanceof ast.Base) {
-      assertNode((node as any)[key] as any, (info as any)[key]);
+    const nodeVal = (node as any)[key];
+    const infoVal = (info as any)[key];
+
+    if (nodeVal instanceof ast.Base) {
+      if (infoVal) {
+        assertNode(nodeVal, infoVal);
+        continue;
+      }
+    }
+
+    switch (key) {
+      case "output":
+        expect(node.compile()).toBe(info.output);
+        break;
+
+      case "pos":
+        expect(node.pos).toMatchObject(info.pos!);
+        break;
+
+      case "kind":
+        expect(node.kind).toBe(info.kind);
+        break;
+
+      default: {
+        if (!nodeVal || !infoVal) break;
+        if (typeof nodeVal === "function") break;
+        if (Array.isArray(nodeVal) && Array.isArray(infoVal)) {
+          infoVal.forEach((info, index) => {
+            const node = nodeVal[index] as ast.Base | undefined;
+            if (node) {
+              assertNode(node, info);
+            }
+          });
+        }
+        break;
+      }
     }
   }
 }

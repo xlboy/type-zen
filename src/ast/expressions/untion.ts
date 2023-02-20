@@ -10,7 +10,7 @@ type Schema = zod.infer<typeof schema>;
 class UnionExpression extends ExpressionBase<Schema> {
   public kind = AST.SyntaxKind.E.Union;
 
-  private values: Array<ExpressionBase>;
+  public values: Array<ExpressionBase>;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);

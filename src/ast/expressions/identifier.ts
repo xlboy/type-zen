@@ -7,7 +7,7 @@ export { IdentifierExpression };
 class IdentifierExpression extends ExpressionBase {
   public kind = AST.SyntaxKind.E.Identifier;
 
-  private value: string;
+  public value: string;
 
   constructor(pos: AST.Position, [mooToken]: [moo.Token]) {
     super(pos);

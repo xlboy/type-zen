@@ -28,8 +28,8 @@ const schema = zod
 class TypeReferenceExpression extends ExpressionBase<Schema1 | Schema2> {
   public kind = AST.SyntaxKind.E.TypeReference;
 
-  private identifier: IdentifierExpression;
-  private arguments?: Array<ExpressionBase>;
+  public identifier: IdentifierExpression;
+  public arguments?: Array<ExpressionBase>;
 
   constructor(pos: AST.Position, args: Schema1 | Schema2) {
     super(pos);

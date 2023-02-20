@@ -47,23 +47,20 @@ namespace Literal {
       return utils.createSource({
         content,
         nodes: [
-          utils.createNode<ast.TypeDeclarationStatement>({
+          utils.createNode({
             instance: ast.TypeDeclarationStatement,
-            kind: ast.Type.SyntaxKind.S.TypeDeclaration,
             pos: {
               start: { line: 1, col: 1 },
               end: { line: 1, col: content.length + 1 },
             },
             output: utils.mergeString("type a = ", numLiteral, ";"),
             identifier: {
-              instance: ast.IdentifierExpression,
-              kind: ast.Type.SyntaxKind.E.Identifier,
+              instance: ast.IdentifierExpression as any,
               output: "a",
               pos: { start: { line: 1, col: 6 }, end: { line: 1, col: 7 } },
             },
             value: {
-              instance: ast.NumberLiteralExpression,
-              kind: ast.Type.SyntaxKind.E.NumberLiteral,
+              instance: ast.NumberLiteralExpression as any,
               output: numLiteral,
               pos: {
                 start: { line: 1, col: contents[0].length + 1 },
@@ -81,29 +78,26 @@ namespace Literal {
       return utils.createSource({
         content,
         nodes: [
-          utils.createNode<ast.TypeDeclarationStatement>({
+          utils.createNode({
             instance: ast.TypeDeclarationStatement,
-            kind: ast.Type.SyntaxKind.S.TypeDeclaration,
             pos: {
               start: { line: 1, col: 1 },
               end: { line: 1, col: content.length + 1 },
             },
             output: utils.mergeString("type strrr = ", strLiteral, ";"),
-            identifier: {
+            identifier: utils.createNode({
               instance: ast.IdentifierExpression,
-              kind: ast.Type.SyntaxKind.E.Identifier,
               output: "strrr",
-              pos: { start: { line: 1, col: 6 }, end: { line: 1, col:  11 } },
-            },
-            value: {
+              pos: { start: { line: 1, col: 6 }, end: { line: 1, col: 11 } },
+            }),
+            value: utils.createNode({
               instance: ast.StringLiteralExpression,
-              kind: ast.Type.SyntaxKind.E.StringLiteral,
               output: strLiteral,
               pos: {
                 start: { line: 1, col: contents[0].length + 1 },
                 end: { line: 1, col: content.length + 1 },
               },
-            },
+            }),
           }),
         ],
       });
