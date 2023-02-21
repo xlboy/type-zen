@@ -18,7 +18,11 @@ e_mainWithoutUnion ->
 e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% toASTNode(ast.GetKeyValueExpression) %}
 
 e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
-    {% args => toASTNode(ast.TupleExpression)([args[2], ...args[4].map(item => item[3])]) %}
+    {% args => toASTNode(ast.TupleExpression)([
+            args[0], 
+            [args[2], ...args[4].map(item => item.at(-1))],
+            args.at(-1)
+        ]) %}
 
 e_array -> e_main "[" "]" {% toASTNode(ast.ArrayExpression) %}
 
