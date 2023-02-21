@@ -9,6 +9,8 @@ namespace GetKeyValue {
         type A = Array["name"]
         type B = Object[KeyVar]['age']
         type C =   (Array | "Str")["name"]
+        type D = Array["a" | "b"]
+        type E = Array[| ["a" ,O["name"]]]
         `,
       nodes: [
         utils.createNode({
@@ -80,6 +82,68 @@ namespace GetKeyValue {
             key: utils.createNode({
               instance: ast.StringLiteralExpression,
               output: `"name"`,
+            }),
+          }),
+        }),
+
+        utils.createNode({
+          instance: ast.TypeDeclarationStatement,
+          output: `type D = Array["a" | "b"];`,
+          value: utils.createNode({
+            instance: ast.GetKeyValueExpression,
+            output: `Array["a" | "b"]`,
+            source: utils.createNode({
+              instance: ast.TypeReferenceExpression,
+              output: "Array",
+            }),
+            key: utils.createNode({
+              instance: ast.UnionExpression,
+              output: `"a" | "b"`,
+              values: [
+                utils.createNode({
+                  instance: ast.StringLiteralExpression,
+                  output: `"a"`,
+                }),
+                utils.createNode({
+                  instance: ast.StringLiteralExpression,
+                  output: `"b"`,
+                }),
+              ],
+            }),
+          }),
+        }),
+
+        utils.createNode({
+          instance: ast.TypeDeclarationStatement,
+          output: `type E = Array["a" | O["name"]];`,
+          value: utils.createNode({
+            instance: ast.GetKeyValueExpression,
+            output: `Array["a" | O["name"]]`,
+            source: utils.createNode({
+              instance: ast.TypeReferenceExpression,
+              output: "Array",
+            }),
+            key: utils.createNode({
+              instance: ast.UnionExpression,
+              output: `"a" | O["name"]`,
+              values: [
+                utils.createNode({
+                  instance: ast.StringLiteralExpression,
+                  output: `"a"`,
+                }),
+                utils.createNode({
+                  instance: ast.GetKeyValueExpression,
+                  output: `O["name"]`,
+                  source: utils.createNode({
+                    instance: ast.TypeReferenceExpression,
+                    output: "O",
+                  }),
+                  key: utils.createNode({
+                    instance: ast.StringLiteralExpression,
+                    output: `"name"`,
+                  }),
+                }),
+              ],
             }),
           }),
         }),
