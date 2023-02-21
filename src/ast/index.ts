@@ -8,6 +8,7 @@ export { BracketSurroundExpression } from "./expressions/bracket-surround";
 export { ConditionExpression } from "./expressions/condition";
 export { TypeDeclarationArgsExpression } from "./expressions/type-declaration-args";
 export { GetKeyValueExpression } from "./expressions/get-key-value";
+export { TupleExpression } from "./expressions/tuple";
 
 export { TypeDeclarationStatement } from "./statements/type-declaration";
 

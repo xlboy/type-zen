@@ -17,8 +17,8 @@ e_mainWithoutUnion ->
 e_getKeyValue -> e_main _ "[" _ e_main _ "]" 
     {% args => toASTNode(ast.GetKeyValueExpression)([args[0], args[4]]) %}
 
-# e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
-#     {% args => toASTNode(ast.TupleExpression)([args[2], ...args[4].map(item => item[3])]) %}
+e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
+    {% args => toASTNode(ast.TupleExpression)([args[2], ...args[4].map(item => item[3])]) %}
 
 e_typeReference -> id _ ("<" 
         (_ e_main (_ "," _ e_main):* {% args => [args[1], ...args[2].map(item => item[3])] %}) 

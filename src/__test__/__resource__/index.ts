@@ -5,6 +5,7 @@ export { Identifier } from "./syntax/expressions/identifier";
 export { Condition } from "./syntax/expressions/condition";
 export { TypeDeclarationArgs } from "./syntax/expressions/type-declaration-args";
 export { GetKeyValue } from "./syntax/expressions/get-key-value";
+export { Tuple } from "./syntax/expressions/tuple";
 
 import { assertSource } from "./utils";
 
