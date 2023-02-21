@@ -18,6 +18,7 @@ namespace AST {
       BracketSurround = "BracketSurround",
       Condition = "Condition",
       TypeDeclarationArgs = "TypeDeclarationArgs",
+      GetKeyValue = "GetKeyValue"
     }
     // Statement
     export enum S {

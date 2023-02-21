@@ -7,6 +7,7 @@ export { TypeReferenceExpression } from "./expressions/type-reference";
 export { BracketSurroundExpression } from "./expressions/bracket-surround";
 export { ConditionExpression } from "./expressions/condition";
 export { TypeDeclarationArgsExpression } from "./expressions/type-declaration-args";
+export { GetKeyValueExpression } from "./expressions/get-key-value";
 
 export { TypeDeclarationStatement } from "./statements/type-declaration";
 

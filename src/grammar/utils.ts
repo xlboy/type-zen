@@ -29,8 +29,13 @@ export function toASTNode(
   /**
    * 净化 args，过滤掉 *null, ...*
    */
-  function cleanseArgs(args: Array<NearleyArg>) {
-    return args.filter((arg) => arg !== null) as Array<CleanArg>;
+  function cleanseArgs(args: Array<NearleyArg>): Array<CleanArg> {
+    return args
+      .filter((arg) => arg !== null)
+      .map((arg) => {
+        if (Array.isArray(arg)) return cleanseArgs(arg);
+        else return arg;
+      }) as any;
   }
 
   function getPosRange(args: Array<CleanArg>): ast.Type.Position {
@@ -44,6 +49,8 @@ export function toASTNode(
 
     if (isASTBaseInstance(firstArg)) {
       pos.start = firstArg.pos.start;
+    } else if (Array.isArray(firstArg)) {
+      pos.start = getPosRange(firstArg).start;
     } else {
       pos.start.col = firstArg.col;
       pos.start.line = firstArg.line;
@@ -51,6 +58,8 @@ export function toASTNode(
 
     if (isASTBaseInstance(lastArg)) {
       pos.end = lastArg.pos.end;
+    } else if (Array.isArray(lastArg)) {
+      pos.end = getPosRange(lastArg).end;
     } else {
       pos.end.line = lastArg.line + lastArg.lineBreaks;
 
