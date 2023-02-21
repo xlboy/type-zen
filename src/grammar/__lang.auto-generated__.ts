@@ -94,6 +94,7 @@ const grammar: Grammar = {
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", (lexer.has("ws") ? {type: "ws"} : ws)], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": n},
+    {"name": "nonEmptySpace", "symbols": [(lexer.has("ws") ? {type: "ws"} : ws)], "postprocess": n},
     {"name": "s_block$ebnf$1$subexpression$1", "symbols": ["s_main", "blockSeparator"]},
     {"name": "s_block$ebnf$1", "symbols": ["s_block$ebnf$1$subexpression$1"]},
     {"name": "s_block$ebnf$1$subexpression$2", "symbols": ["s_main", "blockSeparator"]},
@@ -103,33 +104,31 @@ const grammar: Grammar = {
     {"name": "s_typeDecl$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments", "_"]},
     {"name": "s_typeDecl$ebnf$1", "symbols": ["s_typeDecl$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "s_typeDecl$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl", "symbols": [{"literal":"type"}, "_", "id", "_", "s_typeDecl$ebnf$1", {"literal":"="}, "_", "e_main"], "postprocess": args => toASTNode(ast.TypeDeclarationStatement)([args[0], args[2], args[4]?.[0] || undefined, args.at(-1)])},
-    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":":"}]},
-    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":"extends"}]},
-    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments$ebnf$1$subexpression$1$subexpression$1", "_", "e_main"]},
-    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": ["s_typeDecl_arguments$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl_arguments$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"="}, "_", "e_main"]},
-    {"name": "s_typeDecl_arguments$ebnf$2", "symbols": ["s_typeDecl_arguments$ebnf$2$subexpression$1"], "postprocess": id},
-    {"name": "s_typeDecl_arguments$ebnf$2", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl_arguments$ebnf$3", "symbols": []},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":":"}]},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "symbols": [{"literal":"extends"}]},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1$subexpression$1", "_", "e_main"]},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"="}, "_", "e_main"]},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2", "symbols": ["s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2$subexpression$1"], "postprocess": id},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl_arguments$ebnf$3$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "_", "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$1", "s_typeDecl_arguments$ebnf$3$subexpression$1$ebnf$2"]},
-    {"name": "s_typeDecl_arguments$ebnf$3", "symbols": ["s_typeDecl_arguments$ebnf$3", "s_typeDecl_arguments$ebnf$3$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "s_typeDecl_arguments", "symbols": [{"literal":"<"}, "_", "id", "_", "s_typeDecl_arguments$ebnf$1", "s_typeDecl_arguments$ebnf$2", "s_typeDecl_arguments$ebnf$3", "_", {"literal":">"}], "postprocess":  args => {
-            const firstArg = { id: args[2], type: args[4]?.at(-1), default: args[5]?.at(-1) };
-            const restArgs = args[6].map(arg => {
-                return { id: arg[3], type: arg[5]?.at(-1), default: arg[6]?.at(-1) };
+    {"name": "s_typeDecl", "symbols": [{"literal":"type"}, "_", "id", "_", "s_typeDecl$ebnf$1", {"literal":"="}, "_", "e_main"], "postprocess": args => toASTNode(ast.TypeDeclarationStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)])},
+    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": []},
+    {"name": "s_typeDecl_arguments$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "s_typeDecl_arguments_group"]},
+    {"name": "s_typeDecl_arguments$ebnf$1", "symbols": ["s_typeDecl_arguments$ebnf$1", "s_typeDecl_arguments$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "s_typeDecl_arguments", "symbols": [{"literal":"<"}, "_", "id", "s_typeDecl_arguments_group", "s_typeDecl_arguments$ebnf$1", "_", {"literal":">"}], "postprocess":  args => {
+            const firstArg = Object.assign({ id: args[2], type: void 0, default: void 0 }, args[3] || {});
+            const restArgs = args[4].map(arg => {
+               return  Object.assign({ id: arg[3], type: void 0, default: void 0 }, arg[4] || {}) 
             });
-            return toASTNode(ast.TypeDeclarationArgsExpression)([args[0], [firstArg, ...restArgs], args.at(-1)])
+            return toASTNode(ast.TypeDeclarationArgsExpression)([args[0], [firstArg, ...restArgs], args.at(-1)]);
         } },
+    {"name": "s_typeDecl_arguments_group$ebnf$1$subexpression$1$subexpression$1", "symbols": ["_", {"literal":":"}, "_", "e_main"]},
+    {"name": "s_typeDecl_arguments_group$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments_group$ebnf$1$subexpression$1$subexpression$1"]},
+    {"name": "s_typeDecl_arguments_group$ebnf$1$subexpression$1$subexpression$2", "symbols": ["nonEmptySpace", {"literal":"extends"}, "nonEmptySpace", "e_main"]},
+    {"name": "s_typeDecl_arguments_group$ebnf$1$subexpression$1", "symbols": ["s_typeDecl_arguments_group$ebnf$1$subexpression$1$subexpression$2"]},
+    {"name": "s_typeDecl_arguments_group$ebnf$1", "symbols": ["s_typeDecl_arguments_group$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments_group$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments_group$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"="}, "_", "e_main"]},
+    {"name": "s_typeDecl_arguments_group$ebnf$2", "symbols": ["s_typeDecl_arguments_group$ebnf$2$subexpression$1"], "postprocess": id},
+    {"name": "s_typeDecl_arguments_group$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "s_typeDecl_arguments_group", "symbols": ["s_typeDecl_arguments_group$ebnf$1", "s_typeDecl_arguments_group$ebnf$2"], "postprocess":  args => {
+            const type = args[0]?.[0]?.at(-1);
+            const _default = args[1]?.at(-1);
+            return (type || _default) ? { type, default: _default } : null
+        }},
     {"name": "main", "symbols": [], "postprocess": n},
     {"name": "main", "symbols": ["_", "s_block"], "postprocess": ([, block]) => block},
     {"name": "main", "symbols": ["_"], "postprocess": n}

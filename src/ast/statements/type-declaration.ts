@@ -25,7 +25,7 @@ class TypeDeclarationStatement extends StatementBase<Schema> {
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
-    // this.checkArgs(args, schema);
+    this.checkArgs(args, schema);
     [, this.identifier, , this.value] = args;
 
     if (args[2]) {
