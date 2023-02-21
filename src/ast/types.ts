@@ -19,7 +19,8 @@ namespace AST {
       Condition = "Condition",
       TypeDeclarationArgs = "TypeDeclarationArgs",
       GetKeyValue = "GetKeyValue",
-      Tuple = "Tuple"
+      Tuple = "Tuple",
+      Array = "Array"
     }
     // Statement
     export enum S {

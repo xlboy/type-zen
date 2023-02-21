@@ -2,31 +2,29 @@ import zod from "zod";
 import { AST } from "../types";
 import { ExpressionBase } from "./base";
 
-export { GetKeyValueExpression };
+export { ArrayExpression };
 
-// CustomObject["a"][KeyVar]
 const schema = zod.tuple([
-  zod.instanceof(ExpressionBase) /* CustomObject */,
+  zod.instanceof(ExpressionBase),
   zod.any() /* [ */,
-  zod.instanceof(ExpressionBase) /* ["a"] */,
   zod.any() /* ] */,
 ]);
+
 type Schema = zod.infer<typeof schema>;
 
-class GetKeyValueExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.GetKeyValue;
+class ArrayExpression extends ExpressionBase<Schema> {
+  public kind = AST.SyntaxKind.E.Array;
 
-  public source: Schema[0];
-  public key: Schema[2];
+  public source: ExpressionBase;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
-    [this.source, ,this.key] = args;
+    [this.source] = args;
   }
 
   public compile(): string {
-    return `${this.source.compile()}[${this.key.compile()}]`;
+    return this.source.compile() + "[]";
   }
 
   public toString(): string {

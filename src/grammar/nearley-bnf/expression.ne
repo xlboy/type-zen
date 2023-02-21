@@ -12,13 +12,15 @@ e_mainWithoutUnion ->
     | e_value {% id %}
     | e_typeReference {% id %}
     | e_condition {% id %}
+    | e_array {% id %}
     | e_getKeyValue {% id %}
 
-e_getKeyValue -> e_main _ "[" _ e_main _ "]" 
-    {% args => toASTNode(ast.GetKeyValueExpression)([args[0], args[4]]) %}
+e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% toASTNode(ast.GetKeyValueExpression) %}
 
 e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
     {% args => toASTNode(ast.TupleExpression)([args[2], ...args[4].map(item => item[3])]) %}
+
+e_array -> e_main "[" "]" {% toASTNode(ast.ArrayExpression) %}
 
 e_typeReference -> id _ ("<" 
         (_ e_main (_ "," _ e_main):* {% args => [args[1], ...args[2].map(item => item[3])] %}) 

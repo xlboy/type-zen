@@ -9,6 +9,7 @@ export { ConditionExpression } from "./expressions/condition";
 export { TypeDeclarationArgsExpression } from "./expressions/type-declaration-args";
 export { GetKeyValueExpression } from "./expressions/get-key-value";
 export { TupleExpression } from "./expressions/tuple";
+export { ArrayExpression } from "./expressions/array";
 
 export { TypeDeclarationStatement } from "./statements/type-declaration";
 
