@@ -3,14 +3,14 @@ import { IdentifierExpression } from "../expressions/identifier";
 import { ExpressionBase } from "../expressions/base";
 import { AST } from "../types";
 import { StatementBase } from "./base";
-import { TypeDeclarationArgsExpression } from "../expressions/type-declaration-args";
+import { GenericArgsExpression } from "../expressions/generic-args";
 
 export { TypeDeclarationStatement };
 
 const schema = zod.tuple([
   zod.any() /* type */,
   zod.instanceof(IdentifierExpression),
-  zod.instanceof(TypeDeclarationArgsExpression).or(zod.undefined()),
+  zod.instanceof(GenericArgsExpression).or(zod.undefined()),
   zod.instanceof(ExpressionBase),
 ]);
 
@@ -21,7 +21,7 @@ class TypeDeclarationStatement extends StatementBase<Schema> {
 
   public identifier: IdentifierExpression;
   public value: ExpressionBase;
-  public arguments: TypeDeclarationArgsExpression | null;
+  public arguments: GenericArgsExpression | null;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);

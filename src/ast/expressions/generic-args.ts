@@ -3,7 +3,7 @@ import { AST } from "../types";
 import { ExpressionBase } from "./base";
 import { IdentifierExpression } from "./identifier";
 
-export { TypeDeclarationArgsExpression };
+export { GenericArgsExpression };
 
 const schema = zod.tuple([
   zod.any() /* < */,
@@ -22,8 +22,8 @@ const schema = zod.tuple([
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeDeclarationArgsExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.TypeDeclarationArgs;
+class GenericArgsExpression extends ExpressionBase<Schema> {
+  public kind = AST.SyntaxKind.E.GenericArgs;
 
   public values: Schema[1];
 

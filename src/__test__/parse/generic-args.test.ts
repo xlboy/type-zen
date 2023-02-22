@@ -3,7 +3,7 @@ import * as resource from "../__resource__";
 
 describe("extended", () => {
   it("nodes", () => {
-    resource.TypeDeclarationArgs.nodes.extended.forEach((node) => {
+    resource.GenericArgs.nodes.extended.forEach((node) => {
       resource.utils.assertSource(node);
     });
   });

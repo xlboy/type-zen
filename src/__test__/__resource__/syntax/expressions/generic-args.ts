@@ -1,9 +1,9 @@
 import * as utils from "../../utils";
 import * as ast from "../../../../ast";
 
-export { TypeDeclarationArgs };
+export { GenericArgs };
 
-namespace TypeDeclarationArgs {
+namespace GenericArgs {
   export const nodes = {
     extended: [
       utils.createSource({
@@ -17,7 +17,7 @@ namespace TypeDeclarationArgs {
               output: `ddd`,
             }),
             arguments: utils.createNode({
-              instance: ast.TypeDeclarationArgsExpression,
+              instance: ast.GenericArgsExpression,
               output: `<id>`,
               values: [
                 {
@@ -42,7 +42,7 @@ namespace TypeDeclarationArgs {
               output: `abc`,
             }),
             arguments: utils.createNode({
-              instance: ast.TypeDeclarationArgsExpression,
+              instance: ast.GenericArgsExpression,
               output: `<id, c extends string>`,
               values: [
                 {
@@ -77,7 +77,7 @@ namespace TypeDeclarationArgs {
               output: `_d`,
             }),
             arguments: utils.createNode({
-              instance: ast.TypeDeclarationArgsExpression,
+              instance: ast.GenericArgsExpression,
               output: `<Keys extends string | any, Id = 1, SSSS extends string = "????">`,
               values: [
                 {

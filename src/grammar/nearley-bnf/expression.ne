@@ -15,6 +15,32 @@ e_mainWithoutUnion ->
     | e_array {% id %}
     | e_getKeyValue {% id %}
 
+# e_function -> e_genericArgs:? _ e_function_body _ "=>"  _ e_main {% toASTNode(ast.FunctionExpression) %}
+
+# e_function_body -> "(" _ (id _  ":" _ e_main):? _ (_ "," _ (id _  ":" _ e_main):?):* ",":? _  ")"
+
+#region  //*=========== genericArgs ===========
+# `a`, `a: b`, `a extends b`, `a = 1`, `a: b = 1`, `a extends b = 1`
+e_genericArgs -> "<" _ id e_genericArgs_group
+    (_ "," _ id e_genericArgs_group):* _ ">" 
+    {% args => {
+        const firstArg = Object.assign({ id: args[2], type: void 0, default: void 0 }, args[3] || {});
+        const restArgs = args[4].map(arg => {
+           return  Object.assign({ id: arg[3], type: void 0, default: void 0 }, arg[4] || {}) 
+        });
+        return toASTNode(ast.GenericArgsExpression)([args[0], [firstArg, ...restArgs], args.at(-1)]);
+    } %}
+
+e_genericArgs_group -> 
+    ((_ ":" _ e_main) | (nonEmptySpace "extends" nonEmptySpace e_main)):? (_ "=" _ e_main):?
+    {% args => {
+        const type = args[0]?.[0]?.at(-1);
+        const _default = args[1]?.at(-1);
+        return (type || _default) ? { type, default: _default } : null
+    }%}
+
+#endregion  //*======== genericArgs ===========
+
 e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% toASTNode(ast.GetKeyValueExpression) %}
 
 e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"

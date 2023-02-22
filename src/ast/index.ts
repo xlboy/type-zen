@@ -6,7 +6,7 @@ export { NumberLiteralExpression } from "./expressions/literals/number";
 export { TypeReferenceExpression } from "./expressions/type-reference";
 export { BracketSurroundExpression } from "./expressions/bracket-surround";
 export { ConditionExpression } from "./expressions/condition";
-export { TypeDeclarationArgsExpression } from "./expressions/type-declaration-args";
+export { GenericArgsExpression } from "./expressions/generic-args";
 export { GetKeyValueExpression } from "./expressions/get-key-value";
 export { TupleExpression } from "./expressions/tuple";
 export { ArrayExpression } from "./expressions/array";

@@ -17,7 +17,7 @@ namespace AST {
       TypeReference = "TypeReference",
       BracketSurround = "BracketSurround",
       Condition = "Condition",
-      TypeDeclarationArgs = "TypeDeclarationArgs",
+      GenericArgs = "GenericArgs",
       GetKeyValue = "GetKeyValue",
       Tuple = "Tuple",
       Array = "Array"
