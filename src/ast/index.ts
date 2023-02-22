@@ -10,6 +10,7 @@ export { GenericArgsExpression } from "./expressions/generic-args";
 export { GetKeyValueExpression } from "./expressions/get-key-value";
 export { TupleExpression } from "./expressions/tuple";
 export { ArrayExpression } from "./expressions/array";
+export { Function } from "./expressions/function";
 
 export { TypeDeclarationStatement } from "./statements/type-declaration";
 

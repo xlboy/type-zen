@@ -105,6 +105,10 @@ function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
               }
             }
           });
+        } else if (typeof nodeVal === "object" && typeof infoVal === "object") {
+          expect(nodeVal).toMatchObject(infoVal);
+        } else {
+          expect(nodeVal).toBe(infoVal);
         }
         break;
       }

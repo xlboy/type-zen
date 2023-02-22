@@ -17,12 +17,14 @@ const lexer = moo.compile({
     "symbol",
     "void",
     "unknown",
+    "this",
     ...["true", "false", "boolean"],
   ],
   // 字符串字面量，包围符号为“双引号、单引号、反引号”
   string:
     /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'|`(?:\\[`\\]|[^\n`\\])*`/,
   extend: ["extends", "=="],
+  arrowFnSymbol: "=>",
   symbol: [":", ";", ".", ",", "?", "|", "<", ">", "="],
   lbracket: ["{", "[", "("],
   rbracket: ["}", "]", ")"],
@@ -42,6 +44,7 @@ const lexer = moo.compile({
     "is",
     "out",
     "infer",
+    "asserts"
   ],
 });
 

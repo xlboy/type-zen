@@ -51,29 +51,46 @@ const grammar: Grammar = {
     {"name": "e_mainWithoutUnion", "symbols": ["e_bracketSurround"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_tuple"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_value"], "postprocess": id},
+    {"name": "e_mainWithoutUnion", "symbols": ["e_function_arrow"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_typeReference"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_condition"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_array"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_getKeyValue"], "postprocess": id},
-    {"name": "e_function$ebnf$1", "symbols": ["e_genericArgs"], "postprocess": id},
-    {"name": "e_function$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "e_function", "symbols": ["e_function$ebnf$1", "_", "e_function_body", "_", {"literal":"=>"}, "_", "e_main"], "postprocess": toASTNode(ast.FunctionExpression)},
+    {"name": "e_function_arrow$ebnf$1", "symbols": ["e_function_genericArgs"], "postprocess": id},
+    {"name": "e_function_arrow$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "e_function_arrow", "symbols": ["e_function_arrow$ebnf$1", "_", "e_function_body", "_", {"literal":"=>"}, "_", "e_function_return"], "postprocess":  args => {
+            return toASTNode(ast.Function.Mode.Arrow.Expression)([args[0] || null, args[2], args.at(-1)]);
+        } },
+    {"name": "e_function_genericArgs", "symbols": ["e_genericArgs"], "postprocess": id},
     {"name": "e_function_body$ebnf$1$subexpression$1", "symbols": ["id", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$1", "symbols": ["e_function_body$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_function_body$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_function_body$ebnf$2", "symbols": []},
-    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1$subexpression$1", "symbols": ["id", "_", {"literal":":"}, "_", "e_main"]},
-    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": ["e_function_body$ebnf$2$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_function_body$ebnf$2$subexpression$1$ebnf$1"]},
+    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$2", "symbols": ["e_function_body$ebnf$2", "e_function_body$ebnf$2$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "e_function_body$ebnf$3", "symbols": [{"literal":","}], "postprocess": id},
     {"name": "e_function_body$ebnf$3", "symbols": [], "postprocess": () => null},
-    {"name": "e_function_body", "symbols": [{"literal":"("}, "_", "e_function_body$ebnf$1", "_", "e_function_body$ebnf$2", "e_function_body$ebnf$3", "_", {"literal":")"}]},
+    {"name": "e_function_body", "symbols": [{"literal":"("}, "_", "e_function_body$ebnf$1", "_", "e_function_body$ebnf$2", "e_function_body$ebnf$3", "_", {"literal":")"}], "postprocess":  args => {
+            const bodyArgs = [];
+            if (args[2]) { bodyArgs.push({ id: args[2][0], type: args[2].at(-1) }) }
+            const restArgs = args[4].map(arg => {
+                return { id: arg[3], type: arg.at(-1) }
+            });
+            bodyArgs.push(...restArgs);
+            return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
+        } },
+    {"name": "e_function_return", "symbols": ["e_function_return_assertsAndIs"], "postprocess": id},
+    {"name": "e_function_return", "symbols": ["e_function_return_isOnly"], "postprocess": id},
+    {"name": "e_function_return", "symbols": ["e_function_return_normal"], "postprocess": id},
+    {"name": "e_function_return_assertsAndIs", "symbols": [{"literal":"asserts"}, "nonEmptySpace", "id", "nonEmptySpace", {"literal":"is"}, "nonEmptySpace", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)])},
+    {"name": "e_function_return_isOnly", "symbols": ["id", "nonEmptySpace", {"literal":"is"}, "nonEmptySpace", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)])},
+    {"name": "e_function_return_normal", "symbols": ["e_main"], "postprocess": toASTNode(ast.Function.Return.Expression)},
     {"name": "e_genericArgs$ebnf$1", "symbols": []},
     {"name": "e_genericArgs$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "e_genericArgs_group"]},
     {"name": "e_genericArgs$ebnf$1", "symbols": ["e_genericArgs$ebnf$1", "e_genericArgs$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "e_genericArgs", "symbols": [{"literal":"<"}, "_", "id", "e_genericArgs_group", "e_genericArgs$ebnf$1", "_", {"literal":">"}], "postprocess":  args => {
+    {"name": "e_genericArgs$ebnf$2", "symbols": [{"literal":","}], "postprocess": id},
+    {"name": "e_genericArgs$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "e_genericArgs", "symbols": [{"literal":"<"}, "_", "id", "e_genericArgs_group", "e_genericArgs$ebnf$1", "e_genericArgs$ebnf$2", "_", {"literal":">"}], "postprocess":  args => {
             const firstArg = Object.assign({ id: args[2], type: void 0, default: void 0 }, args[3] || {});
             const restArgs = args[4].map(arg => {
                return  Object.assign({ id: arg[3], type: void 0, default: void 0 }, arg[4] || {}) 

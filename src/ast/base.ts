@@ -22,6 +22,15 @@ abstract class ASTBase<S = any> {
   public abstract toString(): string;
 
   protected checkArgs(args: S, schema: zod.Schema<S>) {
-    schema.parse(args);
+    try {
+      schema.parse(args);
+    } catch (error) {
+      console.error(
+        new Error(
+          `Invalid args for [${this.kind}] at ${this.pos.start.line}:${this.pos.start.col}`
+        )
+      );
+      throw error;
+    }
   }
 }

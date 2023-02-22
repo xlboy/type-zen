@@ -10,19 +10,57 @@ e_mainWithoutUnion ->
     e_bracketSurround {% id %}
     | e_tuple {% id %}
     | e_value {% id %}
+    | e_function_arrow {% id %}
     | e_typeReference {% id %}
     | e_condition {% id %}
     | e_array {% id %}
     | e_getKeyValue {% id %}
 
-# e_function -> e_genericArgs:? _ e_function_body _ "=>"  _ e_main {% toASTNode(ast.FunctionExpression) %}
 
-# e_function_body -> "(" _ (id _  ":" _ e_main):? _ (_ "," _ (id _  ":" _ e_main):?):* ",":? _  ")"
+#region  //*=========== function ===========
+
+e_function_arrow -> e_function_genericArgs:? _ e_function_body _ "=>"  _ e_function_return
+    {% args => {
+        return toASTNode(ast.Function.Mode.Arrow.Expression)([args[0] || null, args[2], args.at(-1)]);
+    } %}
+
+e_function_genericArgs -> e_genericArgs {% id %}
+
+e_function_body -> "(" _ (id _  ":" _ e_main):? _ (_ "," _ id _  ":" _ e_main):* ",":? _  ")"
+    {% args => {
+        const bodyArgs = [];
+        if (args[2]) { bodyArgs.push({ id: args[2][0], type: args[2].at(-1) }) }
+        const restArgs = args[4].map(arg => {
+            return { id: arg[3], type: arg.at(-1) }
+        });
+        bodyArgs.push(...restArgs);
+        return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
+    } %}
+
+
+#region  //*=========== function-return ===========
+e_function_return ->  
+    e_function_return_assertsAndIs {% id %}
+    | e_function_return_isOnly {% id %}
+    | e_function_return_normal {% id %}
+
+e_function_return_assertsAndIs -> 
+    "asserts" nonEmptySpace id nonEmptySpace "is" nonEmptySpace e_main
+    {% args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)]) %}
+
+e_function_return_isOnly -> id nonEmptySpace "is" nonEmptySpace e_main
+    {% args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)]) %}
+
+e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) %}
+#endregion  //*======== function-return ===========
+
+#endregion  //*======== function ===========
+
 
 #region  //*=========== genericArgs ===========
 # `a`, `a: b`, `a extends b`, `a = 1`, `a: b = 1`, `a extends b = 1`
 e_genericArgs -> "<" _ id e_genericArgs_group
-    (_ "," _ id e_genericArgs_group):* _ ">" 
+    (_ "," _ id e_genericArgs_group):* ",":? _ ">" 
     {% args => {
         const firstArg = Object.assign({ id: args[2], type: void 0, default: void 0 }, args[3] || {});
         const restArgs = args[4].map(arg => {
