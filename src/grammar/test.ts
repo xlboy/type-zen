@@ -12,19 +12,25 @@ try {
   // type u2 = 11 | "fa" | true;
   // type u = | [1, true, "str", boolean, never];
   // `;
-  const content = `type is = <T>(t: T) => asserts t is void`;
+  const content = `type is = () => string[] | number[]`;
+  // const content = `type u_ = '1' | 2;`
   // const content = `type aaaa = SSSwcgj<string>`;
   // console.log(content);
 
-  console.time("parser feed")
+  console.time("parser feed");
   parser.feed(content);
-  console.timeEnd("parser feed")
-
+  console.timeEnd("parser feed");
 
   if (parser.results.length !== 0) {
     for (const result of parser.results[0]) {
       console.log(`结果： ${result.compile()}`);
     }
+  }
+
+  if (parser.results.length !== 1) {
+    parser.results.forEach((item) => {
+      console.error("语法错误", JSON.stringify(item));
+    });
   }
 } catch (error: any) {
   const lineColRegex =
@@ -62,9 +68,8 @@ interface fn9 {
   a: () => asserts this is string;
   b: (a: any) => asserts a is string;
   c: (a: any) => a is string;
-  d: (self: this, a: unknown,) => a is string;
+  d: (self: this, a: unknown) => a is string;
 }
 // function-generic-args
 // function-args
 // function-rtn
-

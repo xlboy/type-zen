@@ -26,13 +26,11 @@ e_function_arrow -> e_function_genericArgs:? _ e_function_body _ "=>"  _ e_funct
 
 e_function_genericArgs -> e_genericArgs {% id %}
 
-e_function_body -> "(" _ (id _  ":" _ e_main):? _ (_ "," _ id _  ":" _ e_main):* ",":? _  ")"
+e_function_body -> "(" _ ("...":? id _  ":" _ e_main):? _ (_ "," _ "...":? id _  ":" _ e_main):* ",":? _  ")"
     {% args => {
         const bodyArgs = [];
-        if (args[2]) { bodyArgs.push({ id: args[2][0], type: args[2].at(-1) }) }
-        const restArgs = args[4].map(arg => {
-            return { id: arg[3], type: arg.at(-1) }
-        });
+        if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0] }) }
+        const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3] }));
         bodyArgs.push(...restArgs);
         return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
     } %}
@@ -43,12 +41,14 @@ e_function_return ->
     e_function_return_assertsAndIs {% id %}
     | e_function_return_isOnly {% id %}
     | e_function_return_normal {% id %}
+    
+e_function_return_assertsSource -> "this" {% id %} | id {% id %}
 
 e_function_return_assertsAndIs -> 
-    "asserts" nonEmptySpace id nonEmptySpace "is" nonEmptySpace e_main
+    "asserts" nonEmptySpace:+ e_function_return_assertsSource nonEmptySpace:+ "is" nonEmptySpace:+ e_main
     {% args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)]) %}
 
-e_function_return_isOnly -> id nonEmptySpace "is" nonEmptySpace e_main
+e_function_return_isOnly -> e_function_return_assertsSource nonEmptySpace:+ "is" nonEmptySpace:+ e_main
     {% args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)]) %}
 
 e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) %}
@@ -88,7 +88,7 @@ e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
             args.at(-1)
         ]) %}
 
-e_array -> e_main "[" "]" {% toASTNode(ast.ArrayExpression) %}
+e_array -> e_main "[" "]" {% (...args) => filterAndToASTNode(args, ast.ArrayExpression) %}
 
 e_typeReference -> id _ ("<" 
         (_ e_main (_ "," _ e_main):* {% args => [args[1], ...args[2].map(item => item[3])] %}) 
@@ -113,13 +113,16 @@ e_union_commaSeparation[X] ->
 e_union_mode1 -> "|" _ "[" _ 
     e_union_commaSeparation[(e_mainWithoutUnion | e_union_mode2) {% id %}]
     _ "]" 
-    {% args =>toASTNode(ast.UnionExpression)(args[4].map(item => item[0])) %}
+    {% args => toASTNode(ast.UnionExpression)([args[0], args[2], args[4].map(item => item[0]), args.at(-1)]) %}
 
 # `| 1 | 2`、`1 | 2 | 3` 的 union 姿态
 # TODO：为什么 `("|":? _)` 会出现「解析了2次」的情况？
 # TODO：而 `("|" _):?` 则不会？
 e_union_mode2 -> ("|" _):? e_mainWithoutUnion (_ "|" _ e_mainWithoutUnion):+ 
-    {% args => toASTNode(ast.UnionExpression)([args[1], ...args[2].map(item => item[3])]) %}
+    {% (args, d, reject) => {
+        const _args = [[args[1], ...args[2].map(item => item[3])]];
+        return filterAndToASTNode([_args, d, reject], ast.UnionExpression)
+    } %}
 
 e_union -> e_union_mode1 {% id %}
     | e_union_mode2 {% id %}

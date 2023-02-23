@@ -10,21 +10,23 @@ export { Function };
 namespace Function {
   export namespace Body {
     const schema = zod.tuple([
-      zod.any(), /* ( */
+      zod.any() /* ( */,
       zod.array(
         zod.object({
           id: zod.instanceof(IdentifierExpression),
           type: zod.instanceof(ExpressionBase),
+          rest: zod.boolean(),
         })
       ),
-      zod.any(), /* ) */
+      zod.any() /* ) */,
     ]);
 
     type Schema = zod.infer<typeof schema>;
 
     export class Expression extends ExpressionBase {
-      public kind = AST.SyntaxKind.E.FunctionBodyExpression;
+      public kind = AST.SyntaxKind.E.FunctionBody;
       public args: Schema[1];
+      public rest: boolean;
 
       constructor(pos: AST.Position, args: Schema) {
         super(pos);
@@ -36,7 +38,12 @@ namespace Function {
         return [
           "(",
           this.args
-            .map((arg) => `${arg.id.compile()}: ${arg.type.compile()}`)
+            .map(
+              (arg) =>
+                `${
+                  arg.rest ? "..." : ""
+                }${arg.id.compile()}: ${arg.type.compile()}`
+            )
             .join(", "),
           ")",
         ].join("");
@@ -52,7 +59,7 @@ namespace Function {
     const schema = (() => {
       const assertSource = zod
         .instanceof(IdentifierExpression) /* 纯 id */
-        .or(zod.instanceof(ValueKeywordExpression)); /* this 关键字 */
+        .or(zod.any()); /* this 关键字 - moo.Token 类型 */
       const target = zod.instanceof(ExpressionBase);
 
       const main = zod
@@ -75,10 +82,10 @@ namespace Function {
     type SchemaAssertSource = zod.infer<typeof schema.assertSource>;
 
     export class Expression extends ExpressionBase {
-      public kind = AST.SyntaxKind.E.FunctionReturnExpression;
+      public kind = AST.SyntaxKind.E.FunctionReturn;
 
       public hasAsserts: boolean;
-      public assertSource: SchemaAssertSource;
+      public assertSource: IdentifierExpression | moo.Token;
       public target: SchemaTarget;
       public type: "aserrt-is" | "is" | "normal";
 
@@ -112,11 +119,16 @@ namespace Function {
 
       public compile(): string {
         switch (this.type) {
-          case "aserrt-is":
-            return `asserts ${this.assertSource.compile()} is ${this.target.compile()}`;
-
           case "is":
-            return `${this.assertSource.compile()} is ${this.target.compile()}`;
+          case "aserrt-is": {
+            const assertSource =
+              this.assertSource instanceof IdentifierExpression
+                ? this.assertSource.compile()
+                : "this";
+
+            const content = `${assertSource} is ${this.target.compile()}`;
+            return this.type === "is" ? content : `aserrts ${content}`;
+          }
 
           case "normal":
             return this.target.compile();
@@ -147,7 +159,7 @@ namespace Function {
       type Schema = zod.infer<typeof schema>;
 
       export class Expression extends ExpressionBase {
-        public kind = AST.SyntaxKind.E.ArrowFunctionExpression;
+        public kind = AST.SyntaxKind.E.ArrowFunction;
 
         public genericArgs: GenericArgsExpression | null;
         public body: Body.Expression;

@@ -21,10 +21,10 @@ namespace AST {
       GetKeyValue = "GetKeyValue",
       Tuple = "Tuple",
       Array = "Array",
-      FunctionBodyExpression = "FunctionBodyExpression",
-      FunctionReturnExpression = "FunctionReturnExpression",
-      ArrowFunctionExpression = "ArrowFunctionExpression",
-      NormalFunctionExpression = "NormalFunctionExpression",
+      FunctionBody = "FunctionBody",
+      FunctionReturn = "FunctionReturn",
+      ArrowFunction = "ArrowFunction",
+      NormalFunction = "NormalFunction",
     }
     // Statement
     export enum S {

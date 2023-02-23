@@ -12,7 +12,7 @@ declare var identifier: any;
 
 import lexer  from './moo-lexer'
 import * as ast from '../ast'
-import { toASTNode } from './utils'
+import { toASTNode, filterAndToASTNode } from './utils'
 
 const n = () => null;
 
@@ -62,28 +62,42 @@ const grammar: Grammar = {
             return toASTNode(ast.Function.Mode.Arrow.Expression)([args[0] || null, args[2], args.at(-1)]);
         } },
     {"name": "e_function_genericArgs", "symbols": ["e_genericArgs"], "postprocess": id},
-    {"name": "e_function_body$ebnf$1$subexpression$1", "symbols": ["id", "_", {"literal":":"}, "_", "e_main"]},
+    {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$1", "symbols": [{"literal":"..."}], "postprocess": id},
+    {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "e_function_body$ebnf$1$subexpression$1", "symbols": ["e_function_body$ebnf$1$subexpression$1$ebnf$1", "id", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$1", "symbols": ["e_function_body$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_function_body$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_function_body$ebnf$2", "symbols": []},
-    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "_", {"literal":":"}, "_", "e_main"]},
+    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": [{"literal":"..."}], "postprocess": id},
+    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
+    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_function_body$ebnf$2$subexpression$1$ebnf$1", "id", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$2", "symbols": ["e_function_body$ebnf$2", "e_function_body$ebnf$2$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "e_function_body$ebnf$3", "symbols": [{"literal":","}], "postprocess": id},
     {"name": "e_function_body$ebnf$3", "symbols": [], "postprocess": () => null},
     {"name": "e_function_body", "symbols": [{"literal":"("}, "_", "e_function_body$ebnf$1", "_", "e_function_body$ebnf$2", "e_function_body$ebnf$3", "_", {"literal":")"}], "postprocess":  args => {
             const bodyArgs = [];
-            if (args[2]) { bodyArgs.push({ id: args[2][0], type: args[2].at(-1) }) }
-            const restArgs = args[4].map(arg => {
-                return { id: arg[3], type: arg.at(-1) }
-            });
+            if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0] }) }
+            const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3] }));
             bodyArgs.push(...restArgs);
             return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
         } },
     {"name": "e_function_return", "symbols": ["e_function_return_assertsAndIs"], "postprocess": id},
     {"name": "e_function_return", "symbols": ["e_function_return_isOnly"], "postprocess": id},
     {"name": "e_function_return", "symbols": ["e_function_return_normal"], "postprocess": id},
-    {"name": "e_function_return_assertsAndIs", "symbols": [{"literal":"asserts"}, "nonEmptySpace", "id", "nonEmptySpace", {"literal":"is"}, "nonEmptySpace", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)])},
-    {"name": "e_function_return_isOnly", "symbols": ["id", "nonEmptySpace", {"literal":"is"}, "nonEmptySpace", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)])},
+    {"name": "e_function_return_assertsSource", "symbols": [{"literal":"this"}], "postprocess": id},
+    {"name": "e_function_return_assertsSource", "symbols": ["id"], "postprocess": id},
+    {"name": "e_function_return_assertsAndIs$ebnf$1", "symbols": ["nonEmptySpace"]},
+    {"name": "e_function_return_assertsAndIs$ebnf$1", "symbols": ["e_function_return_assertsAndIs$ebnf$1", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_function_return_assertsAndIs$ebnf$2", "symbols": ["nonEmptySpace"]},
+    {"name": "e_function_return_assertsAndIs$ebnf$2", "symbols": ["e_function_return_assertsAndIs$ebnf$2", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_function_return_assertsAndIs$ebnf$3", "symbols": ["nonEmptySpace"]},
+    {"name": "e_function_return_assertsAndIs$ebnf$3", "symbols": ["e_function_return_assertsAndIs$ebnf$3", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_function_return_assertsAndIs", "symbols": [{"literal":"asserts"}, "e_function_return_assertsAndIs$ebnf$1", "e_function_return_assertsSource", "e_function_return_assertsAndIs$ebnf$2", {"literal":"is"}, "e_function_return_assertsAndIs$ebnf$3", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)])},
+    {"name": "e_function_return_isOnly$ebnf$1", "symbols": ["nonEmptySpace"]},
+    {"name": "e_function_return_isOnly$ebnf$1", "symbols": ["e_function_return_isOnly$ebnf$1", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_function_return_isOnly$ebnf$2", "symbols": ["nonEmptySpace"]},
+    {"name": "e_function_return_isOnly$ebnf$2", "symbols": ["e_function_return_isOnly$ebnf$2", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_function_return_isOnly", "symbols": ["e_function_return_assertsSource", "e_function_return_isOnly$ebnf$1", {"literal":"is"}, "e_function_return_isOnly$ebnf$2", "e_main"], "postprocess": args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)])},
     {"name": "e_function_return_normal", "symbols": ["e_main"], "postprocess": toASTNode(ast.Function.Return.Expression)},
     {"name": "e_genericArgs$ebnf$1", "symbols": []},
     {"name": "e_genericArgs$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "id", "e_genericArgs_group"]},
@@ -124,7 +138,7 @@ const grammar: Grammar = {
             [args[2], ...args[4].map(item => item.at(-1))],
             args.at(-1)
         ]) },
-    {"name": "e_array", "symbols": ["e_main", {"literal":"["}, {"literal":"]"}], "postprocess": toASTNode(ast.ArrayExpression)},
+    {"name": "e_array", "symbols": ["e_main", {"literal":"["}, {"literal":"]"}], "postprocess": (...args) => filterAndToASTNode(args, ast.ArrayExpression)},
     {"name": "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1", "symbols": []},
     {"name": "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_main"]},
     {"name": "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1", "symbols": ["e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1", "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
@@ -147,7 +161,7 @@ const grammar: Grammar = {
     {"name": "e_union_mode1$macrocall$1$ebnf$2", "symbols": [{"literal":","}], "postprocess": id},
     {"name": "e_union_mode1$macrocall$1$ebnf$2", "symbols": [], "postprocess": () => null},
     {"name": "e_union_mode1$macrocall$1", "symbols": ["e_union_mode1$macrocall$2", "e_union_mode1$macrocall$1$ebnf$1", "e_union_mode1$macrocall$1$ebnf$2"], "postprocess": args => [args[0], ...args[1].map(x => x[3])]},
-    {"name": "e_union_mode1", "symbols": [{"literal":"|"}, "_", {"literal":"["}, "_", "e_union_mode1$macrocall$1", "_", {"literal":"]"}], "postprocess": args =>toASTNode(ast.UnionExpression)(args[4].map(item => item[0]))},
+    {"name": "e_union_mode1", "symbols": [{"literal":"|"}, "_", {"literal":"["}, "_", "e_union_mode1$macrocall$1", "_", {"literal":"]"}], "postprocess": args => toASTNode(ast.UnionExpression)([args[0], args[2], args[4].map(item => item[0]), args.at(-1)])},
     {"name": "e_union_mode2$ebnf$1$subexpression$1", "symbols": [{"literal":"|"}, "_"]},
     {"name": "e_union_mode2$ebnf$1", "symbols": ["e_union_mode2$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_union_mode2$ebnf$1", "symbols": [], "postprocess": () => null},
@@ -155,7 +169,10 @@ const grammar: Grammar = {
     {"name": "e_union_mode2$ebnf$2", "symbols": ["e_union_mode2$ebnf$2$subexpression$1"]},
     {"name": "e_union_mode2$ebnf$2$subexpression$2", "symbols": ["_", {"literal":"|"}, "_", "e_mainWithoutUnion"]},
     {"name": "e_union_mode2$ebnf$2", "symbols": ["e_union_mode2$ebnf$2", "e_union_mode2$ebnf$2$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "e_union_mode2", "symbols": ["e_union_mode2$ebnf$1", "e_mainWithoutUnion", "e_union_mode2$ebnf$2"], "postprocess": args => toASTNode(ast.UnionExpression)([args[1], ...args[2].map(item => item[3])])},
+    {"name": "e_union_mode2", "symbols": ["e_union_mode2$ebnf$1", "e_mainWithoutUnion", "e_union_mode2$ebnf$2"], "postprocess":  (args, d, reject) => {
+            const _args = [[args[1], ...args[2].map(item => item[3])]];
+            return filterAndToASTNode([_args, d, reject], ast.UnionExpression)
+        } },
     {"name": "e_union", "symbols": ["e_union_mode1"], "postprocess": id},
     {"name": "e_union", "symbols": ["e_union_mode2"], "postprocess": id},
     {"name": "blockSeparator$ebnf$1", "symbols": []},

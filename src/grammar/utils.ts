@@ -1,10 +1,10 @@
 import * as ast from "../ast";
 
-export function toASTNode(
-  nodeConstructor: ast.Base & {
-    new (pos: ast.Type.Position, args: any[]): void;
-  }
-) {
+type NodeConstructor = ast.Base & {
+  new (pos: ast.Type.Position, args: any[]): void;
+};
+
+export function toASTNode(nodeConstructor: NodeConstructor) {
   // `args` 是 `nearley` 扫描到的 token 集合
   // token 之所以可能为 null，是因为它“本来的内容”是“无意义字符”（↓
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
@@ -75,4 +75,47 @@ export function toASTNode(
       return arg instanceof ast.Base;
     }
   }
+}
+
+export function filterAndToASTNode(
+  args: [data: any[], location: number, reject: Object],
+  nodeConstructor: NodeConstructor
+) {
+  const [, , reject] = args;
+
+  switch (nodeConstructor as any) {
+    case ast.ArrayExpression: {
+      const [mainNode] = args[0] as [ast.Base];
+
+      if (mainNode instanceof ast.Function.Mode.Arrow.Expression) {
+        console.log(
+          `[filterAndToASTNode]: ArrayExpression -> Function.Mode.Arrow.Expression : reject`
+        );
+        return reject;
+      }
+
+      if (mainNode instanceof ast.UnionExpression) {
+        if (!mainNode.isExtended) {
+          console.log(
+            `[filterAndToASTNode]: ArrayExpression -> UnionExpression : reject`
+          );
+          return reject;
+        }
+      }
+      break;
+    }
+
+    case ast.UnionExpression: {
+      const [[firstNode]] = args[0] as [ast.Base[]];
+
+      if (firstNode instanceof ast.Function.Mode.Arrow.Expression) {
+        console.log(
+          `[filterAndToASTNode]: UnionExpression -> Function.Mode.Arrow.Expression : reject`
+        );
+        return reject;
+      }
+    }
+  }
+
+  return toASTNode(nodeConstructor)(args[0]);
 }

@@ -8,6 +8,7 @@ export { GetKeyValue } from "./syntax/expressions/get-key-value";
 export { Tuple } from "./syntax/expressions/tuple";
 export { Array } from "./syntax/expressions/array";
 export { TypeReference } from "./syntax/expressions/type-reference";
+export * as Function from "./syntax/expressions/function";
 
 import { assertSource } from "./utils";
 

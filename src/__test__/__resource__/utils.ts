@@ -26,7 +26,7 @@ type InsidePrototype<T> = {
             ? TestNode<any>
             : NonNullable<T[K]>[number][KK];
         }>
-    : T[K];
+    : Partial<T[K]>;
 };
 
 type TestNode<T> = {
@@ -95,11 +95,10 @@ function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
             } else {
               if (Object.prototype.toString.call(node) === "[object Object]") {
                 for (const nKey in node) {
-                  if (
-                    node[nKey] instanceof ast.Base &&
-                    info[nKey] instanceof ast.Base
-                  ) {
+                  if (node[nKey] instanceof ast.Base) {
                     assertNode((node as any)[nKey], info[nKey]);
+                  } else {
+                    expect(node[nKey]).toBe(info[nKey]);
                   }
                 }
               }

@@ -4,18 +4,38 @@ import { ExpressionBase } from "./base";
 
 export { UnionExpression };
 
-const schema = zod.array(zod.instanceof(ExpressionBase));
+const schema = zod
+  .tuple([zod.array(zod.instanceof(ExpressionBase))])
+  .or(
+    zod.tuple([
+      zod.any() /* | */,
+      zod.any() /* [*/,
+      zod.array(zod.instanceof(ExpressionBase)),
+      zod.any() /* ] */,
+    ])
+  );
 type Schema = zod.infer<typeof schema>;
 
 class UnionExpression extends ExpressionBase<Schema> {
   public kind = AST.SyntaxKind.E.Union;
 
+  public isExtended: boolean;
   public values: Array<ExpressionBase>;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
-    this.values = args;
+    this.initArgs(args);
+  }
+
+  private initArgs(args: Schema) {
+    if (args.length === 1) {
+      this.isExtended = false;
+      this.values = args[0];
+    } else {
+      this.isExtended = true;
+      this.values = args[2];
+    }
   }
 
   public compile(): string {
