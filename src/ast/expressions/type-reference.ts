@@ -5,43 +5,36 @@ import { IdentifierExpression } from "./identifier";
 
 export { TypeReferenceExpression };
 
-type Schema1 = [
-  identifier: IdentifierExpression,
-  symbol1: "<" & any,
-  arguments: Array<ExpressionBase>,
-  symbol2: ">" & any
-];
-
-type Schema2 = [identifier: IdentifierExpression];
-
 const schema = zod
   .tuple([zod.instanceof(IdentifierExpression)])
   .or(
     zod.tuple([
       zod.instanceof(IdentifierExpression),
-      zod.any(),
+      zod.any() /* < */,
       zod.array(zod.instanceof(ExpressionBase)),
-      zod.any(),
+      zod.any() /* > */,
     ])
   );
 
-class TypeReferenceExpression extends ExpressionBase<Schema1 | Schema2> {
+type Schema = zod.infer<typeof schema>;
+
+class TypeReferenceExpression extends ExpressionBase<Schema> {
   public kind = AST.SyntaxKind.E.TypeReference;
 
   public identifier: IdentifierExpression;
-  public arguments?: Array<ExpressionBase>;
+  public arguments: Array<ExpressionBase> = [];
 
-  constructor(pos: AST.Position, args: Schema1 | Schema2) {
+  constructor(pos: AST.Position, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     [this.identifier] = args;
     if (args.length > 1) {
-      [, , this.arguments] = args;
+      if (args[2]) this.arguments = args[2];
     }
   }
 
   public compile(): string {
-    if (!this.arguments || this.arguments.length === 0) {
+    if (this.arguments.length === 0) {
       return this.identifier.compile();
     }
 

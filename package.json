@@ -15,9 +15,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "@types/moo": "^0.5.5",
     "@types/nearley": "^2.11.2",
     "@types/node": "^18.13.0",
+    "@vitest/ui": "^0.28.5",
+    "lodash-es": "^4.17.21",
     "moo": "^0.5.2",
     "nearley": "^2.20.1",
     "node-watch": "^0.7.3",

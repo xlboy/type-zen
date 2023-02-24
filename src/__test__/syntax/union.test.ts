@@ -1,54 +1,7 @@
-import { literalComponents } from "./literal.test";
-import * as utils from "../utils";
+import { it } from "vitest";
 import * as ast from "../../ast";
-import { Component } from "./types";
-import { expect, it, test } from "vitest";
-
-const components = (() => {
-  const source = [
-    ...literalComponents.number,
-    ...literalComponents.string,
-    ...literalComponents.keyword,
-  ];
-  const permutedNodes = utils.permuteObjects(source, 2, 2);
-  const nodes = {
-    native: [] as Component[],
-    extended: [] as Component[],
-    all: [] as Component[],
-  };
-
-  for (const item of permutedNodes) {
-    nodes.native.push({
-      content: item.map(({ content }) => content).join(" | "),
-      node: utils.createNode({
-        instance: ast.UnionExpression,
-        kind: ast.Type.SyntaxKind.E.Union,
-        output: item.map(({ node }) => node.output).join(" | "),
-        values: item.map(({ node }) => node),
-        isExtended: false,
-      }),
-    });
-
-    nodes.extended.push({
-      content: utils.mergeString(
-        "| [",
-        item.map(({ content }) => content).join(", "),
-        "]"
-      ),
-      node: utils.createNode({
-        instance: ast.UnionExpression,
-        kind: ast.Type.SyntaxKind.E.Union,
-        output: item.map(({ node }) => node.output).join(" | "),
-        values: item.map(({ node }) => node),
-        isExtended: true,
-      }),
-    });
-  }
-
-  nodes.all = [...nodes.native, ...nodes.extended];
-
-  return nodes;
-})();
+import { unionComponents } from "../components";
+import * as utils from "../utils";
 
 function testUnion(
   components: {
@@ -75,13 +28,13 @@ function testUnion(
 }
 
 it("native", () => {
-  testUnion(components.native);
+  testUnion(unionComponents.native);
 });
 
 it("extended", () => {
-  testUnion(components.extended);
+  testUnion(unionComponents.extended);
 });
 
 it("all union", () => {
-  testUnion(components.all);
+  testUnion(unionComponents.all);
 });
