@@ -99,7 +99,7 @@ e_bracketSurround -> "(" _ e_main _ ")" {% toASTNode(ast.BracketSurroundExpressi
 e_condition -> 
     e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main {% toASTNode(ast.ConditionExpression) %}
 
-e_value -> %valueKeyword {% toASTNode(ast.ValueKeywordExpression) %} 
+e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | %string {% toASTNode(ast.StringLiteralExpression) %}
     | %number {% toASTNode(ast.NumberLiteralExpression) %}
 

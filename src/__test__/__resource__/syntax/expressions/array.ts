@@ -20,7 +20,7 @@ namespace Array {
             instance: ast.ArrayExpression,
             output: "string[]",
             source: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
           }),
@@ -49,7 +49,7 @@ namespace Array {
               instance: ast.ArrayExpression,
               output: "string[]",
               source: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "string",
               }),
             }),
@@ -73,7 +73,7 @@ namespace Array {
                     output: `"a"`,
                   }),
                   utils.createNode({
-                    instance: ast.ValueKeywordExpression,
+                    instance: ast.LiteralKeywordExpression,
                     output: "false",
                   }),
                   utils.createNode({

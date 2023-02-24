@@ -4,7 +4,7 @@
 // @ts-ignore
 function id(d: any[]): any { return d[0]; }
 declare var extend: any;
-declare var valueKeyword: any;
+declare var literalKeyword: any;
 declare var string: any;
 declare var number: any;
 declare var ws: any;
@@ -149,7 +149,7 @@ const grammar: Grammar = {
     {"name": "e_typeReference", "symbols": ["id", "_", "e_typeReference$ebnf$1"], "postprocess": args => toASTNode(ast.TypeReferenceExpression)([args[0], ...(args[2] || [])])},
     {"name": "e_bracketSurround", "symbols": [{"literal":"("}, "_", "e_main", "_", {"literal":")"}], "postprocess": toASTNode(ast.BracketSurroundExpression)},
     {"name": "e_condition", "symbols": ["e_main", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_main", "_", {"literal":"?"}, "_", "e_main", "_", {"literal":":"}, "_", "e_main"], "postprocess": toASTNode(ast.ConditionExpression)},
-    {"name": "e_value", "symbols": [(lexer.has("valueKeyword") ? {type: "valueKeyword"} : valueKeyword)], "postprocess": toASTNode(ast.ValueKeywordExpression)},
+    {"name": "e_value", "symbols": [(lexer.has("literalKeyword") ? {type: "literalKeyword"} : literalKeyword)], "postprocess": toASTNode(ast.LiteralKeywordExpression)},
     {"name": "e_value", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": toASTNode(ast.StringLiteralExpression)},
     {"name": "e_value", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": toASTNode(ast.NumberLiteralExpression)},
     {"name": "e_union_mode1$macrocall$2$subexpression$1", "symbols": ["e_mainWithoutUnion"]},

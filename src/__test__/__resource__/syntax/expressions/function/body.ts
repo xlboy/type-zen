@@ -25,7 +25,7 @@ namespace Body {
               output: "a",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
             rest: false,
@@ -46,7 +46,7 @@ namespace Body {
               output: "a",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
             rest: false,
@@ -57,7 +57,7 @@ namespace Body {
               output: "b",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
             rest: false,
@@ -78,7 +78,7 @@ namespace Body {
               output: "a",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
             rest: false,
@@ -89,7 +89,7 @@ namespace Body {
               output: "b",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "number",
             }),
             rest: false,
@@ -103,7 +103,7 @@ namespace Body {
               instance: ast.ArrayExpression,
               output: "string[]",
               source: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "string",
               }),
             }),
@@ -125,7 +125,7 @@ namespace Body {
               output: "a",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "any",
             }),
             rest: true,
@@ -147,7 +147,7 @@ namespace Body {
               output: "name",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
             rest: false,
@@ -158,7 +158,7 @@ namespace Body {
               output: "age",
             }),
             type: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "number",
             }),
             rest: false,
@@ -172,7 +172,7 @@ namespace Body {
               instance: ast.ArrayExpression,
               output: "any[]",
               source: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "any",
               }),
             }),
@@ -187,7 +187,7 @@ namespace Body {
               instance: ast.ArrayExpression,
               output: "any[]",
               source: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "any",
               }),
             }),
@@ -232,7 +232,7 @@ namespace Body {
                       output: "a",
                     }),
                     type: utils.createNode({
-                      instance: ast.ValueKeywordExpression,
+                      instance: ast.LiteralKeywordExpression,
                       output: "string",
                     }),
                     rest: false,
@@ -244,7 +244,7 @@ namespace Body {
                 output: "void",
                 type: "normal",
                 target: utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "void",
                 }),
               }),
@@ -277,7 +277,7 @@ namespace Body {
                 output: "void",
                 type: "normal",
                 target: utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "void",
                 }),
               }),

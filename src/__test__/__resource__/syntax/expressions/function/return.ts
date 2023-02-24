@@ -18,7 +18,7 @@ namespace Return {
             value: "this",
           },
           target: utils.createNode({
-            instance: ast.ValueKeywordExpression,
+            instance: ast.LiteralKeywordExpression,
             output: "string",
           }),
         }),
@@ -38,7 +38,7 @@ namespace Return {
             instance: ast.ArrayExpression,
             output: "string[]",
             source: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
           }),
@@ -58,7 +58,7 @@ namespace Return {
             value: "this",
           },
           target: utils.createNode({
-            instance: ast.ValueKeywordExpression,
+            instance: ast.LiteralKeywordExpression,
             output: "string",
           }),
         }),
@@ -78,7 +78,7 @@ namespace Return {
             instance: ast.ArrayExpression,
             output: "string[]",
             source: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
           }),
@@ -94,7 +94,7 @@ namespace Return {
           type: "normal",
           output: "string",
           target: utils.createNode({
-            instance: ast.ValueKeywordExpression,
+            instance: ast.LiteralKeywordExpression,
             output: "string",
           }),
         }),
@@ -110,7 +110,7 @@ namespace Return {
             instance: ast.ArrayExpression,
             output: "string[]",
             source: utils.createNode({
-              instance: ast.ValueKeywordExpression,
+              instance: ast.LiteralKeywordExpression,
               output: "string",
             }),
           }),
@@ -130,7 +130,7 @@ namespace Return {
               instance: ast.ArrayExpression,
               output: "string[]",
               source: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "string",
               }),
             }),
@@ -152,7 +152,7 @@ namespace Return {
                 instance: ast.ArrayExpression,
                 output: "string[]",
                 source: utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "string",
                 }),
               }),
@@ -160,7 +160,7 @@ namespace Return {
                 instance: ast.ArrayExpression,
                 output: "number[]",
                 source: utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "number",
                 }),
               }),

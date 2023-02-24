@@ -77,11 +77,11 @@ namespace Tuple {
             output: `[true, boolean, [1, Object[""]]]`,
             values: [
               utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "true",
               }),
               utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "boolean",
               }),
               utils.createNode({

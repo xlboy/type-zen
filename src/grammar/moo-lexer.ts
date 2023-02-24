@@ -10,7 +10,7 @@ const lexer = moo.compile({
   // 字符串字面量，包围符号为“双引号、单引号、反引号”
   string:
     /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'|`(?:\\[`\\]|[^\n`\\])*`/,
-  valueKeyword: [
+  literalKeyword: [
     "string",
     "number",
     "null",

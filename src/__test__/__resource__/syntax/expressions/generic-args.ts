@@ -57,7 +57,7 @@ namespace GenericArgs {
                     output: `c`,
                   }),
                   type: utils.createNode({
-                    instance: ast.ValueKeywordExpression,
+                    instance: ast.LiteralKeywordExpression,
                     output: `string`,
                   }),
                 },
@@ -90,11 +90,11 @@ namespace GenericArgs {
                     output: `string | any`,
                     values: [
                       utils.createNode({
-                        instance: ast.ValueKeywordExpression,
+                        instance: ast.LiteralKeywordExpression,
                         output: "string",
                       }),
                       utils.createNode({
-                        instance: ast.ValueKeywordExpression,
+                        instance: ast.LiteralKeywordExpression,
                         output: "any",
                       }),
                     ],
@@ -116,7 +116,7 @@ namespace GenericArgs {
                     output: `SSSS`,
                   }),
                   type: utils.createNode({
-                    instance: ast.ValueKeywordExpression,
+                    instance: ast.LiteralKeywordExpression,
                     output: `string`,
                   }),
                   default: utils.createNode({

@@ -5,9 +5,9 @@ import { ExpressionBase } from "./base";
 export { BracketSurroundExpression };
 
 const schema = zod.tuple([
-  zod.any(),
+  zod.any() /* ( */,
   zod.instanceof(ExpressionBase),
-  zod.any(),
+  zod.any() /* ) */,
 ]);
 
 type Schema = zod.infer<typeof schema>;

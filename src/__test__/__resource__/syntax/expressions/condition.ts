@@ -37,12 +37,12 @@ namespace Condition {
               instance: ast.ConditionExpression,
               output: `true extends false ? "true--" : 123`,
               left: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "true",
               }),
 
               right: utils.createNode({
-                instance: ast.ValueKeywordExpression,
+                instance: ast.LiteralKeywordExpression,
                 output: "false",
               }),
               then: utils.createNode({

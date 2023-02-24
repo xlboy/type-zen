@@ -4,25 +4,26 @@ import * as ast from "../../../../ast";
 export { Union };
 
 namespace Union {
-  const template = {
-    valid: {
-      native: [
-        "string | number",
-        "string | number | boolean",
-        "string | number | boolean | null",
-        "string | number | boolean | null | undefined",
-        "string | number | boolean | null | undefined | void",
-        "string | number | boolean | null | undefined | void | never",
-        "string | number | boolean | null | undefined | void | never | unknown",
-        "string | number | boolean | null | undefined | void | never | unknown | any",
-        "sss<ddd> | 123123 | true | 'sdfsdf' | null | undefined | void | ddd<dd<d<dd<dd>>>>",
-      ],
-      extended: [
-        "|[string]",
-        '|[string, 1, 3, true, "sss"]',
-        "|[string, 1, 3, true, 1| 2 | 3, name<sss>, void, (ss<sd> | ccc | 123)]",
-      ],
-    },
+  export const components = {
+    native: [
+      {
+        content: "'1' | 2",
+        node: utils.createNode({
+          instance: ast.UnionExpression,
+          output: "'1' | 2",
+          values: [
+            utils.createNode({
+              instance: ast.StringLiteralExpression,
+              output: "'1'",
+            }),
+            utils.createNode({
+              instance: ast.NumberLiteralExpression,
+              output: "2",
+            }),
+          ],
+        }),
+      },
+    ],
   };
 
   export const nodes = {
@@ -69,11 +70,11 @@ namespace Union {
               output: "string | true | (boolean extends 1 ? 2 : 1)",
               values: [
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "string",
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "true",
                 }),
                 utils.createNode({
@@ -82,7 +83,7 @@ namespace Union {
                   value: utils.createNode({
                     instance: ast.ConditionExpression,
                     left: utils.createNode({
-                      instance: ast.ValueKeywordExpression,
+                      instance: ast.LiteralKeywordExpression,
                       output: "boolean",
                     }),
                     right: utils.createNode({
@@ -141,7 +142,7 @@ namespace Union {
                   output: "123123",
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "true",
                 }),
                 utils.createNode({
@@ -149,15 +150,15 @@ namespace Union {
                   output: "'sdfsdf'",
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "null",
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "undefined",
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "void",
                 }),
                 utils.createNode({
@@ -215,7 +216,7 @@ namespace Union {
               output: "string | 11 | 3",
               values: [
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "string",
                 }),
                 utils.createNode({
@@ -281,7 +282,7 @@ namespace Union {
                   ],
                 }),
                 utils.createNode({
-                  instance: ast.ValueKeywordExpression,
+                  instance: ast.LiteralKeywordExpression,
                   output: "void",
                 }),
                 utils.createNode({

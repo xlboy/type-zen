@@ -2,7 +2,6 @@ import zod from "zod";
 import { AST } from "../types";
 import { ExpressionBase } from "./base";
 import { IdentifierExpression } from "./identifier";
-import { ValueKeywordExpression } from "./value-keyword";
 import { GenericArgsExpression } from "./generic-args";
 
 export { Function };
