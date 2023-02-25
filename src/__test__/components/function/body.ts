@@ -89,6 +89,3 @@ for (
     content += ", ";
   }
 }
-
-console.log(1);
-
