@@ -8,3 +8,4 @@ export { genericArgsComponents } from "./generic-args";
 export { bracketSurroundComponents } from "./bracket-surround";
 export { conditionComponents } from "./condition";
 export { arrayComponents } from "./array";
+export { functionComponents } from "./function";

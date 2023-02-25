@@ -97,7 +97,7 @@ e_typeReference -> id _ ("<"
 e_bracketSurround -> "(" _ e_main _ ")" {% toASTNode(ast.BracketSurroundExpression) %}
 
 e_condition -> 
-    e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main {% toASTNode(ast.ConditionExpression) %}
+    e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main {% (...args) => filterAndToASTNode(args, ast.ConditionExpression) %}
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | %string {% toASTNode(ast.StringLiteralExpression) %}

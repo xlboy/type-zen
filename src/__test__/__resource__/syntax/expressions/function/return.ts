@@ -10,7 +10,6 @@ namespace Return {
         content: `asserts    this   is string`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: true,
           type: "aserrt-is",
           output: "aserrts this is string",
           assertSource: {
@@ -27,7 +26,6 @@ namespace Return {
         content: `asserts  args is string[]`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: true,
           type: "aserrt-is",
           output: "aserrts args is string[]",
           assertSource: utils.createNode({
@@ -50,7 +48,6 @@ namespace Return {
         content: `this is string`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "is",
           output: "this is string",
           assertSource: {
@@ -67,7 +64,6 @@ namespace Return {
         content: `args is string[]`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "is",
           output: "args is string[]",
           assertSource: utils.createNode({
@@ -90,7 +86,6 @@ namespace Return {
         content: `string`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "normal",
           output: "string",
           target: utils.createNode({
@@ -103,7 +98,6 @@ namespace Return {
         content: `string[]`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "normal",
           output: "string[]",
           target: utils.createNode({
@@ -120,7 +114,6 @@ namespace Return {
         content: `string[][]`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "normal",
           output: "string[][]",
           target: utils.createNode({
@@ -141,7 +134,6 @@ namespace Return {
         content: `string[] | number[]`,
         node: utils.createNode({
           instance: ast.Function.Return.Expression,
-          hasAsserts: false,
           type: "normal",
           output: "string[] | number[]",
           target: utils.createNode({

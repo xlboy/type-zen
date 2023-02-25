@@ -19,9 +19,10 @@ const otherComponents = [
   ...bracketSurroundComponents,
 ];
 
-const components: Record<"extended" | "native", Component[]> = {
+const components: Record<"extended" | "native" | "all", Component[]> = {
   extended: [],
   native: [],
+  all: [],
 };
 
 let i = 0;
@@ -75,3 +76,5 @@ while (i < otherComponents.length) {
 
   i += 4;
 }
+
+components.all = [...components.native, ...components.extended];

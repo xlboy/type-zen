@@ -146,6 +146,18 @@ export function filterAndToASTNode(
       }
       break;
     }
+
+    case ast.ConditionExpression: {
+      const [leftNode] = args[0] as (ast.Base | null)[];
+
+      if (leftNode instanceof ast.Function.Mode.Arrow.Expression) {
+        console.log(
+          `[filterAndToASTNode]: ConditionExpression -> Function.Mode.Arrow.Expression : reject`
+        );
+        return reject;
+      }
+      break;
+    }
   }
 
   return toASTNode(nodeConstructor)(args[0]);

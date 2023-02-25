@@ -124,7 +124,7 @@ namespace Function {
                 : "this";
 
             const content = `${assertSource} is ${this.target.compile()}`;
-            return this.type === "is" ? content : `aserrts ${content}`;
+            return this.type === "is" ? content : `asserts ${content}`;
           }
 
           case "normal":
