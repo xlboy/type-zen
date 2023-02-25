@@ -1,21 +1,21 @@
+import _ from "lodash-es";
 import * as ast from "../../ast";
 import * as utils from "../utils";
-import { Component } from "./types";
-import { literalComponents } from "./literal";
-import { typeReferenceComponents } from "./type-reference";
-import { unionComponents } from "./union";
-import { tupleComponents } from "./tuple";
-import { getKeyValueComponents } from "./get-key-value";
 import { bracketSurroundComponents } from "./bracket-surround";
-
+import { getKeyValueComponents } from "./get-key-value";
+import { literalComponents } from "./literal";
+import { tupleComponents } from "./tuple";
+import { typeReferenceComponents } from "./type-reference";
+import { Component } from "./types";
+import { unionComponents } from "./union";
 export { components as conditionComponents };
 
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ...unionComponents.all.slice(0, 10000),
-  ...tupleComponents.slice(0, 10000),
-  ...getKeyValueComponents.slice(0, 10000),
+  ..._.sampleSize(unionComponents.all, 10000),
+  ..._.sampleSize(tupleComponents, 10000),
+  ..._.sampleSize(getKeyValueComponents, 10000),
   ...bracketSurroundComponents,
 ];
 

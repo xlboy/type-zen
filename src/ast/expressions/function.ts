@@ -15,6 +15,7 @@ namespace Function {
           id: zod.instanceof(IdentifierExpression),
           type: zod.instanceof(ExpressionBase),
           rest: zod.boolean(),
+          optional: zod.boolean(),
         })
       ),
       zod.any() /* ) */,
@@ -25,7 +26,6 @@ namespace Function {
     export class Expression extends ExpressionBase {
       public kind = AST.SyntaxKind.E.FunctionBody;
       public args: Schema[1];
-      public rest: boolean;
 
       constructor(pos: AST.Position, args: Schema) {
         super(pos);
@@ -34,18 +34,19 @@ namespace Function {
       }
 
       public compile(): string {
-        return [
-          "(",
-          this.args
-            .map(
-              (arg) =>
-                `${
-                  arg.rest ? "..." : ""
-                }${arg.id.compile()}: ${arg.type.compile()}`
-            )
-            .join(", "),
-          ")",
-        ].join("");
+        const bodyContent = this.args
+          .map((arg) =>
+            [
+              arg.rest ? "..." : "",
+              arg.id.compile(),
+              arg.optional ? "?" : "",
+              ": ",
+              arg.type.compile(),
+            ].join("")
+          )
+          .join(", ");
+
+        return `(${bodyContent})`;
       }
 
       public toString(): string {

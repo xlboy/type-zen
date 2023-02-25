@@ -26,11 +26,11 @@ e_function_arrow -> e_function_genericArgs:? _ e_function_body _ "=>"  _ e_funct
 
 e_function_genericArgs -> e_genericArgs {% id %}
 
-e_function_body -> "(" _ ("...":? id _  ":" _ e_main):? _ (_ "," _ "...":? id _  ":" _ e_main):* ",":? _  ")"
+e_function_body -> "(" _ ("...":? id _ "?":? _ ":" _ e_main):? _ (_ "," _ "...":? id _ "?":? _ ":" _ e_main):* ",":? _  ")"
     {% args => {
         const bodyArgs = [];
-        if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0] }) }
-        const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3] }));
+        if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0], optional: !!args[2][3] }) }
+        const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3], optional: !!arg[6] }));
         bodyArgs.push(...restArgs);
         return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
     } %}

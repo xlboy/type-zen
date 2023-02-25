@@ -1,16 +1,17 @@
-import { typeReferenceComponents } from "./type-reference";
-import { literalComponents } from "./literal";
-import { unionComponents } from "./union";
-import * as utils from "../utils";
-import { Component } from "./types";
+import _ from "lodash-es";
 import * as ast from "../../ast";
+import * as utils from "../utils";
+import { literalComponents } from "./literal";
+import { typeReferenceComponents } from "./type-reference";
+import { Component } from "./types";
+import { unionComponents } from "./union";
 
 export { components as tupleComponents };
 
 const permutedComponents = utils.permuteObjects(
   [
     ...literalComponents.all,
-    ...unionComponents.all.slice(0, 200),
+    ..._.sampleSize(unionComponents.all, 200),
     ...typeReferenceComponents,
   ],
   1,

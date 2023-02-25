@@ -19,7 +19,7 @@ const permutedIdGroup = utils.permuteObjects(identifierTemplates, 1, 3);
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ...unionComponents.all.slice(0, 100),
+  ..._.sampleSize(unionComponents.all, 100),
 ];
 
 let i = 0;

@@ -64,20 +64,24 @@ const grammar: Grammar = {
     {"name": "e_function_genericArgs", "symbols": ["e_genericArgs"], "postprocess": id},
     {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$1", "symbols": [{"literal":"..."}], "postprocess": id},
     {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "e_function_body$ebnf$1$subexpression$1", "symbols": ["e_function_body$ebnf$1$subexpression$1$ebnf$1", "id", "_", {"literal":":"}, "_", "e_main"]},
+    {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$2", "symbols": [{"literal":"?"}], "postprocess": id},
+    {"name": "e_function_body$ebnf$1$subexpression$1$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "e_function_body$ebnf$1$subexpression$1", "symbols": ["e_function_body$ebnf$1$subexpression$1$ebnf$1", "id", "_", "e_function_body$ebnf$1$subexpression$1$ebnf$2", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$1", "symbols": ["e_function_body$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "e_function_body$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_function_body$ebnf$2", "symbols": []},
     {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": [{"literal":"..."}], "postprocess": id},
     {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_function_body$ebnf$2$subexpression$1$ebnf$1", "id", "_", {"literal":":"}, "_", "e_main"]},
+    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$2", "symbols": [{"literal":"?"}], "postprocess": id},
+    {"name": "e_function_body$ebnf$2$subexpression$1$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "e_function_body$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_function_body$ebnf$2$subexpression$1$ebnf$1", "id", "_", "e_function_body$ebnf$2$subexpression$1$ebnf$2", "_", {"literal":":"}, "_", "e_main"]},
     {"name": "e_function_body$ebnf$2", "symbols": ["e_function_body$ebnf$2", "e_function_body$ebnf$2$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "e_function_body$ebnf$3", "symbols": [{"literal":","}], "postprocess": id},
     {"name": "e_function_body$ebnf$3", "symbols": [], "postprocess": () => null},
     {"name": "e_function_body", "symbols": [{"literal":"("}, "_", "e_function_body$ebnf$1", "_", "e_function_body$ebnf$2", "e_function_body$ebnf$3", "_", {"literal":")"}], "postprocess":  args => {
             const bodyArgs = [];
-            if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0] }) }
-            const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3] }));
+            if (args[2]) { bodyArgs.push({ id: args[2][1], type: args[2].at(-1), rest: !!args[2][0], optional: !!args[2][3] }) }
+            const restArgs = args[4].map(arg => ({ id: arg[4], type: arg.at(-1), rest: !!arg[3], optional: !!arg[6] }));
             bodyArgs.push(...restArgs);
             return toASTNode(ast.Function.Body.Expression)([args[0], bodyArgs, args.at(-1)]);
         } },

@@ -288,3 +288,6 @@ namespace Body {
     ),
   ];
 }
+
+
+type a = (a: string, b   ?     : number, ...args: string[]) => void;
