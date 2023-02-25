@@ -21,6 +21,7 @@ const components: Component[] = otherComponents.map((component) => ({
   content: `(${component.content})`,
   node: utils.createNode({
     instance: ast.BracketSurroundExpression,
+    kind: ast.Type.SyntaxKind.E.BracketSurround,
     output: `(${component.node.output})`,
     value: component.node,
   }),

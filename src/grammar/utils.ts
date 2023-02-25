@@ -87,9 +87,12 @@ export function filterAndToASTNode(
     case ast.ArrayExpression: {
       const [mainNode] = args[0] as [ast.Base];
 
-      if (mainNode instanceof ast.Function.Mode.Arrow.Expression) {
+      if (
+        mainNode instanceof ast.Function.Mode.Arrow.Expression ||
+        mainNode instanceof ast.ConditionExpression
+      ) {
         console.log(
-          `[filterAndToASTNode]: ArrayExpression -> Function.Mode.Arrow.Expression : reject`
+          `[filterAndToASTNode]: ArrayExpression -> ${mainNode.toString()} : reject`
         );
         return reject;
       }

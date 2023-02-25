@@ -47,6 +47,7 @@ while (i < otherComponents.length) {
 
   const node = utils.createNode({
     instance: ast.ConditionExpression,
+    kind: ast.Type.SyntaxKind.E.Condition,
     output: utils.mergeString(
       left.node.output!,
       " extends ",

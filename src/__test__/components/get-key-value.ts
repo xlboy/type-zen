@@ -15,6 +15,7 @@ typeReferenceComponents.forEach((ref) => {
       content: `${ref.content}[${lit.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
+        kind: ast.Type.SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${lit.node.output}]`,
         source: ref.node,
         key: lit.node,
@@ -27,6 +28,7 @@ typeReferenceComponents.forEach((ref) => {
       content: `${ref.content}[${ref2.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
+        kind: ast.Type.SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${ref2.node.output}]`,
         source: ref.node,
         key: ref2.node,
@@ -39,6 +41,7 @@ typeReferenceComponents.forEach((ref) => {
       content: `${ref.content}[${union.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
+        kind: ast.Type.SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${union.node.output}]`,
         source: ref.node,
         key: union.node,
