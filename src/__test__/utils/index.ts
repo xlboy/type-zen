@@ -26,7 +26,16 @@ function assertSource<T>(source: TestSource<T>) {
   expect(astNodes.length).not.toBe(0);
 
   source.nodes.forEach((sourceNodeInfo, index) => {
-    assertNode(astNodes[index], sourceNodeInfo);
+    try {
+      assertNode(astNodes[index], sourceNodeInfo);
+    } catch (error) {
+      expect({
+        error,
+        compile: astNodes[index].compile(),
+        info: sourceNodeInfo,
+      }).toMatchSnapshot("error");
+      throw error;
+    }
   });
 }
 

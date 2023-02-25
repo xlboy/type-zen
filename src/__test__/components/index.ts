@@ -6,3 +6,4 @@ export { tupleComponents } from "./tuple";
 export { getKeyValueComponents } from "./get-key-value";
 export { genericArgsComponents } from "./generic-args";
 export { bracketSurroundComponents } from "./bracket-surround";
+export { conditionComponents } from "./condition";

@@ -106,14 +106,42 @@ export function filterAndToASTNode(
     }
 
     case ast.UnionExpression: {
-      const [[firstNode]] = args[0] as [ast.Base[]];
+      const [nodes] = args[0] as [ast.Base[]];
 
-      if (firstNode instanceof ast.Function.Mode.Arrow.Expression) {
+      if (nodes[0] instanceof ast.Function.Mode.Arrow.Expression) {
         console.log(
           `[filterAndToASTNode]: UnionExpression -> Function.Mode.Arrow.Expression : reject`
         );
         return reject;
       }
+
+      const hasConditionExpression = nodes.some(
+        (node) => node instanceof ast.ConditionExpression
+      );
+      if (hasConditionExpression) {
+        console.log(
+          `[filterAndToASTNode]: UnionExpression -> ConditionExpression : reject`
+        );
+        return reject;
+      }
+
+      break;
+    }
+
+    case ast.GetKeyValueExpression: {
+      const [sourceNode] = args[0] as (ast.Base | null)[];
+
+      if (
+        sourceNode instanceof ast.Function.Mode.Arrow.Expression ||
+        sourceNode instanceof ast.ConditionExpression ||
+        sourceNode instanceof ast.UnionExpression
+      ) {
+        console.log(
+          `[filterAndToASTNode]: GetKeyValueExpression -> Function.Mode.Arrow.Expression | UnionExpression : reject`
+        );
+        return reject;
+      }
+      break;
     }
   }
 

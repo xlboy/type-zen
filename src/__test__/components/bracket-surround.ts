@@ -12,9 +12,9 @@ export { components as bracketSurroundComponents };
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ...unionComponents.all.slice(0, unionComponents.all.length / 2),
-  ...tupleComponents.slice(0, tupleComponents.length / 2),
-  ...getKeyValueComponents.slice(0, getKeyValueComponents.length / 2),
+  ...unionComponents.all.slice(0, 2000),
+  ...tupleComponents.slice(0, 2000),
+  ...getKeyValueComponents.slice(0, 2000),
 ];
 
 const components: Component[] = otherComponents.map((component) => ({

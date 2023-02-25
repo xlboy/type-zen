@@ -125,7 +125,7 @@ const grammar: Grammar = {
             const _default = args[1]?.at(-1);
             return (type || _default) ? { type, default: _default } : null
         }},
-    {"name": "e_getKeyValue", "symbols": ["e_main", "_", {"literal":"["}, "_", "e_main", "_", {"literal":"]"}], "postprocess": toASTNode(ast.GetKeyValueExpression)},
+    {"name": "e_getKeyValue", "symbols": ["e_main", "_", {"literal":"["}, "_", "e_main", "_", {"literal":"]"}], "postprocess": (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression)},
     {"name": "e_tuple$ebnf$1", "symbols": ["e_main"], "postprocess": id},
     {"name": "e_tuple$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_tuple$ebnf$2", "symbols": []},

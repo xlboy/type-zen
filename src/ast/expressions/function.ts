@@ -83,7 +83,6 @@ namespace Function {
     export class Expression extends ExpressionBase {
       public kind = AST.SyntaxKind.E.FunctionReturn;
 
-      public hasAsserts: boolean;
       public assertSource: IdentifierExpression | moo.Token;
       public target: SchemaTarget;
       public type: "aserrt-is" | "is" | "normal";
@@ -108,7 +107,6 @@ namespace Function {
             break;
 
           case 3:
-            this.hasAsserts = true;
             this.assertSource = args[1];
             this.target = args[2];
             this.type = "aserrt-is";

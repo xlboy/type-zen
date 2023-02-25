@@ -79,7 +79,7 @@ e_genericArgs_group ->
 
 #endregion  //*======== genericArgs ===========
 
-e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% toASTNode(ast.GetKeyValueExpression) %}
+e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression) %}
 
 e_tuple -> "[" _ e_main:? _ (_ "," _ e_main):* ",":? _ "]"
     {% args => toASTNode(ast.TupleExpression)([
