@@ -130,18 +130,21 @@ const grammar: Grammar = {
             return (type || _default) ? { type, default: _default } : null
         }},
     {"name": "e_getKeyValue", "symbols": ["e_main", "_", {"literal":"["}, "_", "e_main", "_", {"literal":"]"}], "postprocess": (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression)},
-    {"name": "e_tuple$ebnf$1", "symbols": ["e_main"], "postprocess": id},
-    {"name": "e_tuple$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "e_tuple$ebnf$2", "symbols": []},
-    {"name": "e_tuple$ebnf$2$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_main"]},
-    {"name": "e_tuple$ebnf$2", "symbols": ["e_tuple$ebnf$2", "e_tuple$ebnf$2$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "e_tuple$ebnf$3", "symbols": [{"literal":","}], "postprocess": id},
-    {"name": "e_tuple$ebnf$3", "symbols": [], "postprocess": () => null},
-    {"name": "e_tuple", "symbols": [{"literal":"["}, "_", "e_tuple$ebnf$1", "_", "e_tuple$ebnf$2", "e_tuple$ebnf$3", "_", {"literal":"]"}], "postprocess":  args => toASTNode(ast.TupleExpression)([
-            args[0], 
-            [args[2], ...args[4].map(item => item.at(-1))],
-            args.at(-1)
+    {"name": "e_tuple$ebnf$1", "symbols": []},
+    {"name": "e_tuple$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_tuple_value"]},
+    {"name": "e_tuple$ebnf$1", "symbols": ["e_tuple$ebnf$1", "e_tuple$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_tuple$ebnf$2", "symbols": [{"literal":","}], "postprocess": id},
+    {"name": "e_tuple$ebnf$2", "symbols": [], "postprocess": () => null},
+    {"name": "e_tuple", "symbols": [{"literal":"["}, "_", "e_tuple_value", "_", "e_tuple$ebnf$1", "e_tuple$ebnf$2", "_", {"literal":"]"}], "postprocess":  args => toASTNode(ast.TupleExpression)([
+                args[0], 
+                [...(args[2] ? [args[2]] : []), ...args[4].map(item => item.at(-1))],
+                args.at(-1)
         ]) },
+    {"name": "e_tuple_value", "symbols": ["e_main"], "postprocess": args => ({ id: false, deconstruction: false, type: args[0] })},
+    {"name": "e_tuple_value", "symbols": [{"literal":"..."}, "e_main"], "postprocess": args => ({ id: false, deconstruction: true, type: args[1] })},
+    {"name": "e_tuple_value", "symbols": ["id", "_", {"literal":":"}, "_", "e_main"], "postprocess": args => ({ id: args[0], deconstruction: false, type: args.at(-1) })},
+    {"name": "e_tuple_value", "symbols": [{"literal":"..."}, "id", "_", {"literal":":"}, "_", "e_main"], "postprocess": args => ({ id: args[1], deconstruction: true, type: args.at(-1) })},
+    {"name": "e_tuple_value", "symbols": []},
     {"name": "e_array", "symbols": ["e_main", {"literal":"["}, {"literal":"]"}], "postprocess": (...args) => filterAndToASTNode(args, ast.ArrayExpression)},
     {"name": "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1", "symbols": []},
     {"name": "e_typeReference$ebnf$1$subexpression$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "e_main"]},

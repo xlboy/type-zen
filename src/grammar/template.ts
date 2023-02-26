@@ -53,7 +53,6 @@ type A = 1 extends number
   ? true
   : false;
 
-
 type tsppA = `
   type A = 
     if (1 == number) {
@@ -65,4 +64,4 @@ type tsppA = `
     } else {
       return "a" == boolean ? true : false;
     }
-`
+`;

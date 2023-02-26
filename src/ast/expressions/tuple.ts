@@ -1,13 +1,20 @@
 import zod from "zod";
 import { AST } from "../types";
 import { ExpressionBase } from "./base";
+import { IdentifierExpression } from "./identifier";
 
 export { TupleExpression };
 
 // [1, 2, 3, "", "a", Array[number]]
 const schema = zod.tuple([
   zod.any() /* [ */,
-  zod.array(zod.instanceof(ExpressionBase)) /* 1, 2, 3, ...items */,
+  zod.array(
+    zod.object({
+      id: zod.instanceof(IdentifierExpression).or(zod.literal(false)),
+      type: zod.instanceof(ExpressionBase),
+      deconstruction: zod.boolean() /* ... */,
+    })
+  ) /* 1, 2, 3, ...items */,
   zod.any() /* ] */,
 ]);
 
@@ -25,7 +32,15 @@ class TupleExpression extends ExpressionBase<Schema> {
   }
 
   public compile(): string {
-    const content = this.values.map((v) => v.compile()).join(", ");
+    const content = this.values
+      .map((v) => {
+        let str = "";
+        if (v.deconstruction) str += "...";
+        if (v.id) str += `${v.id.compile()}: `;
+        str += v.type.compile();
+        return str;
+      })
+      .join(", ");
 
     return `[${content}]`;
   }
@@ -34,3 +49,5 @@ class TupleExpression extends ExpressionBase<Schema> {
     return this.kind;
   }
 }
+
+type a = [a: string, b: string];
