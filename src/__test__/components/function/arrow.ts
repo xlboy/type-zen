@@ -20,7 +20,7 @@ for (const body of _.sampleSize(bodyComponents, 2000)) {
     components.push({
       content: `${body.content} => ${ret.content}`,
       node: utils.createNode({
-        instance: ast.Function.Mode.Arrow.Expression,
+        instance: ast.Function.Mode.ArrowExpression,
         output: `${body.node.output} => ${ret.node.output}`,
         body: body.node,
         return: ret.node,

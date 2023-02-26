@@ -140,56 +140,92 @@ namespace Function {
   }
 
   export namespace Mode {
-    export namespace Arrow {
-      const schema = zod
-        .tuple([
-          zod.instanceof(GenericArgsExpression),
+    const schema = zod
+      .tuple([
+        zod.instanceof(GenericArgsExpression),
+        zod.instanceof(Body.Expression),
+        zod.instanceof(Return.Expression),
+      ])
+      .or(
+        zod.tuple([
           zod.instanceof(Body.Expression),
           zod.instanceof(Return.Expression),
         ])
-        .or(
-          zod.tuple([
-            zod.instanceof(Body.Expression),
-            zod.instanceof(Return.Expression),
-          ])
-        );
+      );
 
-      type Schema = zod.infer<typeof schema>;
+    type Schema = zod.infer<typeof schema>;
+    export abstract class CommonExpression extends ExpressionBase {
+      public genericArgs: GenericArgsExpression | null;
+      public body: Body.Expression;
+      public return: Return.Expression;
 
-      export class Expression extends ExpressionBase {
-        public kind = AST.SyntaxKind.E.ArrowFunction;
+      protected abstract readonly type: "arrow" | "regular";
 
-        public genericArgs: GenericArgsExpression | null;
-        public body: Body.Expression;
-        public return: Return.Expression;
+      constructor(pos: AST.Position, args: Schema) {
+        super(pos);
+        this.checkArgs(args, schema);
+        this.initArgs(args);
+      }
 
-        constructor(pos: AST.Position, args: Schema) {
-          super(pos);
-          this.checkArgs(args, schema);
-          this.initArgs(args);
+      private initArgs(args: Schema) {
+        if (args.length === 3) {
+          [this.genericArgs, this.body, this.return] = args;
+        } else {
+          this.genericArgs = null;
+          [this.body, this.return] = args;
+        }
+      }
+      public compile(): string {
+        const separator = this.type === "arrow" ? "=>" : ":";
+        const mainContent = `${this.body.compile()} ${separator} ${this.return.compile()}`;
+
+        if (this.genericArgs) {
+          return `${this.genericArgs.compile()}${mainContent}`;
         }
 
-        private initArgs(args: Schema) {
-          if (args.length === 3) {
-            [this.genericArgs, this.body, this.return] = args;
-          } else {
-            this.genericArgs = null;
-            [this.body, this.return] = args;
-          }
-        }
-        public compile(): string {
-          const mainContent = `${this.body.compile()} => ${this.return.compile()}`;
+        return mainContent;
+      }
 
-          if (this.genericArgs) {
-            return `${this.genericArgs.compile()}${mainContent}`;
-          }
+      public toString(): string {
+        return this.kind;
+      }
+    }
 
-          return mainContent;
-        }
+    export class RegularExpression extends CommonExpression {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.RegularFunction;
+      protected readonly type: "arrow" | "regular" = "regular";
+    }
 
-        public toString(): string {
-          return this.kind;
-        }
+    export class ArrowExpression extends CommonExpression {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.ArrowFunction;
+      protected readonly type: "arrow" | "regular" = "arrow";
+    }
+
+    export class ConstructorExpression extends ExpressionBase {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Constructor;
+
+      public body: RegularExpression | ArrowExpression;
+
+      private static schema = zod.tuple([
+        zod.any() /* new */,
+        zod.instanceof(RegularExpression).or(zod.instanceof(ArrowExpression)),
+      ]);
+
+      constructor(
+        pos: AST.Position,
+        args: zod.infer<typeof ConstructorExpression.schema>
+      ) {
+        super(pos);
+        this.checkArgs(args, ConstructorExpression.schema);
+        this.body = args[1];
+      }
+
+      public compile(): string {
+        return `new ${this.body.compile()}`;
+      }
+
+      public toString(): string {
+        return this.kind;
       }
     }
   }

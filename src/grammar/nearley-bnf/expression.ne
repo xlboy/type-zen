@@ -10,7 +10,7 @@ e_mainWithoutUnion ->
     e_bracketSurround {% id %}
     | e_tuple {% id %}
     | e_value {% id %}
-    | e_function_arrow {% id %}
+    | e_function {% id %}
     | e_typeReference {% id %}
     | e_condition {% id %}
     | e_array {% id %}
@@ -21,15 +21,34 @@ e_mainWithoutUnion ->
 # e_object -> 1
 
 # e_object_value ->
-# e_object_value_1 -> id _ ":" _
+
+# e_object_rightValue -> e_main
+# e_object_leftKey -> 
+#     # name, age?
+#     id _ "?":?
+#     #  索引签名: [b: string], [c: number]
+#     | "[" _ id _ ":" _ e_main "]"
+#     #  [K in ACC], [C in "ss" | "dd"]
+#     | "[" _ id nonEmptySpace:+ "in" nonEmptySpace:+ e_main (nonEmptySpace:+ "as" nonEmptySpace:+ e_main) _ "]" _ (("-" _ "?") | "?"):?
+    
 #endregion  //*======== object ===========
 
-
 #region  //*=========== function ===========
+e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
+    {% args => toASTNode(ast.Function.Mode.ConstructorExpression)([args[0], args.at(-1)]) %}
+
+e_function -> e_function_constructor[e_function_arrow {% id %}] {% id %}
+    | e_function_arrow {% id %}
+
+
+e_function_regular -> e_function_genericArgs:? _ e_function_body _ ":"  _ e_function_return
+    {% args => {
+        return toASTNode(ast.Function.Mode.RegularExpression)([args[0] || null, args[2], args.at(-1)]);
+    } %}
 
 e_function_arrow -> e_function_genericArgs:? _ e_function_body _ "=>"  _ e_function_return
     {% args => {
-        return toASTNode(ast.Function.Mode.Arrow.Expression)([args[0] || null, args[2], args.at(-1)]);
+        return toASTNode(ast.Function.Mode.ArrowExpression)([args[0] || null, args[2], args.at(-1)]);
     } %}
 
 e_function_genericArgs -> e_genericArgs {% id %}

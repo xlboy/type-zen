@@ -88,7 +88,8 @@ export function filterAndToASTNode(
       const [mainNode] = args[0] as [ast.Base];
 
       if (
-        mainNode instanceof ast.Function.Mode.Arrow.Expression ||
+        mainNode instanceof ast.Function.Mode.CommonExpression ||
+        mainNode instanceof ast.Function.Mode.ConstructorExpression ||
         mainNode instanceof ast.ConditionExpression
       ) {
         console.log(
@@ -112,7 +113,8 @@ export function filterAndToASTNode(
       const [nodes] = args[0] as [ast.Base[]];
 
       if (
-        nodes[0] instanceof ast.Function.Mode.Arrow.Expression ||
+        nodes[0] instanceof ast.Function.Mode.CommonExpression ||
+        nodes[0] instanceof ast.Function.Mode.ConstructorExpression ||
         nodes[0] instanceof ast.InferExpression
       ) {
         console.log(
@@ -138,13 +140,14 @@ export function filterAndToASTNode(
       const [sourceNode] = args[0] as (ast.Base | null)[];
 
       if (
-        sourceNode instanceof ast.Function.Mode.Arrow.Expression ||
+        sourceNode instanceof ast.Function.Mode.CommonExpression ||
+        sourceNode instanceof ast.Function.Mode.ConstructorExpression ||
         sourceNode instanceof ast.ConditionExpression ||
-        sourceNode instanceof ast.UnionExpression || 
+        sourceNode instanceof ast.UnionExpression ||
         sourceNode instanceof ast.InferExpression
       ) {
         console.log(
-          `[filterAndToASTNode]: GetKeyValueExpression -> Function.Mode.Arrow.Expression | UnionExpression : reject`
+          `[filterAndToASTNode]: GetKeyValueExpression -> Function | UnionExpression : reject`
         );
         return reject;
       }
@@ -154,9 +157,12 @@ export function filterAndToASTNode(
     case ast.ConditionExpression: {
       const [leftNode] = args[0] as (ast.Base | null)[];
 
-      if (leftNode instanceof ast.Function.Mode.Arrow.Expression) {
+      if (
+        leftNode instanceof ast.Function.Mode.CommonExpression ||
+        leftNode instanceof ast.Function.Mode.ConstructorExpression
+      ) {
         console.log(
-          `[filterAndToASTNode]: ConditionExpression -> Function.Mode.Arrow.Expression : reject`
+          `[filterAndToASTNode]: ConditionExpression -> Function : reject`
         );
         return reject;
       }

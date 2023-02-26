@@ -13,7 +13,7 @@ function testReturn(components: Component[]) {
           instance: ast.TypeDeclarationStatement,
           output: `type A = () => ${component.node.output};`,
           value: utils.createNode({
-            instance: ast.Function.Mode.Arrow.Expression,
+            instance: ast.Function.Mode.ArrowExpression,
             return: component.node,
           }),
         }),

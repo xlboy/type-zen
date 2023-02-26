@@ -25,7 +25,8 @@ namespace AST {
       FunctionBody = "FunctionBody",
       FunctionReturn = "FunctionReturn",
       ArrowFunction = "ArrowFunction",
-      NormalFunction = "NormalFunction",
+      RegularFunction = "RegularFunction",
+      Constructor = "Constructor",
     }
     // Statement
     export enum S {
