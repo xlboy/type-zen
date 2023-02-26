@@ -5,7 +5,7 @@ export { StringLiteralExpression } from "./expressions/literals/string";
 export { NumberLiteralExpression } from "./expressions/literals/number";
 export { TypeReferenceExpression } from "./expressions/type-reference";
 export { BracketSurroundExpression } from "./expressions/bracket-surround";
-export { ConditionExpression } from "./expressions/condition";
+export { ConditionExpression, InferExpression } from "./expressions/condition";
 export { GenericArgsExpression } from "./expressions/generic-args";
 export { GetKeyValueExpression } from "./expressions/get-key-value";
 export { TupleExpression } from "./expressions/tuple";

@@ -17,6 +17,7 @@ namespace AST {
       TypeReference = "TypeReference",
       BracketSurround = "BracketSurround",
       Condition = "Condition",
+      Infer = "Infer",
       GenericArgs = "GenericArgs",
       GetKeyValue = "GetKeyValue",
       Tuple = "Tuple",

@@ -111,9 +111,12 @@ export function filterAndToASTNode(
     case ast.UnionExpression: {
       const [nodes] = args[0] as [ast.Base[]];
 
-      if (nodes[0] instanceof ast.Function.Mode.Arrow.Expression) {
+      if (
+        nodes[0] instanceof ast.Function.Mode.Arrow.Expression ||
+        nodes[0] instanceof ast.InferExpression
+      ) {
         console.log(
-          `[filterAndToASTNode]: UnionExpression -> Function.Mode.Arrow.Expression : reject`
+          `[filterAndToASTNode]: UnionExpression -> ${nodes[0].kind} : reject`
         );
         return reject;
       }
@@ -137,7 +140,8 @@ export function filterAndToASTNode(
       if (
         sourceNode instanceof ast.Function.Mode.Arrow.Expression ||
         sourceNode instanceof ast.ConditionExpression ||
-        sourceNode instanceof ast.UnionExpression
+        sourceNode instanceof ast.UnionExpression || 
+        sourceNode instanceof ast.InferExpression
       ) {
         console.log(
           `[filterAndToASTNode]: GetKeyValueExpression -> Function.Mode.Arrow.Expression | UnionExpression : reject`

@@ -15,11 +15,13 @@ e_mainWithoutUnion ->
     | e_condition {% id %}
     | e_array {% id %}
     | e_getKeyValue {% id %}
+    | e_infer {% id %}
 
 #region  //*=========== object ===========
-# e_object ->  1
+# e_object -> 1
 
-# e_object_value -> 
+# e_object_value ->
+# e_object_value_1 -> id _ ":" _
 #endregion  //*======== object ===========
 
 
@@ -101,7 +103,6 @@ e_tuple_value -> e_main _ "?":? {% args => ({ id: false, deconstruction: false, 
     | null
 #endregion  //*======== tuple ===========
 
-
 e_array -> e_main "[" "]" {% (...args) => filterAndToASTNode(args, ast.ArrayExpression) %}
 
 e_typeReference -> id _ ("<" 
@@ -110,8 +111,21 @@ e_typeReference -> id _ ("<"
 
 e_bracketSurround -> "(" _ e_main _ ")" {% toASTNode(ast.BracketSurroundExpression) %}
 
+#region  //*=========== condition ===========
 e_condition -> 
-    e_main _ %extend _ e_main _ "?" _ e_main _ ":" _ e_main {% (...args) => filterAndToASTNode(args, ast.ConditionExpression) %}
+    e_main e_condition_extend e_main _ "?" _ e_main _ ":" _ e_main 
+    {% (...args) => filterAndToASTNode(args, ast.ConditionExpression) %}
+
+e_infer -> "infer" nonEmptySpace id (e_condition_extend e_main):* 
+    {% args => {
+        if (args[3].length === 0) {
+            return toASTNode(ast.InferExpression)([args[0], args[2]]);
+        }
+        return toASTNode(ast.InferExpression)([args[0], args[2], args[3].map(item => item.at(-1))])
+    } %}
+
+e_condition_extend -> (nonEmptySpace:+ "extends" nonEmptySpace:+) | (_ "==" _)
+#endregion  //*======== condition ===========
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | %string {% toASTNode(ast.StringLiteralExpression) %}

@@ -7,7 +7,7 @@ import { typeReferenceComponents } from "../type-reference";
 import { Component } from "../types";
 import { bracketSurroundComponents } from "../bracket-surround";
 import { arrayComponents } from "../array";
-import { conditionComponents } from "../condition";
+import { conditionComponents, inferComponents } from "../condition";
 import { unionComponents } from "../union";
 import { identifierTemplates } from "../identifier";
 import _ from "lodash-es";
@@ -21,7 +21,8 @@ const otherComponents = [
   ...getKeyValueComponents.slice(0, 8000),
   ...bracketSurroundComponents.slice(0, 8000),
   ...arrayComponents.slice(0, 8000),
-  ...conditionComponents.all.slice(0, 8000),
+  ...conditionComponents.all.slice(0, 200),
+  ...inferComponents.all.slice(0, 200),
   ...unionComponents.all.slice(0, 8000),
 ];
 

@@ -3,7 +3,6 @@
 // Bypasses TS6133. Allow declared but unused functions.
 // @ts-ignore
 function id(d: any[]): any { return d[0]; }
-declare var extend: any;
 declare var literalKeyword: any;
 declare var string: any;
 declare var number: any;
@@ -56,6 +55,7 @@ const grammar: Grammar = {
     {"name": "e_mainWithoutUnion", "symbols": ["e_condition"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_array"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_getKeyValue"], "postprocess": id},
+    {"name": "e_mainWithoutUnion", "symbols": ["e_infer"], "postprocess": id},
     {"name": "e_function_arrow$ebnf$1", "symbols": ["e_function_genericArgs"], "postprocess": id},
     {"name": "e_function_arrow$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_function_arrow", "symbols": ["e_function_arrow$ebnf$1", "_", "e_function_body", "_", {"literal":"=>"}, "_", "e_function_return"], "postprocess":  args => {
@@ -159,7 +159,24 @@ const grammar: Grammar = {
     {"name": "e_typeReference$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "e_typeReference", "symbols": ["id", "_", "e_typeReference$ebnf$1"], "postprocess": args => toASTNode(ast.TypeReferenceExpression)([args[0], ...(args[2] || [])])},
     {"name": "e_bracketSurround", "symbols": [{"literal":"("}, "_", "e_main", "_", {"literal":")"}], "postprocess": toASTNode(ast.BracketSurroundExpression)},
-    {"name": "e_condition", "symbols": ["e_main", "_", (lexer.has("extend") ? {type: "extend"} : extend), "_", "e_main", "_", {"literal":"?"}, "_", "e_main", "_", {"literal":":"}, "_", "e_main"], "postprocess": (...args) => filterAndToASTNode(args, ast.ConditionExpression)},
+    {"name": "e_condition", "symbols": ["e_main", "e_condition_extend", "e_main", "_", {"literal":"?"}, "_", "e_main", "_", {"literal":":"}, "_", "e_main"], "postprocess": (...args) => filterAndToASTNode(args, ast.ConditionExpression)},
+    {"name": "e_infer$ebnf$1", "symbols": []},
+    {"name": "e_infer$ebnf$1$subexpression$1", "symbols": ["e_condition_extend", "e_main"]},
+    {"name": "e_infer$ebnf$1", "symbols": ["e_infer$ebnf$1", "e_infer$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_infer", "symbols": [{"literal":"infer"}, "nonEmptySpace", "id", "e_infer$ebnf$1"], "postprocess":  args => {
+            if (args[3].length === 0) {
+                return toASTNode(ast.InferExpression)([args[0], args[2]]);
+            }
+            return toASTNode(ast.InferExpression)([args[0], args[2], args[3].map(item => item.at(-1))])
+        } },
+    {"name": "e_condition_extend$subexpression$1$ebnf$1", "symbols": ["nonEmptySpace"]},
+    {"name": "e_condition_extend$subexpression$1$ebnf$1", "symbols": ["e_condition_extend$subexpression$1$ebnf$1", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_condition_extend$subexpression$1$ebnf$2", "symbols": ["nonEmptySpace"]},
+    {"name": "e_condition_extend$subexpression$1$ebnf$2", "symbols": ["e_condition_extend$subexpression$1$ebnf$2", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_condition_extend$subexpression$1", "symbols": ["e_condition_extend$subexpression$1$ebnf$1", {"literal":"extends"}, "e_condition_extend$subexpression$1$ebnf$2"]},
+    {"name": "e_condition_extend", "symbols": ["e_condition_extend$subexpression$1"]},
+    {"name": "e_condition_extend$subexpression$2", "symbols": ["_", {"literal":"=="}, "_"]},
+    {"name": "e_condition_extend", "symbols": ["e_condition_extend$subexpression$2"]},
     {"name": "e_value", "symbols": [(lexer.has("literalKeyword") ? {type: "literalKeyword"} : literalKeyword)], "postprocess": toASTNode(ast.LiteralKeywordExpression)},
     {"name": "e_value", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": toASTNode(ast.StringLiteralExpression)},
     {"name": "e_value", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": toASTNode(ast.NumberLiteralExpression)},

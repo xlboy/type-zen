@@ -3,7 +3,7 @@ import * as ast from "../../../ast";
 import * as utils from "../../utils";
 import { arrayComponents } from "../array";
 import { bracketSurroundComponents } from "../bracket-surround";
-import { conditionComponents } from "../condition";
+import { conditionComponents, inferComponents } from "../condition";
 import { getKeyValueComponents } from "../get-key-value";
 import { identifierTemplates } from "../identifier";
 import { literalComponents } from "../literal";
@@ -23,6 +23,7 @@ const otherComponents = [
   ..._.sampleSize(arrayComponents, 5000),
   // TODO：比较耗性能…
   ..._.sampleSize(conditionComponents.all, 200),
+  ..._.sampleSize(inferComponents.all, 200),
   ..._.sampleSize(unionComponents.all, 5000),
 ];
 

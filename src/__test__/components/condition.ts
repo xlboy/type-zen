@@ -8,7 +8,8 @@ import { tupleComponents } from "./tuple";
 import { typeReferenceComponents } from "./type-reference";
 import { Component } from "./types";
 import { unionComponents } from "./union";
-export { components as conditionComponents };
+import { identifierTemplates } from "./identifier";
+export { conditionComponents, inferComponents };
 
 const otherComponents = [
   ...literalComponents.all,
@@ -19,62 +20,144 @@ const otherComponents = [
   ...bracketSurroundComponents,
 ];
 
-const components: Record<"extended" | "native" | "all", Component[]> = {
-  extended: [],
-  native: [],
-  all: [],
-};
+const inferComponents: Record<"extended" | "native" | "all", Component[]> =
+  (() => {
+    const inferComponents: Record<"extended" | "native" | "all", Component[]> =
+      {
+        extended: [],
+        native: [],
+        all: [],
+      };
 
-let i = 0;
-while (i < otherComponents.length) {
-  const left = otherComponents[i];
-  const right = otherComponents[i + 1];
-  const then = otherComponents[i + 2];
-  const els = otherComponents[i + 3];
+    for (let i = 0; i < 1000; i++) {
+      const id = utils.createNode({
+        instance: ast.IdentifierExpression,
+        output: _.sample(identifierTemplates)!,
+      });
+      const extendsTypes: utils.TestNode<ast.Base>[] = [];
+      const hasExtendsTypes = _.random(0, 1) === 1;
 
-  if (!left || !right || !then || !els) break;
+      let native = {
+        content: id.output!,
+        output: id.output!,
+      };
+      let extended = {
+        content: id.output!,
+        output: id.output!,
+      };
 
-  const generateContent = (isNative: boolean) => {
-    return utils.mergeString(
-      left.content,
-      isNative ? " extends " : " == ",
-      right.content,
-      " ? ",
-      then.content,
-      " : ",
-      els.content
-    );
-  };
+      if (hasExtendsTypes) {
+        const extendsSize = _.random(1, 3);
+        _.sampleSize(otherComponents, extendsSize).forEach((item) => {
+          extendsTypes.push(item.node);
 
-  const node = utils.createNode({
-    instance: ast.ConditionExpression,
-    kind: ast.Type.SyntaxKind.E.Condition,
-    output: utils.mergeString(
-      left.node.output!,
-      " extends ",
-      right.node.output!,
-      " ? ",
-      then.node.output!,
-      " : ",
-      els.node.output!
-    ),
-    left: left.node,
-    right: right.node,
-    then: then.node,
-    else: els.node,
-  });
+          native.content += ` extends ${item.content}`;
+          native.output += ` extends ${item.node.output}`;
+          extended.content += ` == ${item.content}`;
+          extended.output += ` extends ${item.node.output}`;
+        });
+      }
 
-  components.native.push({
-    content: generateContent(true),
-    node,
-  });
+      inferComponents.native.push({
+        content: `infer ${native.content}`,
+        node: utils.createNode({
+          instance: ast.InferExpression,
+          kind: ast.Type.SyntaxKind.E.Infer,
+          output: `infer ${native.output}`,
+          name: id,
+          extendsTypes,
+        }),
+      });
 
-  components.extended.push({
-    content: generateContent(false),
-    node,
-  });
+      inferComponents.extended.push({
+        content: `infer ${extended.content}`,
+        node: utils.createNode({
+          instance: ast.InferExpression,
+          kind: ast.Type.SyntaxKind.E.Infer,
+          output: `infer ${extended.output}`,
+          name: id,
+          extendsTypes,
+        }),
+      });
+    }
 
-  i += 4;
-}
+    inferComponents.all = [
+      ...inferComponents.native,
+      ...inferComponents.extended,
+    ];
 
-components.all = [...components.native, ...components.extended];
+    return inferComponents;
+  })();
+
+const conditionComponents: Record<"extended" | "native" | "all", Component[]> =
+  (() => {
+    const conditionComponents: Record<
+      "extended" | "native" | "all",
+      Component[]
+    > = {
+      extended: [],
+      native: [],
+      all: [],
+    };
+    let i = 0;
+    while (i < otherComponents.length) {
+      const hasInfer = _.random(0, 1) === 1;
+      const left = otherComponents[i];
+      const right = hasInfer
+        ? _.sample(inferComponents.all)
+        : otherComponents[i + 1];
+      const then = otherComponents[i + 2];
+      const els = otherComponents[i + 3];
+
+      if (!left || !right || !then || !els) break;
+
+      const generateContent = (isNative: boolean) => {
+        return utils.mergeString(
+          left.content,
+          isNative ? " extends " : " == ",
+          right.content,
+          " ? ",
+          then.content,
+          " : ",
+          els.content
+        );
+      };
+
+      const node = utils.createNode({
+        instance: ast.ConditionExpression,
+        kind: ast.Type.SyntaxKind.E.Condition,
+        output: utils.mergeString(
+          left.node.output!,
+          " extends ",
+          right.node.output!,
+          " ? ",
+          then.node.output!,
+          " : ",
+          els.node.output!
+        ),
+        left: left.node,
+        right: right.node,
+        then: then.node,
+        else: els.node,
+      });
+
+      conditionComponents.native.push({
+        content: generateContent(true),
+        node,
+      });
+
+      conditionComponents.extended.push({
+        content: generateContent(false),
+        node,
+      });
+
+      i += 4;
+    }
+
+    conditionComponents.all = [
+      ...conditionComponents.native,
+      ...conditionComponents.extended,
+    ];
+
+    return conditionComponents;
+  })();
