@@ -12,7 +12,7 @@ export { components as tupleComponents };
 const permutedComponentGroup = utils.permuteObjects(
   [
     ...literalComponents.all,
-    ..._.sampleSize(unionComponents.all, 200),
+    ..._.sampleSize(unionComponents.all, 100),
     ...typeReferenceComponents,
   ],
   1,
@@ -22,15 +22,19 @@ const permutedComponentGroup = utils.permuteObjects(
 const components: Component[] = [];
 
 for (const pComponents of permutedComponentGroup) {
-  const values: utils.TestNode<ast.TupleExpression>["values"] = [];
+  type Value = NonNullable<
+    utils.TestNode<ast.TupleExpression>["values"]
+  >[number];
+  const values: Value[] = [];
   let output = "[",
     content = "[";
   for (let index = 0; index < pComponents.length; index++) {
     const id = _.random(0, 1) === 1 ? _.sample(identifierTemplates)! : null;
     const deconstruction = _.random(0, 1) === 1;
+    const optional = _.random(0, 1) === 1;
 
     //#region  //*=========== item ===========
-    const item: typeof values[number] = { deconstruction };
+    const item: Value = { deconstruction };
     item.id = id
       ? utils.createNode({
           instance: ast.IdentifierExpression,
@@ -38,6 +42,7 @@ for (const pComponents of permutedComponentGroup) {
         })
       : false;
     item.type = pComponents[index].node;
+    item.optional = deconstruction ? false : optional;
 
     values.push(item);
     //#endregion  //*======== item ===========
@@ -49,12 +54,25 @@ for (const pComponents of permutedComponentGroup) {
     }
 
     if (id) {
-      output += `${id}: `;
-      content += `${id} : `;
+      output += id;
+      content += id;
+
+      if (optional && !deconstruction) {
+        output += "?";
+        content += "?";
+      }
+
+      output += ": ";
+      content += ": ";
     }
 
     output += pComponents[index].node.output;
     content += pComponents[index].content;
+
+    if (!id && !deconstruction && optional) {
+      output += "?";
+      content += "?";
+    }
 
     if (index !== pComponents.length - 1) {
       output += ", ";

@@ -16,6 +16,12 @@ e_mainWithoutUnion ->
     | e_array {% id %}
     | e_getKeyValue {% id %}
 
+#region  //*=========== object ===========
+# e_object ->  1
+
+# e_object_value -> 
+#endregion  //*======== object ===========
+
 
 #region  //*=========== function ===========
 
@@ -81,17 +87,20 @@ e_genericArgs_group ->
 
 e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression) %}
 
+#region  //*=========== tuple ===========
 e_tuple -> "[" _ e_tuple_value  _ (_ "," _ e_tuple_value):* ",":? _ "]"
     {% args => toASTNode(ast.TupleExpression)([
             args[0], 
             [...(args[2] ? [args[2]] : []), ...args[4].map(item => item.at(-1))],
             args.at(-1)
     ]) %}
-e_tuple_value -> e_main {% args => ({ id: false, deconstruction: false, type: args[0] }) %}
-    | "..." e_main {% args => ({ id: false, deconstruction: true, type: args[1] }) %}
-    | id _ ":" _ e_main {% args => ({ id: args[0], deconstruction: false, type: args.at(-1) }) %}
-    | "..." id _ ":" _ e_main {% args => ({ id: args[1], deconstruction: true, type: args.at(-1) }) %}
+e_tuple_value -> e_main _ "?":? {% args => ({ id: false, deconstruction: false, type: args[0], optional: !!args.at(-1) }) %}
+    | "..." e_main {% args => ({ id: false, deconstruction: true, type: args[1], optional: false }) %}
+    | id _ "?":? _ ":" _ e_main {% args => ({ id: args[0], deconstruction: false, type: args.at(-1), optional: !!args[2] }) %}
+    | "..." id _ ":" _ e_main {% args => ({ id: args[1], deconstruction: true, type: args.at(-1), optional: false }) %}
     | null
+#endregion  //*======== tuple ===========
+
 
 e_array -> e_main "[" "]" {% (...args) => filterAndToASTNode(args, ast.ArrayExpression) %}
 

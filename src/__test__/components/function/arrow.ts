@@ -15,7 +15,7 @@ const allReturnComponents = [
   ...returnComponents.normal,
 ];
 
-for (const body of _.sampleSize(bodyComponents, 4000)) {
+for (const body of _.sampleSize(bodyComponents, 2000)) {
   for (const ret of _.sampleSize(allReturnComponents, 5)) {
     components.push({
       content: `${body.content} => ${ret.content}`,

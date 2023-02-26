@@ -12,6 +12,7 @@ const schema = zod.tuple([
     zod.object({
       id: zod.instanceof(IdentifierExpression).or(zod.literal(false)),
       type: zod.instanceof(ExpressionBase),
+      optional: zod.boolean(),
       deconstruction: zod.boolean() /* ... */,
     })
   ) /* 1, 2, 3, ...items */,
@@ -36,8 +37,13 @@ class TupleExpression extends ExpressionBase<Schema> {
       .map((v) => {
         let str = "";
         if (v.deconstruction) str += "...";
-        if (v.id) str += `${v.id.compile()}: `;
+        if (v.id) {
+          str += v.id.compile();
+          if (!v.deconstruction && v.optional) str += "?";
+          str += ": ";
+        };
         str += v.type.compile();
+        if (!v.id && v.optional && !v.deconstruction) str += "?";
         return str;
       })
       .join(", ");
