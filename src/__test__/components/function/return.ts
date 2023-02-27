@@ -50,7 +50,7 @@ for (const component of otherComponents) {
     content: utils.mergeString("asserts ", id, " is ", component.content),
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.FunctionReturn,
+      kind: ast.Type.SyntaxKind.E.Function_Return,
       output: utils.mergeString("asserts ", id, " is ", component.node.output!),
       assertSource,
       type: "aserrt-is",
@@ -62,7 +62,7 @@ for (const component of otherComponents) {
     content: utils.mergeString(id, " is ", component.content),
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.FunctionReturn,
+      kind: ast.Type.SyntaxKind.E.Function_Return,
       output: utils.mergeString(id, " is ", component.node.output!),
       assertSource,
       type: "is",
@@ -74,7 +74,7 @@ for (const component of otherComponents) {
     content: component.content,
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.FunctionReturn,
+      kind: ast.Type.SyntaxKind.E.Function_Return,
       output: component.node.output,
       target: component.node,
     }),

@@ -74,7 +74,7 @@ for (
       content: `(${content})`,
       node: utils.createNode({
         instance: ast.Function.Body.Expression,
-        kind: ast.Type.SyntaxKind.E.FunctionBody,
+        kind: ast.Type.SyntaxKind.E.Function_Body,
         output: `(${output})`,
         args: currentArgs,
       }),

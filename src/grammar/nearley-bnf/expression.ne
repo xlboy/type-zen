@@ -4,10 +4,10 @@
 
 e_main -> e_mainWithoutUnion {% id %}
     | e_union {% id %}
-
+    
 # 之所以要将 “除 union 的表达式” 抽取出来，是为了让 **union 表达式内部的递归** 避免递归了其本身，这会导致极大程度的性能损耗、溢出…  
 e_mainWithoutUnion -> 
-    e_bracketSurround {% id %}
+    e_object {% id %}
     | e_tuple {% id %}
     | e_value {% id %}
     | e_function {% id %}
@@ -16,22 +16,7 @@ e_mainWithoutUnion ->
     | e_array {% id %}
     | e_getKeyValue {% id %}
     | e_infer {% id %}
-
-#region  //*=========== object ===========
-# e_object -> 1
-
-# e_object_value ->
-
-# e_object_rightValue -> e_main
-# e_object_leftKey -> 
-#     # name, age?
-#     id _ "?":?
-#     #  索引签名: [b: string], [c: number]
-#     | "[" _ id _ ":" _ e_main "]"
-#     #  [K in ACC], [C in "ss" | "dd"]
-#     | "[" _ id nonEmptySpace:+ "in" nonEmptySpace:+ e_main (nonEmptySpace:+ "as" nonEmptySpace:+ e_main) _ "]" _ (("-" _ "?") | "?"):?
-    
-#endregion  //*======== object ===========
+    | e_bracketSurround {% id %}
 
 #region  //*=========== function ===========
 e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
@@ -40,16 +25,16 @@ e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
 e_function -> e_function_constructor[e_function_arrow {% id %}] {% id %}
     | e_function_arrow {% id %}
 
+e_function_regular -> e_function_body _ ":"  _ e_function_return
+    {% args => toASTNode(ast.Function.Mode.RegularExpression)([args[0], args.at(-1)]) %}
+    | e_function_genericArgs _ e_function_body _ ":"  _ e_function_return
+        {% args => toASTNode(ast.Function.Mode.RegularExpression)([args[0], args[2], args.at(-1)]) %}
 
-e_function_regular -> e_function_genericArgs:? _ e_function_body _ ":"  _ e_function_return
-    {% args => {
-        return toASTNode(ast.Function.Mode.RegularExpression)([args[0] || null, args[2], args.at(-1)]);
-    } %}
 
-e_function_arrow -> e_function_genericArgs:? _ e_function_body _ "=>"  _ e_function_return
-    {% args => {
-        return toASTNode(ast.Function.Mode.ArrowExpression)([args[0] || null, args[2], args.at(-1)]);
-    } %}
+e_function_arrow -> e_function_body _ "=>"  _ e_function_return
+    {% args => toASTNode(ast.Function.Mode.ArrowExpression)([args[0], args.at(-1)]) %}
+    | e_function_genericArgs _ e_function_body _ "=>"  _ e_function_return
+        {% args => toASTNode(ast.Function.Mode.ArrowExpression)([args[0], args[2], args.at(-1)]) %}
 
 e_function_genericArgs -> e_genericArgs {% id %}
 
@@ -84,6 +69,68 @@ e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) 
 #endregion  //*======== function ===========
 
 
+#region  //*=========== object ===========
+e_object -> 
+    "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}
+    | "{" _ (e_object_content _ e_object_content_eof):* "}"
+        {% args => toASTNode(ast.Object.Expression)([args[0], args[2].map(id), args.at(-1)]) %}
+    
+e_object_content_eof -> (("," | ";") _) | null
+
+e_object_content -> 
+    e_object_content_callExpression {% id %}
+    | e_object_content_constructorExpression {% id %}
+    | e_object_content_method {% id %}
+    | e_object_content_normal {% id %}
+    | e_object_content_literalIndex {% id %}
+    | e_object_content_indexSignature {% id %}
+    | e_object_content_mapped {% id %}
+
+e_object_content_callExpression -> e_function_regular {% id %}
+e_object_content_constructorExpression -> e_function_constructor[e_function_regular {% id %}] {% id %}
+
+e_object_content_key -> id {% id %}
+    | ("if" | "else" | "in" | "void" | "this") {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
+
+e_object_content_method -> e_object_content_method_key _ "?":? _ e_function_regular 
+    {% args => toASTNode(ast.Object.Content.MethodExpression)([
+        args[0], 
+        !!args[2], args.at(-1)
+        ]) 
+    %}   
+e_object_content_method_key -> e_object_content_key {% id %}
+
+e_object_content_normal  -> e_object_content_normal_key _ "?":? _ ":" _ e_main
+    {% args => toASTNode(ast.Object.Content.NormalExpression)([args[0], !!args[2], args.at(-1)]) %}
+e_object_content_normal_key -> e_object_content_key {% id %}
+    | "new" {% toASTNode(ast.IdentifierExpression) %}
+
+    
+e_object_content_literalIndex -> "[" _ (e_string | e_number) _ "]" _ "?":? _ ":" _ e_main
+    {% args => toASTNode(ast.Object.Content.LiteralIndexExpression)([args[0], args[2][0], !!args[6], args.at(-1)]) %}
+    
+e_object_content_indexSignature -> "[" _ id _ ":" _ e_main _ "]" _ ":" _ e_main
+    {% args => toASTNode(ast.Object.Content.IndexSignatureExpression)([args[0], args[2], args[6], args.at(-1)]) %}
+
+e_object_content_mapped -> 
+    "[" _ 
+        (
+            id nonEmptySpace:+ "in" nonEmptySpace:+ e_main 
+            (nonEmptySpace:+ "as" nonEmptySpace:+ e_main):?
+        )
+    _ "]"
+    _ (("-" _ "?") | "?"):? _ ":" _
+    e_main
+    {% args => {
+        const hasAsTarget = !!args[2]?.[5];
+        const asTarget = hasAsTarget ? args[2][5].at(-1) : false;
+        const operator = !!args[6] ? Array.isArray(args[6][0]) ? [true, true] : [false, true] : [false, false];
+        return toASTNode(ast.Object.Content.MappedExpression)([args[0], args[2][0], args[2][4], asTarget, operator, args.at(-1)])
+    } %}
+
+
+#endregion  //*======== object ===========
+
 #region  //*=========== genericArgs ===========
 # `a`, `a: b`, `a extends b`, `a = 1`, `a: b = 1`, `a extends b = 1`
 e_genericArgs -> "<" _ id e_genericArgs_group
@@ -109,17 +156,21 @@ e_genericArgs_group ->
 e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression) %}
 
 #region  //*=========== tuple ===========
-e_tuple -> "[" _ e_tuple_value  _ (_ "," _ e_tuple_value):* ",":? _ "]"
-    {% args => toASTNode(ast.TupleExpression)([
-            args[0], 
-            [...(args[2] ? [args[2]] : []), ...args[4].map(item => item.at(-1))],
-            args.at(-1)
-    ]) %}
-e_tuple_value -> e_main _ "?":? {% args => ({ id: false, deconstruction: false, type: args[0], optional: !!args.at(-1) }) %}
+e_tuple -> 
+    "[" _ "]" {% args => toASTNode(ast.TupleExpression)([args[0], [], args.at(-1)]) %}
+    | "[" _ e_tuple_value _ ",":? _ "]" 
+        {% args => toASTNode(ast.TupleExpression)([args[0], [args[2]], args.at(-1)]) %}
+    | "[" _ e_tuple_value (_ "," _ e_tuple_value):* (_ ","):? _ "]" 
+        {% args => toASTNode(ast.TupleExpression)(
+            [args[0], [args[2], ...args[3].map(item => item.at(-1))], args.at(-1)]
+        ) %}
+
+e_tuple_value -> 
+    e_main _ "?" {% args => ({ id: false, deconstruction: false, type: args[0], optional: true }) %}
+    | e_main {% args => ({ id: false, deconstruction: false, type: args[0], optional: false }) %}
     | "..." e_main {% args => ({ id: false, deconstruction: true, type: args[1], optional: false }) %}
     | id _ "?":? _ ":" _ e_main {% args => ({ id: args[0], deconstruction: false, type: args.at(-1), optional: !!args[2] }) %}
     | "..." id _ ":" _ e_main {% args => ({ id: args[1], deconstruction: true, type: args.at(-1), optional: false }) %}
-    | null
 #endregion  //*======== tuple ===========
 
 e_array -> e_main "[" "]" {% (...args) => filterAndToASTNode(args, ast.ArrayExpression) %}
@@ -147,8 +198,11 @@ e_condition_extend -> (nonEmptySpace:+ "extends" nonEmptySpace:+) | (_ "==" _)
 #endregion  //*======== condition ===========
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
-    | %string {% toASTNode(ast.StringLiteralExpression) %}
-    | %number {% toASTNode(ast.NumberLiteralExpression) %}
+    | e_string {% id %}
+    | e_number {% id %}
+
+e_string -> %string {% toASTNode(ast.StringLiteralExpression) %}
+e_number -> %number {% toASTNode(ast.NumberLiteralExpression) %}
 
 #region  //*=========== union ===========
 

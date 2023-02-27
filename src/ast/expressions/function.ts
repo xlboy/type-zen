@@ -24,7 +24,7 @@ namespace Function {
     type Schema = zod.infer<typeof schema>;
 
     export class Expression extends ExpressionBase {
-      public kind = AST.SyntaxKind.E.FunctionBody;
+      public kind = AST.SyntaxKind.E.Function_Body;
       public args: Schema[1];
 
       constructor(pos: AST.Position, args: Schema) {
@@ -82,7 +82,7 @@ namespace Function {
     type SchemaAssertSource = zod.infer<typeof schema.assertSource>;
 
     export class Expression extends ExpressionBase {
-      public kind = AST.SyntaxKind.E.FunctionReturn;
+      public kind = AST.SyntaxKind.E.Function_Return;
 
       public assertSource: IdentifierExpression | moo.Token;
       public target: SchemaTarget;
@@ -177,7 +177,9 @@ namespace Function {
       }
       public compile(): string {
         const separator = this.type === "arrow" ? "=>" : ":";
-        const mainContent = `${this.body.compile()} ${separator} ${this.return.compile()}`;
+        const mainContent = `${this.body.compile()}${
+          this.type === "arrow" ? " " : ""
+        }${separator} ${this.return.compile()}`;
 
         if (this.genericArgs) {
           return `${this.genericArgs.compile()}${mainContent}`;
@@ -192,19 +194,21 @@ namespace Function {
     }
 
     export class RegularExpression extends CommonExpression {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.RegularFunction;
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Regular;
       protected readonly type: "arrow" | "regular" = "regular";
     }
 
     export class ArrowExpression extends CommonExpression {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.ArrowFunction;
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Arrow;
       protected readonly type: "arrow" | "regular" = "arrow";
     }
 
-    export class ConstructorExpression extends ExpressionBase {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Constructor;
+    export class ConstructorExpression<
+      Body extends RegularExpression | ArrowExpression
+    > extends ExpressionBase {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Constructor;
 
-      public body: RegularExpression | ArrowExpression;
+      public body: Body;
 
       private static schema = zod.tuple([
         zod.any() /* new */,
@@ -217,7 +221,7 @@ namespace Function {
       ) {
         super(pos);
         this.checkArgs(args, ConstructorExpression.schema);
-        this.body = args[1];
+        this.body = args[1] as any;
       }
 
       public compile(): string {

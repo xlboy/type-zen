@@ -77,6 +77,9 @@ for (const pComponents of permutedComponentGroup) {
     if (index !== pComponents.length - 1) {
       output += ", ";
       content += ", ";
+    } else {
+      const trailingComma = _.random(0, 1) === 1;
+      if (trailingComma) content += ",";
     }
     //#endregion  //*======== output, content ===========
   }

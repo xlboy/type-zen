@@ -22,11 +22,18 @@ namespace AST {
       GetKeyValue = "GetKeyValue",
       Tuple = "Tuple",
       Array = "Array",
-      FunctionBody = "FunctionBody",
-      FunctionReturn = "FunctionReturn",
-      ArrowFunction = "ArrowFunction",
-      RegularFunction = "RegularFunction",
-      Constructor = "Constructor",
+      Function_Body = "Function_Body",
+      Function_Return = "Function_Return",
+      Function_Arrow = "Function_Arrow",
+      Function_Regular = "Function_Regular",
+      Function_Constructor = "Function_Constructor",
+      Object = "Object",
+      Object_Mapped = "Object_Mapped",
+      Object_Method = "Object_Method",
+      Object_Normal = "Object_Normal",
+      Object_NameOnly = "Object_NameOnly",
+      Object_IndexSignature = "Object_IndexSignature",
+      Object_LiteralIndex = "Object_LiteralIndex",
     }
     // Statement
     export enum S {

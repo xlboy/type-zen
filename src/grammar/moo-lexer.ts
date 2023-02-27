@@ -32,7 +32,7 @@ const lexer = moo.compile({
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
-      keyword: ["if", "else", "in", "void", "this"],
+      keyword: ["if", "else", "in", "void", "this", "new"],
     }),
   },
   // 又能作为标识符，又能作为关键字的关键字
@@ -47,7 +47,11 @@ const lexer = moo.compile({
     "infer",
     "asserts",
   ],
-  normalKeyword: ["new"],
 });
 
 export default lexer;
+
+type a = {
+  new (): void;
+  new: () => void;
+};

@@ -24,6 +24,10 @@ function assertSource<T>(source: TestSource<T>) {
   const astNodes = new Parser(source.content).toAST();
 
   expect(astNodes.length).not.toBe(0);
+  
+  if (astNodes.length !== 1) {
+    expect(source.content).toMatchSnapshot("divergence");
+  }
 
   source.nodes.forEach((sourceNodeInfo, index) => {
     try {

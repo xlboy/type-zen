@@ -13,7 +13,7 @@ it("normal", () => {
           output: `type B = ${component.node.output} => void;`,
           value: utils.createNode({
             instance: ast.Function.Mode.ArrowExpression,
-            kind: ast.Type.SyntaxKind.E.ArrowFunction,
+            kind: ast.Type.SyntaxKind.E.Function_Arrow,
             body: component.node,
           }),
         }),
