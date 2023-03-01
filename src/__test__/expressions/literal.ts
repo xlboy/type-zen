@@ -1,6 +1,6 @@
 import * as ast from "../../ast";
 import * as utils from "../utils";
-import type { Expression } from "./types";
+import type { Expression } from "./";
 
 export { expressions as literalExpressions };
 

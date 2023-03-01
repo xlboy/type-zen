@@ -1,7 +1,7 @@
 import * as ast from "../../ast";
 import * as utils from "../utils";
 import { identifierTemplates } from "./identifier";
-import { Expression } from "./types";
+import { Expression } from "./";
 
 export { expressions as typeReferenceExpressions };
 

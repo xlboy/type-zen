@@ -1,7 +1,7 @@
 import * as ast from "../../ast";
 import * as utils from "../utils";
 import _ from "lodash-es";
-import type { Expression } from "./types";
+import type { Expression } from "./";
 import { functionExpressions } from "./function";
 import { identifierTemplates } from "./identifier";
 import { arrayExpressions } from "./array";

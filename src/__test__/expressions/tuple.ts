@@ -3,7 +3,7 @@ import * as ast from "../../ast";
 import * as utils from "../utils";
 import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
-import { Expression } from "./types";
+import { Expression } from "./";
 import { unionExpressions } from "./union";
 import { identifierTemplates } from "./identifier";
 

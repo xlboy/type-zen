@@ -4,7 +4,7 @@ import * as utils from "../utils";
 import { identifierTemplates } from "./identifier";
 import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
-import type { Expression } from "./types";
+import type { Expression } from "./";
 import { unionExpressions } from "./union";
 
 export { expressions as genericArgsExpressions };

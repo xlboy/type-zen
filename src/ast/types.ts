@@ -38,6 +38,7 @@ namespace AST {
     // Statement
     export enum S {
       TypeAlias = "TypeAlias",
+      DeclareVariable = "DeclareVariable",
     }
   }
 }

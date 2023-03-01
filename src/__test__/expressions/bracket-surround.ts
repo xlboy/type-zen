@@ -5,7 +5,7 @@ import { getKeyValueExpressions } from "./get-key-value";
 import { literalExpressions } from "./literal";
 import { tupleExpressions } from "./tuple";
 import { typeReferenceExpressions } from "./type-reference";
-import type { Expression } from "./types";
+import type { Expression } from "./";
 import { unionExpressions } from "./union";
 export { expressions as bracketSurroundExpressions };
 

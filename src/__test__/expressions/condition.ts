@@ -6,7 +6,7 @@ import { getKeyValueExpressions } from "./get-key-value";
 import { literalExpressions } from "./literal";
 import { tupleExpressions } from "./tuple";
 import { typeReferenceExpressions } from "./type-reference";
-import { Expression } from "./types";
+import { Expression } from "./";
 import { unionExpressions } from "./union";
 import { identifierTemplates } from "./identifier";
 export { conditionExpressions, inferExpressions };

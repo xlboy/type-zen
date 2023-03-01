@@ -1,4 +1,4 @@
-import { Expression } from "../types";
+import type { Expression } from "../";
 import { bodyExpressions } from "./body";
 import { returnExpressions } from "./return";
 import * as utils from "../../utils";

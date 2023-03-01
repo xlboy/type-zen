@@ -4,7 +4,7 @@ import { getKeyValueExpressions } from "./get-key-value";
 import { literalExpressions } from "./literal";
 import { tupleExpressions } from "./tuple";
 import { typeReferenceExpressions } from "./type-reference";
-import { Expression } from "./types";
+import type { Expression } from "./";
 import { bracketSurroundExpressions } from "./bracket-surround";
 import _ from "lodash-es";
 

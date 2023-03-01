@@ -9,7 +9,7 @@ import { identifierTemplates } from "../identifier";
 import { literalExpressions } from "../literal";
 import { tupleExpressions } from "../tuple";
 import { typeReferenceExpressions } from "../type-reference";
-import { Expression } from "../types";
+import type { Expression } from "../";
 import { unionExpressions } from "../union";
 
 export { expressions as bodyExpressions };

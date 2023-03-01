@@ -46,12 +46,8 @@ const lexer = moo.compile({
     "out",
     "infer",
     "asserts",
+    "declare",
   ],
 });
 
 export default lexer;
-
-type a = {
-  new (): void;
-  new: () => void;
-};
