@@ -88,7 +88,7 @@ export function filterAndToASTNode(
       const [mainNode] = args[0] as [ast.Base];
 
       if (
-        mainNode instanceof ast.Function.Mode.CommonExpression ||
+        mainNode instanceof ast.Function.Mode.ArrowExpression ||
         mainNode instanceof ast.Function.Mode.ConstructorExpression ||
         mainNode instanceof ast.ConditionExpression
       ) {
@@ -113,7 +113,7 @@ export function filterAndToASTNode(
       const [nodes] = args[0] as [ast.Base[]];
 
       if (
-        nodes[0] instanceof ast.Function.Mode.CommonExpression ||
+        nodes[0] instanceof ast.Function.Mode.ArrowExpression ||
         nodes[0] instanceof ast.Function.Mode.ConstructorExpression ||
         nodes[0] instanceof ast.InferExpression
       ) {
@@ -140,7 +140,7 @@ export function filterAndToASTNode(
       const [sourceNode] = args[0] as (ast.Base | null)[];
 
       if (
-        sourceNode instanceof ast.Function.Mode.CommonExpression ||
+        sourceNode instanceof ast.Function.Mode.ArrowExpression ||
         sourceNode instanceof ast.Function.Mode.ConstructorExpression ||
         sourceNode instanceof ast.ConditionExpression ||
         sourceNode instanceof ast.UnionExpression ||
@@ -158,7 +158,7 @@ export function filterAndToASTNode(
       const [leftNode] = args[0] as (ast.Base | null)[];
 
       if (
-        leftNode instanceof ast.Function.Mode.CommonExpression ||
+        leftNode instanceof ast.Function.Mode.ArrowExpression ||
         leftNode instanceof ast.Function.Mode.ConstructorExpression
       ) {
         console.log(

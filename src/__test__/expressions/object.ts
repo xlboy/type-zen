@@ -76,6 +76,8 @@ function generateObjectOutput(contents: string[]) {
       content: `{ 
         (name: string, age?: number):string,
         ():void;
+        ()
+        <T>()
       }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
@@ -83,6 +85,8 @@ function generateObjectOutput(contents: string[]) {
         output: generateObjectOutput([
           "(name: string, age?: number): string",
           "(): void",
+          "()",
+          "<T>()",
         ]),
         contents: [
           utils.createNode({
@@ -129,6 +133,27 @@ function generateObjectOutput(contents: string[]) {
               output: "void",
             }),
             output: "(): void",
+          }),
+          utils.createNode({
+            instance: ast.Object.Content.CallExpression,
+            output: "()",
+          }),
+          utils.createNode({
+            instance: ast.Object.Content.CallExpression,
+            output: "<T>()",
+            genericArgs: utils.createNode({
+              instance: ast.GenericArgsExpression,
+              values: [
+                {
+                  id: utils.createNode({
+                    instance: ast.IdentifierExpression,
+                    output: "T",
+                  }),
+                  default: void 0,
+                  type: void 0,
+                },
+              ],
+            }),
           }),
         ],
       }),

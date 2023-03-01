@@ -25,10 +25,14 @@ e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
 e_function -> e_function_constructor[e_function_arrow {% id %}] {% id %}
     | e_function_arrow {% id %}
 
-e_function_regular -> e_function_body _ ":"  _ e_function_return
-    {% args => toASTNode(ast.Function.Mode.RegularExpression)([args[0], args.at(-1)]) %}
+e_function_normal -> e_function_body _ ":"  _ e_function_return
+    {% args => toASTNode(ast.Function.Mode.NormalExpression)([args[0], args.at(-1)]) %}
     | e_function_genericArgs _ e_function_body _ ":"  _ e_function_return
-        {% args => toASTNode(ast.Function.Mode.RegularExpression)([args[0], args[2], args.at(-1)]) %}
+        {% args => toASTNode(ast.Function.Mode.NormalExpression)([args[0], args[2], args.at(-1)]) %}
+    | e_function_genericArgs _ e_function_body 
+        {% args => toASTNode(ast.Function.Mode.NormalExpression)([args[0], args.at(-1)]) %}
+    | e_function_body 
+        {% toASTNode(ast.Function.Mode.NormalExpression) %}
 
 
 e_function_arrow -> e_function_body _ "=>"  _ e_function_return
@@ -78,21 +82,21 @@ e_object ->
 e_object_content_eof -> (("," | ";") _) | null
 
 e_object_content -> 
-    e_object_content_callExpression {% id %}
-    | e_object_content_constructorExpression {% id %}
+    e_object_content_call {% id %}
+    | e_object_content_constructor {% id %}
     | e_object_content_method {% id %}
     | e_object_content_normal {% id %}
     | e_object_content_literalIndex {% id %}
     | e_object_content_indexSignature {% id %}
     | e_object_content_mapped {% id %}
 
-e_object_content_callExpression -> e_function_regular {% id %}
-e_object_content_constructorExpression -> e_function_constructor[e_function_regular {% id %}] {% id %}
+e_object_content_call -> e_function_normal {% id %}
+e_object_content_constructor -> e_function_constructor[e_function_normal {% id %}] {% id %}
 
 e_object_content_key -> id {% id %}
     | ("if" | "else" | "in" | "void" | "this") {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
 
-e_object_content_method -> e_object_content_method_key _ "?":? _ e_function_regular 
+e_object_content_method -> e_object_content_method_key _ "?":? _ e_function_normal 
     {% args => toASTNode(ast.Object.Content.MethodExpression)([
         args[0], 
         !!args[2], args.at(-1)

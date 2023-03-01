@@ -12,7 +12,6 @@ namespace _Object {
   export namespace Content {
     /** 例： `{ (name: string): void; }` */
     export const CallExpression = Function.Mode.NormalExpression;
-    // export class CallExpression extends Function.Mode.RegularExpression {}
 
     /** 例： `{ new (name: string): void; }` */
     export const ConstructorExpression = Function.Mode

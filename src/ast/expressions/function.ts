@@ -140,34 +140,36 @@ namespace Function {
   }
 
   export namespace Mode {
-    const schema = zod
-      .tuple([
-        zod.instanceof(GenericArgsExpression),
-        zod.instanceof(Body.Expression),
-        zod.instanceof(Return.Expression),
-      ])
-      .or(
-        zod.tuple([
-          zod.instanceof(Body.Expression),
-          zod.instanceof(Return.Expression),
-        ])
-      );
+    export abstract class ArrowExpression extends ExpressionBase {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Arrow;
 
-    type Schema = zod.infer<typeof schema>;
-    export abstract class CommonExpression extends ExpressionBase {
       public genericArgs: GenericArgsExpression | null;
       public body: Body.Expression;
       public return: Return.Expression;
 
-      protected abstract readonly type: "arrow" | "normal";
+      private static readonly schema = zod
+        .tuple([
+          zod.instanceof(GenericArgsExpression),
+          zod.instanceof(Body.Expression),
+          zod.instanceof(Return.Expression),
+        ])
+        .or(
+          zod.tuple([
+            zod.instanceof(Body.Expression),
+            zod.instanceof(Return.Expression),
+          ])
+        );
 
-      constructor(pos: AST.Position, args: Schema) {
+      constructor(
+        pos: AST.Position,
+        args: zod.infer<typeof ArrowExpression.schema>
+      ) {
         super(pos);
-        this.checkArgs(args, schema);
+        this.checkArgs(args, ArrowExpression.schema);
         this.initArgs(args);
       }
 
-      private initArgs(args: Schema) {
+      private initArgs(args: zod.infer<typeof ArrowExpression.schema>) {
         if (args.length === 3) {
           [this.genericArgs, this.body, this.return] = args;
         } else {
@@ -176,10 +178,7 @@ namespace Function {
         }
       }
       public compile(): string {
-        const separator = this.type === "arrow" ? "=>" : ":";
-        const mainContent = `${this.body.compile()}${
-          this.type === "arrow" ? " " : ""
-        }${separator} ${this.return.compile()}`;
+        const mainContent = `${this.body.compile()} => ${this.return.compile()}`;
 
         if (this.genericArgs) {
           return `${this.genericArgs.compile()}${mainContent}`;
@@ -193,14 +192,86 @@ namespace Function {
       }
     }
 
-    export class NormalExpression extends CommonExpression {
+    export class NormalExpression extends ExpressionBase {
       public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Normal;
-      protected readonly type: "arrow" | "normal" = "normal";
-    }
 
-    export class ArrowExpression extends CommonExpression {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Arrow;
-      protected readonly type: "arrow" | "normal" = "arrow";
+      public genericArgs: GenericArgsExpression | null;
+      public body: Body.Expression;
+      public return: Return.Expression | null;
+
+      private static readonly schema = zod
+        .tuple([
+          zod.instanceof(GenericArgsExpression),
+          zod.instanceof(Body.Expression),
+          zod.instanceof(Return.Expression),
+        ])
+        .or(
+          zod.tuple([
+            zod.instanceof(Body.Expression),
+            zod.instanceof(Return.Expression),
+          ])
+        )
+        .or(
+          zod.tuple([
+            zod.instanceof(GenericArgsExpression),
+            zod.instanceof(Body.Expression),
+          ])
+        )
+        .or(zod.tuple([zod.instanceof(Body.Expression)]));
+
+      private tyep: "g-b-r" | "b-r" | "g-b" | "b";
+
+      constructor(
+        pos: AST.Position,
+        args: zod.infer<typeof NormalExpression.schema>
+      ) {
+        super(pos);
+        this.checkArgs(args, NormalExpression.schema);
+        this.initArgs(args);
+      }
+
+      private initArgs(args: zod.infer<typeof NormalExpression.schema>) {
+        if (args.length === 3) {
+          [this.genericArgs, this.body, this.return] = args;
+          this.tyep = "g-b-r";
+        } else if (args.length === 2) {
+          if (args[0] instanceof GenericArgsExpression) {
+            this.genericArgs = args[0];
+            this.body = args[1] as Body.Expression;
+            this.return = null;
+            this.tyep = "g-b";
+          } else {
+            this.genericArgs = null;
+            this.body = args[0] as Body.Expression;
+            this.return = args[1] as Return.Expression;
+            this.tyep = "b-r";
+          }
+        } else {
+          this.genericArgs = null;
+          this.body = args[0] as Body.Expression;
+          this.return = null;
+          this.tyep = "b";
+        }
+      }
+      public compile(): string {
+        switch (this.tyep) {
+          case "g-b-r":
+            return `${this.genericArgs!.compile()}${this.body.compile()}: ${this.return!.compile()}`;
+
+          case "b-r":
+            return `${this.body.compile()}: ${this.return!.compile()}`;
+
+          case "g-b":
+            return `${this.genericArgs!.compile()}${this.body.compile()}`;
+
+          case "b":
+            return `${this.body.compile()}`;
+        }
+      }
+
+      public toString(): string {
+        return this.kind;
+      }
     }
 
     export class ConstructorExpression<
