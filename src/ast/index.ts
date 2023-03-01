@@ -15,6 +15,7 @@ export { Object } from "./expressions/object";
 
 export { TypeAliasStatement } from "./statements/type-alias";
 export { DeclareVariableStatement } from "./statements/declare-variable";
+export { DeclareFunctionStatement } from "./statements/declare-function";
 
 export { ASTBase as Base } from "./base";
 export { AST as Type } from "./types";

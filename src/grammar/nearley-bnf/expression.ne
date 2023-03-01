@@ -94,7 +94,7 @@ e_object_content_call -> e_function_normal {% id %}
 e_object_content_constructor -> e_function_constructor[e_function_normal {% id %}] {% id %}
 
 e_object_content_key -> id {% id %}
-    | ("if" | "else" | "in" | "void" | "this") {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
+    | ("if" | "else" | "in" | "void" | "this" | "function") {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
 
 e_object_content_method -> e_object_content_method_key _ "?":? _ e_function_normal 
     {% args => toASTNode(ast.Object.Content.MethodExpression)([

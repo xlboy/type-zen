@@ -32,7 +32,7 @@ const lexer = moo.compile({
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
-      keyword: ["if", "else", "in", "void", "this", "new"],
+      keyword: ["if", "else", "in", "void", "this", "new", "function"],
     }),
   },
   // 又能作为标识符，又能作为关键字的关键字
