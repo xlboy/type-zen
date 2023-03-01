@@ -14,7 +14,7 @@ function testUnion(
       content: `type B = ${content}`,
       nodes: [
         utils.createNode({
-          instance: ast.TypeDeclarationStatement,
+          instance: ast.TypeAliasStatement,
           output: `type B = ${node.output};`,
           identifier: utils.createNode({
             instance: ast.IdentifierExpression,

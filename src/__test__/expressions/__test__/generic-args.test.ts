@@ -10,7 +10,7 @@ describe.concurrent("normal", () => {
         content: `type A${expr.content} = 1`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type A${expr.node.output} = 1;`,
             arguments: expr.node,
             value: utils.createNode({
@@ -29,7 +29,7 @@ describe.concurrent("normal", () => {
         content: `type B${expr.content} = ''`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type B${expr.node.output} = '';`,
             arguments: expr.node,
             value: utils.createNode({

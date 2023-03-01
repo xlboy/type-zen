@@ -305,7 +305,7 @@ const grammar: Grammar = {
     {"name": "s_typeDecl$ebnf$1$subexpression$1", "symbols": ["e_genericArgs", "_"]},
     {"name": "s_typeDecl$ebnf$1", "symbols": ["s_typeDecl$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "s_typeDecl$ebnf$1", "symbols": [], "postprocess": () => null},
-    {"name": "s_typeDecl", "symbols": [{"literal":"type"}, "_", "id", "_", "s_typeDecl$ebnf$1", {"literal":"="}, "_", "e_main"], "postprocess": args => toASTNode(ast.TypeDeclarationStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)])},
+    {"name": "s_typeDecl", "symbols": [{"literal":"type"}, "_", "id", "_", "s_typeDecl$ebnf$1", {"literal":"="}, "_", "e_main"], "postprocess": args => toASTNode(ast.TypeAliasStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)])},
     {"name": "main", "symbols": [], "postprocess": n},
     {"name": "main", "symbols": ["_", "s_block"], "postprocess": ([, block]) => block},
     {"name": "main", "symbols": ["_"], "postprocess": n}

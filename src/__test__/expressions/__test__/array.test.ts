@@ -9,7 +9,7 @@ it("normal", () => {
       content: `type B = ${expr.content}`,
       nodes: [
         utils.createNode({
-          instance: ast.TypeDeclarationStatement,
+          instance: ast.TypeAliasStatement,
           output: `type B = ${expr.node.output};`,
           value: expr.node,
         }),

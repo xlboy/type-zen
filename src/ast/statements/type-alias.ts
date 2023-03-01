@@ -5,7 +5,7 @@ import { AST } from "../types";
 import { StatementBase } from "./base";
 import { GenericArgsExpression } from "../expressions/generic-args";
 
-export { TypeDeclarationStatement };
+export { TypeAliasStatement };
 
 const schema = zod.tuple([
   zod.any() /* type */,
@@ -16,8 +16,8 @@ const schema = zod.tuple([
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeDeclarationStatement extends StatementBase<Schema> {
-  public kind = AST.SyntaxKind.S.TypeDeclaration;
+class TypeAliasStatement extends StatementBase<Schema> {
+  public kind = AST.SyntaxKind.S.TypeAlias;
 
   public identifier: IdentifierExpression;
   public value: ExpressionBase;

@@ -14,7 +14,7 @@ function testLiteral(
       content: `type A = ${content}`,
       nodes: [
         utils.createNode({
-          instance: ast.TypeDeclarationStatement,
+          instance: ast.TypeAliasStatement,
           output: `type A = ${node.output};`,
           identifier: utils.createNode({
             instance: ast.IdentifierExpression,

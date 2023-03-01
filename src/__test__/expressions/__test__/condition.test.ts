@@ -10,7 +10,7 @@ describe("condition", () => {
         content: `type A = ${expr.content}`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type A = ${expr.node.output};`,
             value: expr.node,
           }),
@@ -25,7 +25,7 @@ describe("condition", () => {
         content: `type A = ${expr.content}`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type A = ${expr.node.output};`,
             value: expr.node,
           }),
@@ -42,7 +42,7 @@ describe("infer", () => {
         content: `type A = ${expr.content}`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type A = ${expr.node.output};`,
             value: expr.node,
           }),
@@ -57,7 +57,7 @@ describe("infer", () => {
         content: `type A = ${expr.content}`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             output: `type A = ${expr.node.output};`,
             value: expr.node,
           }),

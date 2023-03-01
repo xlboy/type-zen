@@ -37,7 +37,7 @@ namespace AST {
     }
     // Statement
     export enum S {
-      TypeDeclaration = "TypeDeclaration",
+      TypeAlias = "TypeAlias",
     }
   }
 }

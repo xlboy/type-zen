@@ -10,7 +10,7 @@ function testReturn(expressions: Expression[]) {
       content: `type A = () => ${expr.content}`,
       nodes: [
         utils.createNode({
-          instance: ast.TypeDeclarationStatement,
+          instance: ast.TypeAliasStatement,
           output: `type A = () => ${expr.node.output};`,
           value: utils.createNode({
             instance: ast.Function.Mode.ArrowExpression,

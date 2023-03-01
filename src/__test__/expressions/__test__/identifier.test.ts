@@ -11,7 +11,7 @@ describe("valid", () => {
         content: `type ${template} = any;`,
         nodes: [
           utils.createNode({
-            instance: ast.TypeDeclarationStatement,
+            instance: ast.TypeAliasStatement,
             identifier: utils.createNode({
               instance: ast.IdentifierExpression,
               output: template,

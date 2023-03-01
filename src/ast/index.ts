@@ -13,7 +13,7 @@ export { ArrayExpression } from "./expressions/array";
 export { Function } from "./expressions/function";
 export { Object } from "./expressions/object";
 
-export { TypeDeclarationStatement } from "./statements/type-declaration";
+export { TypeAliasStatement } from "./statements/type-alias";
 
 export { ASTBase as Base } from "./base";
 export { AST as Type } from "./types";
