@@ -1,7 +1,16 @@
 import * as ast from "../../ast";
 import * as utils from "../utils";
+import _ from "lodash-es";
 import type { Component } from "./types";
 import { functionComponents } from "./function";
+import { identifierTemplates } from "./identifier";
+import { arrayComponents } from "./array";
+import { bracketSurroundComponents } from "./bracket-surround";
+import { conditionComponents } from "./condition";
+import { getKeyValueComponents } from "./get-key-value";
+import { literalComponents } from "./literal";
+import { tupleComponents } from "./tuple";
+import { unionComponents } from "./union";
 
 export { components as objectComponents };
 
@@ -226,6 +235,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Method,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: "foo",
@@ -258,6 +268,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Method,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: "foo",
@@ -320,6 +331,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Normal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: "name",
@@ -343,6 +355,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Normal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: "name",
@@ -356,6 +369,7 @@ function generateObjectOutput(contents: string[]) {
           }),
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Normal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: "age",
@@ -382,6 +396,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
+            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
             literalName: utils.createNode({
               instance: ast.StringLiteralExpression,
               output: "'age'",
@@ -405,6 +420,7 @@ function generateObjectOutput(contents: string[]) {
         contents: [
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
+            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
             literalName: utils.createNode({
               instance: ast.StringLiteralExpression,
               output: "'age'",
@@ -418,6 +434,7 @@ function generateObjectOutput(contents: string[]) {
           }),
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
+            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
             literalName: utils.createNode({
               instance: ast.NumberLiteralExpression,
               output: "123",
@@ -589,6 +606,201 @@ function generateObjectOutput(contents: string[]) {
             instance: ast.Object.Content.ConstructorExpression,
             body: item.node,
             output: "new " + item.node.output,
+          }),
+        ],
+      }),
+    };
+  });
+
+  components.complex.method = functionComponents.normal.map((item) => {
+    const optional = _.random(0, 1) === 1;
+    const id = _.sample(identifierTemplates)!;
+    const content = "{ " + id + (optional ? "?" : "") + item.content + " }";
+    const output = id + (optional ? "?" : "") + item.node.output!;
+
+    return {
+      content,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: generateObjectOutput([output]),
+        contents: [
+          utils.createNode({
+            instance: ast.Object.Content.MethodExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Method,
+            name: utils.createNode({
+              instance: ast.IdentifierExpression,
+              output: id,
+            }),
+            optional,
+            body: item.node,
+            output,
+          }),
+        ],
+      }),
+    };
+  });
+
+  const otherComponents = [
+    ..._.sampleSize(functionComponents.arrow, 100),
+    ..._.sampleSize(arrayComponents, 100),
+    ..._.sampleSize(bracketSurroundComponents, 100),
+    ..._.sampleSize(conditionComponents.all, 100),
+    ..._.sampleSize(getKeyValueComponents, 100),
+    ..._.sampleSize(literalComponents.all, 100),
+    ..._.sampleSize(tupleComponents, 100),
+    ..._.sampleSize(unionComponents.all, 100),
+  ];
+
+  components.complex.normal = otherComponents.map((item) => {
+    const id = _.sample(identifierTemplates)!;
+    const optional = _.random(0, 1) === 1;
+    const content =
+      "{ " + id + (optional ? "?" : "") + ": " + item.content + " }";
+    const output = id + (optional ? "?" : "") + ": " + item.node.output!;
+
+    return {
+      content,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: generateObjectOutput([output]),
+        contents: [
+          utils.createNode({
+            instance: ast.Object.Content.NormalExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Normal,
+            name: utils.createNode({
+              instance: ast.IdentifierExpression,
+              output: id,
+            }),
+            optional,
+            value: item.node,
+            output,
+          }),
+        ],
+      }),
+    };
+  });
+
+  components.complex.literalIndex = _.sampleSize(
+    [...literalComponents.number, ...literalComponents.string],
+    100
+  ).map((literalName) => {
+    const value = _.sample(otherComponents)!;
+    const optional = _.random(0, 1) === 1;
+    const content = `{ [${literalName.content}]${optional ? "?" : ""}: ${
+      value.content
+    } }`;
+    const output = `[${literalName.node.output}]${optional ? "?" : ""}: ${
+      value.node.output
+    }`;
+
+    return {
+      content,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: generateObjectOutput([output]),
+        contents: [
+          utils.createNode({
+            instance: ast.Object.Content.LiteralIndexExpression,
+            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
+            literalName: literalName.node,
+            optional,
+            value: value.node,
+            output,
+          }),
+        ],
+      }),
+    };
+  });
+
+  components.complex.indexSignature = _.sampleSize(otherComponents, 100).map(
+    (nameType) => {
+      const id = _.sample(identifierTemplates)!;
+      const value = _.sample(otherComponents)!;
+      const content = `{ [${id}: ${nameType.content}]: ${value.content} }`;
+      const output = `[${id}: ${nameType.node.output}]: ${value.node.output}`;
+
+      return {
+        content,
+        node: utils.createNode({
+          instance: ast.Object.Expression,
+          kind: ast.Type.SyntaxKind.E.Object,
+          output: generateObjectOutput([output]),
+          contents: [
+            utils.createNode({
+              instance: ast.Object.Content.IndexSignatureExpression,
+              kind: ast.Type.SyntaxKind.E.Object_IndexSignature,
+              value: value.node,
+              name: utils.createNode({
+                instance: ast.IdentifierExpression,
+                output: id,
+              }),
+              nameType: nameType.node,
+              output,
+            }),
+          ],
+        }),
+      };
+    }
+  );
+
+  components.complex.mapped = otherComponents.map((value) => {
+    const id = _.sample(identifierTemplates)!;
+    const operator = {
+      remove: _.random(0, 1) === 1,
+      optional: _.random(0, 1) === 1,
+    };
+    const inSource = _.sample(otherComponents)!;
+    const asTarget = _.random(0, 1) === 1 ? _.sample(otherComponents)! : false;
+
+    const content = utils.mergeString(
+      "{ [",
+      id,
+      " in ",
+      inSource.content,
+      asTarget ? " as " + asTarget.content : "",
+      "]",
+      operator.remove ? " -?" : operator.optional ? "?" : "",
+      ": ",
+      value.content,
+      " }"
+    );
+
+    const output = utils.mergeString(
+      "[",
+      id,
+      " in ",
+      inSource.node.output!,
+      asTarget ? " as " + asTarget.node.output : "",
+      "]",
+      operator.remove ? "-?" : operator.optional ? "?" : "",
+      ": ",
+      value.node.output!
+    );
+
+    return {
+      content,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: generateObjectOutput([output]),
+        contents: [
+          utils.createNode({
+            instance: ast.Object.Content.MappedExpression,
+            kind: ast.Type.SyntaxKind.E.Object_Mapped,
+            value: value.node,
+            name: utils.createNode({
+              instance: ast.IdentifierExpression,
+              output: id,
+            }),
+            inSource: inSource.node,
+            asTarget: asTarget ? asTarget.node : false,
+            operator: operator.remove
+              ? [true, true]
+              : ([false, operator.optional] as any),
+            output,
           }),
         ],
       }),

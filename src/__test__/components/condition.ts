@@ -14,9 +14,9 @@ export { conditionComponents, inferComponents };
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ..._.sampleSize(unionComponents.all, 5000),
-  ..._.sampleSize(tupleComponents, 5000),
-  ..._.sampleSize(getKeyValueComponents, 5000),
+  ..._.sampleSize(unionComponents.all, 3000),
+  ..._.sampleSize(tupleComponents, 3000),
+  ..._.sampleSize(getKeyValueComponents, 3000),
   ...bracketSurroundComponents,
 ];
 

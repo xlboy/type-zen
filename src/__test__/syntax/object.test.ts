@@ -65,4 +65,24 @@ describe("complex", () => {
   it("constructor", () => {
     testObject(objectComponents.complex.constructor);
   });
+
+  it("method", () => {
+    testObject(objectComponents.complex.method);
+  });
+
+  it("normal", () => {
+    testObject(objectComponents.complex.normal);
+  });
+
+  it("literalIndex", () => {
+    testObject(objectComponents.complex.literalIndex);
+  });
+
+  it("indexSignature", () => {
+    testObject(objectComponents.complex.indexSignature);
+  });
+  
+  it("mapped", () => {
+    testObject(objectComponents.complex.mapped);
+  });
 });
