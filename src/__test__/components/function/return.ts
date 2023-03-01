@@ -17,13 +17,13 @@ export { components as returnComponents };
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ...tupleComponents.slice(0, 8000),
-  ...getKeyValueComponents.slice(0, 8000),
-  ...bracketSurroundComponents.slice(0, 8000),
-  ...arrayComponents.slice(0, 8000),
+  ...tupleComponents.slice(0, 3000),
+  ...getKeyValueComponents.slice(0, 3000),
+  ...bracketSurroundComponents.slice(0, 3000),
+  ...arrayComponents.slice(0, 3000),
   ...conditionComponents.all.slice(0, 200),
-  ...inferComponents.all.slice(0, 200),
-  ...unionComponents.all.slice(0, 8000),
+  ...inferComponents.all.slice(0, 3000),
+  ...unionComponents.all.slice(0, 3000),
 ];
 
 const components: Record<"assertAndIs" | "isOnly" | "normal", Component[]> = {

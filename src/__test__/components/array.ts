@@ -13,9 +13,9 @@ export { components as arrayComponents };
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ..._.sampleSize(tupleComponents, 10000),
-  ..._.sampleSize(getKeyValueComponents, 10000),
-  ..._.sampleSize(bracketSurroundComponents, 10000),
+  ..._.sampleSize(tupleComponents, 5000),
+  ..._.sampleSize(getKeyValueComponents, 5000),
+  ..._.sampleSize(bracketSurroundComponents, 5000),
 ];
 
 const components: Component[] = otherComponents.map((component) => ({

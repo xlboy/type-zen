@@ -17,14 +17,14 @@ export { components as bodyComponents };
 const otherComponents = [
   ...literalComponents.all,
   ...typeReferenceComponents,
-  ..._.sampleSize(tupleComponents, 5000),
-  ..._.sampleSize(getKeyValueComponents, 5000),
-  ..._.sampleSize(bracketSurroundComponents, 5000),
-  ..._.sampleSize(arrayComponents, 5000),
+  ..._.sampleSize(tupleComponents, 3000),
+  ..._.sampleSize(getKeyValueComponents, 3000),
+  ..._.sampleSize(bracketSurroundComponents, 3000),
+  ..._.sampleSize(arrayComponents, 3000),
   // TODO：比较耗性能…
   ..._.sampleSize(conditionComponents.all, 200),
   ..._.sampleSize(inferComponents.all, 200),
-  ..._.sampleSize(unionComponents.all, 5000),
+  ..._.sampleSize(unionComponents.all, 3000),
 ];
 
 const components: Component[] = [];

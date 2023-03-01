@@ -12,7 +12,33 @@ try {
   // type u2 = 11 | "fa" | true;
   // type u = | [1, true, "str", boolean, never];
   // `;
-  const content = `type is = () => string[] | number[]`;
+  // const content = `type B = 0 | 8[];`;
+  // const content = `type B = 0 extends 8 ? 1921291 : 1.11[];`
+  // const content = `type A = () => asserts this is 0 extends 8 ? 1921291 : 1.11;`
+
+  // const content = `
+
+  // new (a: string): void;
+  // name: string;
+  // age?: number;
+  // [key: string]: any;
+  // type A = [...string];
+  // type B = [id: string, b: Array]
+  // type C = [...b: any[]]
+  // type D = [...any[]]
+  // `
+  // const content = `type A = infer u77S4Qw4EcXXeR6NGmvuWY extends Required[8 | false];`;
+  const content = `
+  type B = { [key: string]: any }
+  `;
+  // const content = `type A = new () => void`
+  //
+
+  // const content = `type A = 0 extends () => asserts this is 0 ? 1921291 : 1.11;`
+  // const content = `type A = 0 extends 8 ? 1921291 : () => asserts this is 0;`
+  // const content = `type A = "111" | name[string]`;
+
+  // const content = `type is = () => this is true | false`;
   // const content = `type u_ = '1' | 2;`
   // const content = `type aaaa = SSSwcgj<string>`;
   // console.log(content);
@@ -28,8 +54,9 @@ try {
   }
 
   if (parser.results.length !== 1) {
-    parser.results.forEach((item) => {
-      console.error("语法错误", JSON.stringify(item));
+    parser.results.some((item, index, arr) => {
+      if (index > 100) return true;
+      console.error("语法错误", item === arr[index + 1]);
     });
   }
 } catch (error: any) {
@@ -51,17 +78,19 @@ type fn5 = {
   (a: string, b: number): boolean;
   new (a: string, b: number): boolean;
   a: new (a: string, b: number) => boolean;
+  b?(a: string, b: number): boolean;
 };
 type fn6 = {
   a(): void;
 };
 type fn7 = {
   a: () => void;
+  if(): void;
 };
 
 interface fn8 {
-  a(): void;
-  a: () => void;
+  a?(): void;
+  // a: () => void;
 }
 
 interface fn9 {
@@ -70,6 +99,52 @@ interface fn9 {
   c: (a: any) => a is string;
   d: (self: this, a: unknown) => a is string;
 }
+
+type a = [string?, ...any[]];
+
+type AA<T> = `SB-${T extends string ? T : string}`;
+
+type ACC = string;
+type bb =
+  | {
+      [K in "b"]: any;
+    }
+  | {
+      [1]?: any;
+      name?: any;
+    }
+  | {
+      [K in 1 extends 1 ? "分手快乐" : "" as "1" | 2 | K]-?: any;
+    }
+  | {
+      name: string;
+      [s: ACC]: any;
+    }
+  | {
+      (a: string, b: number, undefined: any): boolean;
+      new (a: string, b: number): boolean;
+      (a: string, b: number): boolean;
+      new (a: string, b: number): boolean;
+      new: () => void;
+    }
+  | {
+      [K in ACC]: () => void;
+    };
+
+type sdfsdfsdf = `dsfsdf`["length"] extends {} ? [] : 2;
+type bd = {
+  [K in "1" as K["length"]]: string;
+};
+
+type ACE = 1 extends infer U extends infer C extends infer CC | number
+  ? [U, C, CC]
+  : never;
+
+const a: bd = {};
+
+// type cc = bb[]
+// type b =[a: string, ...b?: any[]];
 // function-generic-args
 // function-args
 // function-rtn
+// type ads = ;

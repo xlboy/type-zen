@@ -159,7 +159,7 @@ namespace Function {
       public body: Body.Expression;
       public return: Return.Expression;
 
-      protected abstract readonly type: "arrow" | "regular";
+      protected abstract readonly type: "arrow" | "normal";
 
       constructor(pos: AST.Position, args: Schema) {
         super(pos);
@@ -193,18 +193,18 @@ namespace Function {
       }
     }
 
-    export class RegularExpression extends CommonExpression {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Regular;
-      protected readonly type: "arrow" | "regular" = "regular";
+    export class NormalExpression extends CommonExpression {
+      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Normal;
+      protected readonly type: "arrow" | "normal" = "normal";
     }
 
     export class ArrowExpression extends CommonExpression {
       public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Arrow;
-      protected readonly type: "arrow" | "regular" = "arrow";
+      protected readonly type: "arrow" | "normal" = "arrow";
     }
 
     export class ConstructorExpression<
-      Body extends RegularExpression | ArrowExpression
+      Body extends NormalExpression | ArrowExpression
     > extends ExpressionBase {
       public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Constructor;
 
@@ -212,7 +212,7 @@ namespace Function {
 
       private static schema = zod.tuple([
         zod.any() /* new */,
-        zod.instanceof(RegularExpression).or(zod.instanceof(ArrowExpression)),
+        zod.instanceof(NormalExpression).or(zod.instanceof(ArrowExpression)),
       ]);
 
       constructor(

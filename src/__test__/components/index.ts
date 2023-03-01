@@ -9,3 +9,4 @@ export { bracketSurroundComponents } from "./bracket-surround";
 export { conditionComponents, inferComponents } from "./condition";
 export { arrayComponents } from "./array";
 export { functionComponents } from "./function";
+export { objectComponents } from "./object";

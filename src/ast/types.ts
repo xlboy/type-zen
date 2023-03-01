@@ -25,7 +25,7 @@ namespace AST {
       Function_Body = "Function_Body",
       Function_Return = "Function_Return",
       Function_Arrow = "Function_Arrow",
-      Function_Regular = "Function_Regular",
+      Function_Normal = "Function_Normal",
       Function_Constructor = "Function_Constructor",
       Object = "Object",
       Object_Mapped = "Object_Mapped",

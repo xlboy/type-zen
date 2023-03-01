@@ -11,12 +11,12 @@ export { _Object as Object };
 namespace _Object {
   export namespace Content {
     /** 例： `{ (name: string): void; }` */
-    export const CallExpression = Function.Mode.RegularExpression;
+    export const CallExpression = Function.Mode.NormalExpression;
     // export class CallExpression extends Function.Mode.RegularExpression {}
 
     /** 例： `{ new (name: string): void; }` */
     export const ConstructorExpression = Function.Mode
-      .ConstructorExpression<Function.Mode.RegularExpression>;
+      .ConstructorExpression<Function.Mode.NormalExpression>;
 
     /** 例： `{ getId(): string; getName()?: string; }` */
     export class MethodExpression extends ExpressionBase {
@@ -25,12 +25,12 @@ namespace _Object {
       private static readonly schema = zod.tuple([
         zod.instanceof(IdentifierExpression),
         zod.boolean() /* optional */,
-        zod.instanceof(Function.Mode.RegularExpression),
+        zod.instanceof(Function.Mode.NormalExpression),
       ]);
 
       public name: IdentifierExpression;
       public optional: boolean;
-      public regularFn: Function.Mode.RegularExpression;
+      public body: Function.Mode.NormalExpression;
 
       constructor(
         pos: AST.Position,
@@ -38,14 +38,14 @@ namespace _Object {
       ) {
         super(pos);
         this.checkArgs(args, MethodExpression.schema);
-        [this.name, this.optional, this.regularFn] = args;
+        [this.name, this.optional, this.body] = args;
       }
 
       public compile(): string {
         return [
           this.name.compile(),
           this.optional ? "?" : "",
-          this.regularFn.compile(),
+          this.body.compile(),
         ].join("");
       }
       public toString(): string {
@@ -122,7 +122,6 @@ namespace _Object {
           this.optional ? "?" : "",
           ": ",
           this.value.compile(),
-          ";",
         ].join("");
       }
 
@@ -138,13 +137,12 @@ namespace _Object {
       private static readonly schema = zod.tuple([
         zod.any() /* [ */,
         zod.instanceof(IdentifierExpression) /* name */,
-        zod.instanceof(ExpressionBase) /* type */,
+        zod.instanceof(ExpressionBase) /* nameType */,
         zod.instanceof(ExpressionBase) /* value */,
-        zod.any() /* ] */,
       ]);
 
       public name: IdentifierExpression;
-      public type: ExpressionBase;
+      public nameType: ExpressionBase;
       public value: ExpressionBase;
 
       constructor(
@@ -153,11 +151,11 @@ namespace _Object {
       ) {
         super(pos);
         this.checkArgs(args, IndexSignatureExpression.schema);
-        [this.name] = args;
+        [, this.name, this.nameType, this.value] = args;
       }
 
       public compile(): string {
-        return `[${this.name.compile()}: ${this.type.compile()}]: ${this.value.compile()};`;
+        return `[${this.name.compile()}: ${this.nameType.compile()}]: ${this.value.compile()}`;
       }
 
       public toString(): string {
@@ -211,7 +209,6 @@ namespace _Object {
           this.operator[1] ? "?" : "",
           ": ",
           this.value.compile(),
-          ";",
         ].join("");
       }
 
@@ -250,9 +247,7 @@ namespace _Object {
     public compile(): string {
       return [
         "{\n",
-        this.contents
-          .map((item) =>  `  ${item.compile()}`)
-          .join("\n"),
+        this.contents.map((item) => `  ${item.compile()};`).join("\n"),
         "\n}",
       ].join("");
     }

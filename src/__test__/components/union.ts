@@ -1,7 +1,6 @@
 import * as ast from "../../ast";
 import * as utils from "../utils";
 import { literalComponents } from "./literal";
-import { tupleComponents } from "./tuple";
 import { typeReferenceComponents } from "./type-reference";
 import type { Component } from "./types";
 
