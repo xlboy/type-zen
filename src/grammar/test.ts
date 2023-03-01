@@ -28,9 +28,8 @@ try {
   // type D = [...any[]]
   // `
   // const content = `type A = infer u77S4Qw4EcXXeR6NGmvuWY extends Required[8 | false];`;
-  const content = `
-  type B = { [key: string]: any }
-  `;
+  const content =
+    "type A = { [QgZDIA9G5h2A0jYGV3F9 in ([...undefined | void, WDQ2SyynXd6zztx: | [true, ReturnType],])] -?: (ssT0utkp1VE: | [`wwlklksdldfs.1111`, $], ...eg9xKgLDDkge: | [false, unknown]) => xGFkEqLuJa is gQ$AdCtdFHLtyNKrX2yCrr2D6fy | ___$1 }";
   // const content = `type A = new () => void`
   //
 

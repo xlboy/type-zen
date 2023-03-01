@@ -7,48 +7,24 @@ interface TestSource<N> {
   nodes: Array<TestNode<any>>;
 }
 
-// type InsidePrototype<T> = {
-//   [K in keyof T as K extends "toString" | "compile" ? never : K]?: NonNullable<
-//     T[K]
-//   > extends ast.Base
-//     ? TestNode<T[K] & any>
-//     : T[K] extends Function
-//     ? never
-//     : NonNullable<T[K]> extends any[]
-//     ? NonNullable<T[K]>[number] extends ast.Base
-//       ? Array<TestNode<any>>
-//       : Array<{
-//           [KK in keyof NonNullable<T[K]>[number]]?: NonNullable<
-//             NonNullable<T[K]>[number][KK]
-//           > extends ast.Base
-//             ? TestNode<any>
-//             : NonNullable<T[K]>[number][KK] extends infer U
-//             ? U extends ast.Base
-//               ? TestNode<any>
-//               : U
-//             : never;
-//         }>
-//     : Partial<T[K]>;
-// };
-
 type InsidePrototype<T> = {
   [K in keyof T as K extends "toString" | "compile" ? never : K]?: NonNullable<
     T[K]
-  > extends infer NoNull_TItem
-    ? NoNull_TItem extends ast.Base
+  > extends infer NoNullTItem
+    ? NoNullTItem extends ast.Base
       ? TestNode<T[K] & any>
       : T[K] extends Function
       ? never
-      : NoNull_TItem extends any[]
-      ? NoNull_TItem[number] extends infer NoNull_TItemGroup
-        ? NoNull_TItemGroup extends ast.Base
+      : NoNullTItem extends any[]
+      ? NoNullTItem[number] extends infer NoNullTItemGroup
+        ? NoNullTItemGroup extends ast.Base
           ? Array<TestNode<any>>
           : Array<{
-              [KK in keyof NoNull_TItemGroup]?: NonNullable<
-                NoNull_TItemGroup[KK]
+              [KK in keyof NoNullTItemGroup]?: NonNullable<
+                NoNullTItemGroup[KK]
               > extends ast.Base
                 ? TestNode<any>
-                : NoNull_TItemGroup[KK] extends infer U
+                : NoNullTItemGroup[KK] extends infer U
                 ? U extends ast.Base
                   ? TestNode<any>
                   : U
