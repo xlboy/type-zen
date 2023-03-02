@@ -28,6 +28,10 @@ function testObject(
 }
 
 describe("simple", () => {
+  it("empty", () => {
+    testObject(objectExpressions.simple.empty);
+  });
+
   it("call", () => {
     testObject(objectExpressions.simple.call);
   });

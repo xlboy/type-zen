@@ -76,7 +76,7 @@ e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) 
 #region  //*=========== object ===========
 e_object -> 
     "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}
-    | "{" _ (e_object_content _ e_object_content_eof):* "}"
+    | "{" _ (e_object_content _ e_object_content_eof):+ "}"
         {% args => toASTNode(ast.Object.Expression)([args[0], args[2].map(id), args.at(-1)]) %}
     
 e_object_content_eof -> (("," | ";") _) | null

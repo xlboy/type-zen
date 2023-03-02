@@ -19,10 +19,10 @@ type ObjectContentName = Uncapitalize<
 > extends `${infer T}Expression`
   ? T
   : never;
-type ObjectExpressions = Record<
-  "simple" | "complex",
-  Record<ObjectContentName, Expression[]>
->;
+type ObjectExpressions = {
+  simple: Record<ObjectContentName | "empty", Expression[]>;
+  complex: Record<ObjectContentName, Expression[]>;
+};
 const expressions: ObjectExpressions = {
   complex: {
     call: [],
@@ -41,6 +41,7 @@ const expressions: ObjectExpressions = {
     literalIndex: [],
     mapped: [],
     normal: [],
+    empty: [],
   },
 };
 
@@ -53,6 +54,26 @@ function generateObjectOutput(contents: string[]) {
 }
 
 (function initSimple() {
+  expressions.simple.empty = [
+    {
+      content: `{}`,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: "{}",
+        contents: [],
+      }),
+    },
+    {
+      content: `{       \n    \n\n}`,
+      node: utils.createNode({
+        instance: ast.Object.Expression,
+        kind: ast.Type.SyntaxKind.E.Object,
+        output: "{}",
+        contents: [],
+      }),
+    },
+  ];
   expressions.simple.call = [
     {
       content: `{ (): void }`,
