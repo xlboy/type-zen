@@ -37,5 +37,3 @@ for (let index = 0; index < 2000; index++) {
 
   statements.push({ content, node });
 }
-
-console.log(1);

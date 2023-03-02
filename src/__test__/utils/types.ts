@@ -7,27 +7,30 @@ interface TestSource<N> {
   nodes: Array<TestNode<any>>;
 }
 
+type $_InsidePrototype_KeyFilter<K> = K extends "toString" | "compile"
+  ? never
+  : K;
 type InsidePrototype<T> = {
-  [K in keyof T as K extends "toString" | "compile" ? never : K]?: NonNullable<
-    T[K]
-  > extends infer NoNullTItem
-    ? NoNullTItem extends ast.Base
+  [K in keyof T as $_InsidePrototype_KeyFilter<K>]?: [
+    NonNullable<T[K]>
+  ] extends [infer FilteredValue]
+    ? FilteredValue extends ast.Base
       ? TestNode<T[K] & any>
-      : T[K] extends Function
+      : FilteredValue extends Function
       ? never
-      : NoNullTItem extends any[]
-      ? NoNullTItem[number] extends infer NoNullTItemGroup
-        ? NoNullTItemGroup extends ast.Base
+      : FilteredValue extends any[]
+      ? FilteredValue[number] extends infer FValueItem
+        ? FValueItem extends ast.Base
           ? Array<TestNode<any>>
           : Array<{
-              [KK in keyof NoNullTItemGroup]?: NonNullable<
-                NoNullTItemGroup[KK]
+              [_K in keyof FValueItem]?: NonNullable<
+                FValueItem[_K]
               > extends ast.Base
                 ? TestNode<any>
-                : NoNullTItemGroup[KK] extends infer U
-                ? U extends ast.Base
+                : FValueItem[_K] extends infer Item
+                ? Item extends ast.Base
                   ? TestNode<any>
-                  : U
+                  : Item
                 : never;
             }>
         : never
