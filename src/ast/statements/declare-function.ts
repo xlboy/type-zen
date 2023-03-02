@@ -1,9 +1,8 @@
 import zod from "zod";
+import { Function } from "../expressions/function";
 import { IdentifierExpression } from "../expressions/identifier";
-import { ExpressionBase } from "../expressions/base";
 import { AST } from "../types";
 import { StatementBase } from "./base";
-import { Function } from "../expressions/function";
 
 export { DeclareFunctionStatement };
 

@@ -17,5 +17,7 @@ export { TypeAliasStatement } from "./statements/type-alias";
 export { DeclareVariableStatement } from "./statements/declare-variable";
 export { DeclareFunctionStatement } from "./statements/declare-function";
 
+export { EnumMemberExpression, EnumStatement } from "./statements/enum";
+
 export { ASTBase as Base } from "./base";
 export { AST as Type } from "./types";

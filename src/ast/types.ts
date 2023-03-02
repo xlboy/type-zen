@@ -34,12 +34,16 @@ namespace AST {
       Object_NameOnly = "Object_NameOnly",
       Object_IndexSignature = "Object_IndexSignature",
       Object_LiteralIndex = "Object_LiteralIndex",
+      EnumMember = "EnumMember",
     }
     // Statement
     export enum S {
       TypeAlias = "TypeAlias",
       DeclareVariable = "DeclareVariable",
       DeclareFunction = "DeclareFunction",
+      If = "If",
+      Enum = "Enum",
+      SugarBlock = "SugarBlock",
     }
   }
 }

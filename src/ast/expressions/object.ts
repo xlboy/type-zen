@@ -244,6 +244,8 @@ namespace _Object {
     }
 
     public compile(): string {
+      if (this.contents.length === 0) return "{}";
+
       return [
         "{\n",
         this.contents.map((item) => `  ${item.compile()};`).join("\n"),

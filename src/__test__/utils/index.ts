@@ -21,10 +21,16 @@ function createNode<T>(node: TestNode<T>) {
 }
 
 function assertSource<T>(source: TestSource<T>) {
-  const astNodes = new Parser(source.content).toAST();
+  let astNodes!: ast.Base<any>[];
+  try {
+    astNodes = new Parser(source.content).toAST();
+} catch (error) {
+    expect({ error, content: source.content }).toMatchSnapshot("parser-error");
+    throw error;
+}
 
   expect(astNodes.length).not.toBe(0);
-  
+
   if (astNodes.length !== 1) {
     expect(source.content).toMatchSnapshot("divergence");
   }

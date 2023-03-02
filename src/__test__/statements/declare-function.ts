@@ -1,8 +1,8 @@
-import * as ast from "../../ast";
-import * as utils from "../utils";
-import * as expr from "../expressions";
-import _, { has } from "lodash-es";
+import _ from "lodash-es";
 import { Statement } from ".";
+import * as ast from "../../ast";
+import * as expr from "../expressions";
+import * as utils from "../utils";
 
 export { statements as declareFunctionStatements };
 
