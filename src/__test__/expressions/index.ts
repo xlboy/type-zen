@@ -12,6 +12,7 @@ import { conditionExpressions, inferExpressions } from "./condition";
 import { arrayExpressions } from "./array";
 import { functionExpressions } from "./function";
 import { objectExpressions } from "./object";
+import { keyofExpressions } from "./keyof";
 
 export { type Expression };
 export {
@@ -29,6 +30,7 @@ export {
   arrayExpressions,
   functionExpressions,
   objectExpressions,
+  keyofExpressions,
   mainExpressions,
 };
 
@@ -49,4 +51,6 @@ const mainExpressions = [
   ...intersectionExpressions.all,
   ...arrayExpressions,
   ...functionExpressions.arrow,
+  ...objectExpressions.all,
+  ...keyofExpressions,
 ];

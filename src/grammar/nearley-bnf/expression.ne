@@ -15,9 +15,10 @@ e_mainWithoutUnion ->
     | e_condition {% id %}
     | e_array {% id %}
     | e_getKeyValue {% id %}
-    | e_infer {% id %}
+    | e_conditionInfer {% id %}
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
+    | e_keyof {% id %}
 
 
 #region  //*=========== function ===========
@@ -191,7 +192,7 @@ e_condition ->
     e_main e_condition_extend e_main _ "?" _ e_main _ ":" _ e_main 
     {% (...args) => filterAndToASTNode(args, ast.ConditionExpression) %}
 
-e_infer -> "infer" nonEmptySpace id (e_condition_extend e_main):* 
+e_conditionInfer -> "infer" nonEmptySpace id (e_condition_extend e_main):* 
     {% args => {
         if (args[3].length === 0) {
             return toASTNode(ast.InferExpression)([args[0], args[2]]);
@@ -201,6 +202,13 @@ e_infer -> "infer" nonEmptySpace id (e_condition_extend e_main):*
 
 e_condition_extend -> (nonEmptySpace:+ "extends" nonEmptySpace:+) | (_ "==" _)
 #endregion  //*======== condition ===========
+
+e_keyof -> "keyof" nonEmptySpace:+ e_main
+    {% (args, d, reject) => {
+        const _args = [args[0], args.at(-1)];
+        return filterAndToASTNode([_args, d, reject], ast.KeyofExpression)
+    } %}
+    # {% args => toASTNode(ast.KeyofExpression)([args[0], args.at(-1)]) %}
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | e_string {% id %}
@@ -252,4 +260,4 @@ e_intersection_mode2 -> e_main (_ "&" _ e_main):+
 
 e_intersection -> e_intersection_mode1 {% id %}
     | e_intersection_mode2 {% id %}
-#endregion  //*======== Intersection ===========
+#endregion  //*======== intersection ===========

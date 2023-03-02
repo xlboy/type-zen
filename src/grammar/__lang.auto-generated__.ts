@@ -55,9 +55,10 @@ const grammar: Grammar = {
     {"name": "e_mainWithoutUnion", "symbols": ["e_condition"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_array"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_getKeyValue"], "postprocess": id},
-    {"name": "e_mainWithoutUnion", "symbols": ["e_infer"], "postprocess": id},
+    {"name": "e_mainWithoutUnion", "symbols": ["e_conditionInfer"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_bracketSurround"], "postprocess": id},
     {"name": "e_mainWithoutUnion", "symbols": ["e_intersection"], "postprocess": id},
+    {"name": "e_mainWithoutUnion", "symbols": ["e_keyof"], "postprocess": id},
     {"name": "e_function$macrocall$2", "symbols": ["e_function_arrow"], "postprocess": id},
     {"name": "e_function$macrocall$1$ebnf$1", "symbols": ["nonEmptySpace"]},
     {"name": "e_function$macrocall$1$ebnf$1", "symbols": ["e_function$macrocall$1$ebnf$1", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
@@ -244,10 +245,10 @@ const grammar: Grammar = {
     {"name": "e_typeReference", "symbols": ["id", "_", "e_typeReference$ebnf$1"], "postprocess": args => toASTNode(ast.TypeReferenceExpression)([args[0], ...(args[2] || [])])},
     {"name": "e_bracketSurround", "symbols": [{"literal":"("}, "_", "e_main", "_", {"literal":")"}], "postprocess": toASTNode(ast.BracketSurroundExpression)},
     {"name": "e_condition", "symbols": ["e_main", "e_condition_extend", "e_main", "_", {"literal":"?"}, "_", "e_main", "_", {"literal":":"}, "_", "e_main"], "postprocess": (...args) => filterAndToASTNode(args, ast.ConditionExpression)},
-    {"name": "e_infer$ebnf$1", "symbols": []},
-    {"name": "e_infer$ebnf$1$subexpression$1", "symbols": ["e_condition_extend", "e_main"]},
-    {"name": "e_infer$ebnf$1", "symbols": ["e_infer$ebnf$1", "e_infer$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "e_infer", "symbols": [{"literal":"infer"}, "nonEmptySpace", "id", "e_infer$ebnf$1"], "postprocess":  args => {
+    {"name": "e_conditionInfer$ebnf$1", "symbols": []},
+    {"name": "e_conditionInfer$ebnf$1$subexpression$1", "symbols": ["e_condition_extend", "e_main"]},
+    {"name": "e_conditionInfer$ebnf$1", "symbols": ["e_conditionInfer$ebnf$1", "e_conditionInfer$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_conditionInfer", "symbols": [{"literal":"infer"}, "nonEmptySpace", "id", "e_conditionInfer$ebnf$1"], "postprocess":  args => {
             if (args[3].length === 0) {
                 return toASTNode(ast.InferExpression)([args[0], args[2]]);
             }
@@ -261,6 +262,12 @@ const grammar: Grammar = {
     {"name": "e_condition_extend", "symbols": ["e_condition_extend$subexpression$1"]},
     {"name": "e_condition_extend$subexpression$2", "symbols": ["_", {"literal":"=="}, "_"]},
     {"name": "e_condition_extend", "symbols": ["e_condition_extend$subexpression$2"]},
+    {"name": "e_keyof$ebnf$1", "symbols": ["nonEmptySpace"]},
+    {"name": "e_keyof$ebnf$1", "symbols": ["e_keyof$ebnf$1", "nonEmptySpace"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "e_keyof", "symbols": [{"literal":"keyof"}, "e_keyof$ebnf$1", "e_main"], "postprocess":  (args, d, reject) => {
+            const _args = [args[0], args.at(-1)];
+            return filterAndToASTNode([_args, d, reject], ast.KeyofExpression)
+        } },
     {"name": "e_value", "symbols": [(lexer.has("literalKeyword") ? {type: "literalKeyword"} : literalKeyword)], "postprocess": toASTNode(ast.LiteralKeywordExpression)},
     {"name": "e_value", "symbols": ["e_string"], "postprocess": id},
     {"name": "e_value", "symbols": ["e_number"], "postprocess": id},

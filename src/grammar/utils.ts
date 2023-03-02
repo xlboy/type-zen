@@ -109,7 +109,25 @@ export function filterAndToASTNode(
       break;
     }
 
-    case ast.IntersectionExpression: 
+    case ast.KeyofExpression: {
+      const [, sourceNode] = args[0] as [any, ast.Base];
+
+      if (
+        sourceNode instanceof ast.IntersectionExpression ||
+        sourceNode instanceof ast.UnionExpression
+      ) {
+        if (!sourceNode.isExtended) {
+          console.log(
+            `[filterAndToASTNode]: KeyofExpression -> ${sourceNode.kind} : reject`
+          );
+          return reject;
+        }
+      }
+
+      break;
+    }
+
+    case ast.IntersectionExpression:
     case ast.UnionExpression: {
       const [nodes] = args[0] as [ast.Base[]];
 
@@ -145,10 +163,11 @@ export function filterAndToASTNode(
         sourceNode instanceof ast.Function.Mode.ConstructorExpression ||
         sourceNode instanceof ast.ConditionExpression ||
         sourceNode instanceof ast.UnionExpression ||
-        sourceNode instanceof ast.InferExpression
+        sourceNode instanceof ast.InferExpression ||
+        sourceNode instanceof ast.KeyofExpression
       ) {
         console.log(
-          `[filterAndToASTNode]: GetKeyValueExpression -> Function | UnionExpression : reject`
+          `[filterAndToASTNode]: GetKeyValueExpression -> ${sourceNode.kind} : reject`
         );
         return reject;
       }

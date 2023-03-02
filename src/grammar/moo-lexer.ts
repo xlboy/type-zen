@@ -29,25 +29,44 @@ const lexer = moo.compile({
   symbol: [":", ";", ".", ",", "?", "|", "<", ">", "=", "-", "&"],
   lbracket: ["{", "[", "("],
   rbracket: ["}", "]", ")"],
+
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
-      keyword: ["if", "else", "in", "void", "this", "new", "function"],
+      keyword: [
+        "if",
+        "else",
+        "in",
+        "void",
+        "this",
+        "new",
+        "function",
+        "interface",
+        "namespace",
+        "keyof",
+        "type",
+        "as",
+        "is",
+        "out",
+        "infer",
+        "asserts",
+        "declare",
+      ],
     }),
   },
   // 又能作为标识符，又能作为关键字的关键字
-  multifunctionalKeyword: [
-    "interface",
-    "namespace",
-    "keyof",
-    "type",
-    "as",
-    "is",
-    "out",
-    "infer",
-    "asserts",
-    "declare",
-  ],
+  // multifunctionalKeyword: [
+  //   "interface",
+  //   "namespace",
+  //   "keyof",
+  //   "type",
+  //   "as",
+  //   "is",
+  //   "out",
+  //   "infer",
+  //   "asserts",
+  //   "declare",
+  // ],
 });
 
 export default lexer;
