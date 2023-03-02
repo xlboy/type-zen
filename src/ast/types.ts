@@ -10,6 +10,7 @@ namespace AST {
     // Expression
     export enum E {
       Union = "Untion",
+      Intersection = "Intersection",
       Identifier = "Identifier",
       LiteralKeyword = "LiteralKeyword",
       StringLiteral = "StringLiteral",

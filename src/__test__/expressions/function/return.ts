@@ -9,6 +9,7 @@ import { bracketSurroundExpressions } from "../bracket-surround";
 import { arrayExpressions } from "../array";
 import { conditionExpressions, inferExpressions } from "../condition";
 import { unionExpressions } from "../union";
+import { intersectionExpressions } from "../intersection";
 import { identifierTemplates } from "../identifier";
 import _ from "lodash-es";
 
@@ -24,6 +25,7 @@ const otherExpressions = [
   ...conditionExpressions.all.slice(0, 200),
   ...inferExpressions.all.slice(0, 3000),
   ...unionExpressions.all.slice(0, 3000),
+  ...intersectionExpressions.all.slice(0, 3000),
 ];
 
 const expressions: Record<"assertAndIs" | "isOnly" | "normal", Expression[]> = {

@@ -109,6 +109,7 @@ export function filterAndToASTNode(
       break;
     }
 
+    case ast.IntersectionExpression: 
     case ast.UnionExpression: {
       const [nodes] = args[0] as [ast.Base[]];
 
@@ -118,7 +119,7 @@ export function filterAndToASTNode(
         nodes[0] instanceof ast.InferExpression
       ) {
         console.log(
-          `[filterAndToASTNode]: UnionExpression -> ${nodes[0].kind} : reject`
+          `[filterAndToASTNode]: ${nodeConstructor.name} -> ${nodes[0].kind} : reject`
         );
         return reject;
       }
@@ -128,7 +129,7 @@ export function filterAndToASTNode(
       );
       if (hasConditionExpression) {
         console.log(
-          `[filterAndToASTNode]: UnionExpression -> ConditionExpression : reject`
+          `[filterAndToASTNode]: ${nodeConstructor.name} -> ConditionExpression : reject`
         );
         return reject;
       }

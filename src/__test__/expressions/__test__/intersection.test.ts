@@ -1,9 +1,9 @@
 import { it } from "vitest";
 import * as ast from "../../../ast";
-import { unionExpressions } from "..";
+import { intersectionExpressions } from "..";
 import * as utils from "../../utils";
 
-function testUnion(
+function testIntersection(
   expressions: {
     content: string;
     node: utils.TestNode;
@@ -28,13 +28,13 @@ function testUnion(
 }
 
 it("native", () => {
-  testUnion(unionExpressions.native);
+  testIntersection(intersectionExpressions.native);
 });
 
 it("extended", () => {
-  testUnion(unionExpressions.extended);
+  testIntersection(intersectionExpressions.extended);
 });
 
 it("all", () => {
-  testUnion(unionExpressions.all);
+  testIntersection(intersectionExpressions.all);
 });

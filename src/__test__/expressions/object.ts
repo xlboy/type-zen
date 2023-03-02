@@ -1,13 +1,14 @@
+import _ from "lodash-es";
 import * as ast from "../../ast";
 import * as utils from "../utils";
-import _ from "lodash-es";
 import type { Expression } from "./";
-import { functionExpressions } from "./function";
-import { identifierTemplates } from "./identifier";
 import { arrayExpressions } from "./array";
 import { bracketSurroundExpressions } from "./bracket-surround";
 import { conditionExpressions } from "./condition";
+import { functionExpressions } from "./function";
 import { getKeyValueExpressions } from "./get-key-value";
+import { identifierTemplates } from "./identifier";
+import { intersectionExpressions } from "./intersection";
 import { literalExpressions } from "./literal";
 import { tupleExpressions } from "./tuple";
 import { unionExpressions } from "./union";
@@ -22,6 +23,7 @@ type ObjectContentName = Uncapitalize<
 type ObjectExpressions = {
   simple: Record<ObjectContentName | "empty", Expression[]>;
   complex: Record<ObjectContentName, Expression[]>;
+  all: Expression[];
 };
 const expressions: ObjectExpressions = {
   complex: {
@@ -43,6 +45,7 @@ const expressions: ObjectExpressions = {
     normal: [],
     empty: [],
   },
+  all: [],
 };
 
 function generateObjectOutput(contents: string[]) {
@@ -696,6 +699,7 @@ function generateObjectOutput(contents: string[]) {
     ..._.sampleSize(literalExpressions.all, 100),
     ..._.sampleSize(tupleExpressions, 100),
     ..._.sampleSize(unionExpressions.all, 100),
+    ..._.sampleSize(intersectionExpressions.all, 100),
   ];
 
   expressions.complex.normal = otherExpressions.map((item) => {
@@ -853,3 +857,8 @@ function generateObjectOutput(contents: string[]) {
     };
   });
 })();
+
+expressions.all = [
+  ..._.values(expressions.simple).flat(Infinity),
+  ..._.values(expressions.complex).flat(Infinity),
+] as any;

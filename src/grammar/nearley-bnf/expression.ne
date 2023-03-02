@@ -4,7 +4,7 @@
 
 e_main -> e_mainWithoutUnion {% id %}
     | e_union {% id %}
-    
+
 # 之所以要将 “除 union 的表达式” 抽取出来，是为了让 **union 表达式内部的递归** 避免递归了其本身，这会导致极大程度的性能损耗、溢出…  
 e_mainWithoutUnion -> 
     e_object {% id %}
@@ -17,6 +17,8 @@ e_mainWithoutUnion ->
     | e_getKeyValue {% id %}
     | e_infer {% id %}
     | e_bracketSurround {% id %}
+    | e_intersection {% id %}
+
 
 #region  //*=========== function ===========
 e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
@@ -71,7 +73,6 @@ e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) 
 #endregion  //*======== function-return ===========
 
 #endregion  //*======== function ===========
-
 
 #region  //*=========== object ===========
 e_object -> 
@@ -233,4 +234,22 @@ e_union -> e_union_mode1 {% id %}
     | e_union_mode2 {% id %}
 #endregion  //*======== union ===========
 
+#region  //*=========== intersection ===========
+# `[]`、`[1]`、`[1,]`、`[1,2]`、`[1,2,]` 内部的元素
+e_intersection_commaSeparation[X] -> 
+    $X (_ "," _ $X):* ",":? {% args => [args[0], ...args[1].map(x => x[3])] %}
 
+# `& [1, 2, 3]` 的 intersection 姿态
+e_intersection_mode1 -> "&" _ "[" _ e_intersection_commaSeparation[e_main] _ "]" 
+    {% args => toASTNode(ast.IntersectionExpression)([args[0], args[4].map(id), args.at(-1)]) %}
+
+# `1 & 2`、`1 & 2 & 3` 的 intersection 姿态
+e_intersection_mode2 -> e_main (_ "&" _ e_main):+ 
+    {% (args, d, reject) => {
+        const _args = [[args[0], ...args[1].map(item => item.at(-1))]];
+        return filterAndToASTNode([_args, d, reject], ast.IntersectionExpression)
+    } %}
+
+e_intersection -> e_intersection_mode1 {% id %}
+    | e_intersection_mode2 {% id %}
+#endregion  //*======== Intersection ===========

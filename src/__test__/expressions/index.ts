@@ -3,6 +3,7 @@ import { identifierTemplates } from "./identifier";
 import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
 import { unionExpressions } from "./union";
+import { intersectionExpressions } from "./intersection";
 import { tupleExpressions } from "./tuple";
 import { getKeyValueExpressions } from "./get-key-value";
 import { genericArgsExpressions } from "./generic-args";
@@ -18,6 +19,7 @@ export {
   literalExpressions,
   typeReferenceExpressions,
   unionExpressions,
+  intersectionExpressions,
   tupleExpressions,
   getKeyValueExpressions,
   genericArgsExpressions,
@@ -43,6 +45,8 @@ const mainExpressions = [
   ...bracketSurroundExpressions,
   ...conditionExpressions.all,
   ...inferExpressions.all,
+  ...unionExpressions.all,
+  ...intersectionExpressions.all,
   ...arrayExpressions,
   ...functionExpressions.arrow,
 ];

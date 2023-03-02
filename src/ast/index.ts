@@ -1,5 +1,6 @@
 export { LiteralKeywordExpression } from "./expressions/literals/keyword";
 export { UnionExpression } from "./expressions/untion";
+export { IntersectionExpression } from "./expressions/intersection";
 export { IdentifierExpression } from "./expressions/identifier";
 export { StringLiteralExpression } from "./expressions/literals/string";
 export { NumberLiteralExpression } from "./expressions/literals/number";
