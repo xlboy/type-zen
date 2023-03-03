@@ -602,7 +602,7 @@ function generateObjectOutput(contents: string[]) {
             value: utils.createNode({
               instance: ast.TypeReferenceExpression,
               output: "Array<K>",
-              identifier: utils.createNode({
+              name: utils.createNode({
                 instance: ast.IdentifierExpression,
                 output: "Array",
               }),
@@ -611,7 +611,7 @@ function generateObjectOutput(contents: string[]) {
             asTarget: utils.createNode({
               instance: ast.TypeReferenceExpression,
               output: "Filter<K>",
-              identifier: utils.createNode({
+              name: utils.createNode({
                 instance: ast.IdentifierExpression,
                 output: "Filter",
               }),

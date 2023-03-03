@@ -8,7 +8,7 @@ const schema = zod
   .tuple([zod.array(zod.instanceof(ExpressionBase))])
   .or(
     zod.tuple([
-      zod.any() /* | */,
+      zod.any() /* & */,
       zod.array(zod.instanceof(ExpressionBase)),
       zod.any() /* ] */,
     ])

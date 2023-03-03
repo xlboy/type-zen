@@ -25,8 +25,8 @@ class DeclareVariableStatement extends StatementBase<Schema> {
   public kind = AST.SyntaxKind.S.DeclareVariable;
 
   public declareType: Schema[1];
-  public identifier: IdentifierExpression;
-  public value: ExpressionBase | null;
+  public name: IdentifierExpression;
+  public value: ExpressionBase | undefined;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
@@ -36,12 +36,12 @@ class DeclareVariableStatement extends StatementBase<Schema> {
 
   private initArgs(args: Schema) {
     this.declareType = args[1];
-    this.identifier = args[2];
-    this.value = args[3] || null;
+    this.name = args[2];
+    this.value = args[3];
   }
 
   public compile(): string {
-    let str = `declare ${this.declareType} ${this.identifier.compile()}`;
+    let str = `declare ${this.declareType} ${this.name.compile()}`;
 
     if (this.value) {
       str += `: ${this.value.compile()}`;

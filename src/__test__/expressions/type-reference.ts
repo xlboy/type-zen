@@ -22,7 +22,7 @@ const expressions: Expression[] = (() => {
       instance: ast.TypeReferenceExpression,
       output: template,
       kind: ast.Type.SyntaxKind.E.TypeReference,
-      identifier: utils.createNode({
+      name: utils.createNode({
         instance: ast.IdentifierExpression,
         output: template,
       }),

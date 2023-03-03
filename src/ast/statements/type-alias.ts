@@ -21,16 +21,14 @@ class TypeAliasStatement extends StatementBase<Schema> {
 
   public identifier: IdentifierExpression;
   public value: ExpressionBase;
-  public arguments: GenericArgsExpression | null;
+  public arguments: GenericArgsExpression | undefined;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     [, this.identifier, , this.value] = args;
 
-    if (args[2]) {
-      this.arguments = args[2];
-    }
+    this.arguments = args[2];
   }
 
   public compile(): string {

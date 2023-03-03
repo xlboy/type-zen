@@ -54,19 +54,6 @@ const lexer = moo.compile({
       ],
     }),
   },
-  // 又能作为标识符，又能作为关键字的关键字
-  // multifunctionalKeyword: [
-  //   "interface",
-  //   "namespace",
-  //   "keyof",
-  //   "type",
-  //   "as",
-  //   "is",
-  //   "out",
-  //   "infer",
-  //   "asserts",
-  //   "declare",
-  // ],
 });
 
 export default lexer;

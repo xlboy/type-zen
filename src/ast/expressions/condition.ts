@@ -59,7 +59,7 @@ const inferSchema = zod
       zod.any() /* "infer" */,
       zod.instanceof(IdentifierExpression),
       zod.array(
-        zod.instanceof(ExpressionBase)
+        zod.instanceof(ExpressionBase) /* string, name, ... */
       ) /* extends string extends name... */,
     ])
   );

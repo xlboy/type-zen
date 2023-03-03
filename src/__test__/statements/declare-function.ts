@@ -27,7 +27,7 @@ for (let index = 0; index < 2000; index++) {
     instance: ast.DeclareFunctionStatement,
     kind: ast.Type.SyntaxKind.S.DeclareFunction,
     output,
-    identifier: utils.createNode({
+    name: utils.createNode({
       instance: ast.IdentifierExpression,
       output: id,
     }),

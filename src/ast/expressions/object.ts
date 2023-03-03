@@ -19,7 +19,7 @@ namespace _Object {
 
     /** 例： `{ getId(): string; getName()?: string; }` */
     export class MethodExpression extends ExpressionBase {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Object_Method;
+      public kind = AST.SyntaxKind.E.Object_Method;
 
       private static readonly schema = zod.tuple([
         zod.instanceof(IdentifierExpression),
@@ -218,7 +218,7 @@ namespace _Object {
   }
 
   export class Expression extends ExpressionBase {
-    public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Object;
+    public kind = AST.SyntaxKind.E.Object;
 
     private static readonly schema = zod.tuple([
       zod.any() /* { */,

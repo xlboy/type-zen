@@ -141,9 +141,9 @@ namespace Function {
 
   export namespace Mode {
     export abstract class ArrowExpression extends ExpressionBase {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Arrow;
+      public kind = AST.SyntaxKind.E.Function_Arrow;
 
-      public genericArgs: GenericArgsExpression | null;
+      public genericArgs: GenericArgsExpression | undefined;
       public body: Body.Expression;
       public return: Return.Expression;
 
@@ -173,7 +173,6 @@ namespace Function {
         if (args.length === 3) {
           [this.genericArgs, this.body, this.return] = args;
         } else {
-          this.genericArgs = null;
           [this.body, this.return] = args;
         }
       }
@@ -193,11 +192,11 @@ namespace Function {
     }
 
     export class NormalExpression extends ExpressionBase {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Normal;
+      public kind = AST.SyntaxKind.E.Function_Normal;
 
-      public genericArgs: GenericArgsExpression | null;
+      public genericArgs: GenericArgsExpression | undefined;
       public body: Body.Expression;
-      public return: Return.Expression | null;
+      public return: Return.Expression | undefined;
 
       private static readonly schema = zod
         .tuple([
@@ -238,18 +237,14 @@ namespace Function {
           if (args[0] instanceof GenericArgsExpression) {
             this.genericArgs = args[0];
             this.body = args[1] as Body.Expression;
-            this.return = null;
             this.tyep = "g-b";
           } else {
-            this.genericArgs = null;
             this.body = args[0] as Body.Expression;
             this.return = args[1] as Return.Expression;
             this.tyep = "b-r";
           }
         } else {
-          this.genericArgs = null;
           this.body = args[0] as Body.Expression;
-          this.return = null;
           this.tyep = "b";
         }
       }
@@ -277,7 +272,7 @@ namespace Function {
     export class ConstructorExpression<
       Body extends NormalExpression | ArrowExpression
     > extends ExpressionBase {
-      public kind: AST.SyntaxKind.E = AST.SyntaxKind.E.Function_Constructor;
+      public kind = AST.SyntaxKind.E.Function_Constructor;
 
       public body: Body;
 

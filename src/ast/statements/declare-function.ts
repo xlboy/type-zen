@@ -23,8 +23,8 @@ type Schema = zod.infer<typeof schema>;
 class DeclareFunctionStatement extends StatementBase<Schema> {
   public kind = AST.SyntaxKind.S.DeclareFunction;
 
-  public identifier: IdentifierExpression;
-  public body: Function.Mode.NormalExpression | null;
+  public name: IdentifierExpression;
+  public body: Function.Mode.NormalExpression | undefined;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
@@ -33,12 +33,12 @@ class DeclareFunctionStatement extends StatementBase<Schema> {
   }
 
   private initArgs(args: Schema) {
-    this.identifier = args[1];
-    this.body = args[2] || null;
+    this.name = args[1];
+    this.body = args[2];
   }
 
   public compile(): string {
-    let str = `declare function ${this.identifier.compile()}`;
+    let str = `declare function ${this.name.compile()}`;
 
     if (this.body) {
       str += this.body.compile();

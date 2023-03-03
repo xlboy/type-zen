@@ -21,13 +21,13 @@ type Schema = zod.infer<typeof schema>;
 class TypeReferenceExpression extends ExpressionBase<Schema> {
   public kind = AST.SyntaxKind.E.TypeReference;
 
-  public identifier: IdentifierExpression;
+  public name: IdentifierExpression;
   public arguments: Array<ExpressionBase> = [];
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
-    [this.identifier] = args;
+    [this.name] = args;
     if (args.length > 1) {
       if (args[2]) this.arguments = args[2];
     }
@@ -35,11 +35,11 @@ class TypeReferenceExpression extends ExpressionBase<Schema> {
 
   public compile(): string {
     if (this.arguments.length === 0) {
-      return this.identifier.compile();
+      return this.name.compile();
     }
 
     return [
-      this.identifier.compile(),
+      this.name.compile(),
       "<",
       this.arguments.map((arg) => arg.compile()).join(", "),
       ">",
