@@ -2,11 +2,11 @@
 
 一个基于 TypeScript 类型层的语言，解决复杂类型代码带来的一系列体验问题。
 
-### 示例
+# 示例
 
-#### 联合
+## 联合
 
-> 使用 `|` 与**常写的数组**进行组合来表达
+> 使用 `|` 与 **常写的数组** 进行组合来表达
 
 ```ini
 type A = | [1, 3, 5]
@@ -16,9 +16,9 @@ type A = | [1, 3, 5]
 type A = 1 | 3 | 5
 ```
 
-#### 交叉
+## 交叉
 
-> 使用 `&` 与**常写的数组**进行组合来表达
+> 使用 `&` 与 **常写的数组** 进行组合来表达
 
 ```ini
 type A = & [1, 3, 5]
@@ -28,25 +28,25 @@ type A = & [1, 3, 5]
 type A = 1 & 3 & 5
 ```
 
-#### 约束符
+## 约束符
 
-#####  泛型参数领域
+###  泛型参数领域
 
 > 在类型泛型参数声名处，可使用 `:` 代替 `extends`（减少 `extends` 关键字频繁出现带来的不好的视觉体验）
 
 ```ini
 type MyOmit<T: object, K: keyof T, AllKey: keyof T = keyof T> = {
-    [key in AllKey extends K ? never : AllKey]: T[key];
+  [key in AllKey extends K ? never : AllKey]: T[key];
 };
 ```
 ↓ 
 ```typescript
 type MyOmit<T extends object, K extends keyof T, AllKey extends keyof T = keyof T> = {
-    [key in AllKey extends K ? never : AllKey]: T[key];
+  [key in AllKey extends K ? never : AllKey]: T[key];
 };
 ```
 
-##### 主体领域
+### 主体领域
 > 在类型主体中，可使用 `==` 代替 `extends`（减少 `extends` 关键字频繁出现带来的不好的视觉体验）
 
 ```ini
@@ -57,20 +57,22 @@ type IsNumber<V> = V == number ? true : false
 type IsNumber<V> = V extends number ? true : false
 ```
 
-##### 糖块
+### 糖块
 > 具有特定语义的代码块，可简化代码的书写
 
 糖块的作用域处于 `^{` 与 `}` 中，或是 `if`语句中。
- **它必须含有 `return` 语句**。在糖块中，如果 return 语句不成对，会默认使用 `never 值` 补全（自动返回其值）。
+
+
+> :warning: **它必须含有 `return 语句`**。在糖块中，如果 return 语句不成对，会默认使用 `never 值` 补全（自动返回其值）
 
 - 基本的 `^{}`
 
    ```ini
    type A = ^{
-       type B = 1
-       type C = 2
+     type B = 1
+     type C = 2
        
-       return { B, C }
+     return { B, C }
    }
    ```
    ↓ 
@@ -82,13 +84,13 @@ type IsNumber<V> = V extends number ? true : false
 
    ```ini
    type A = ^{
-       type B = 1
-       type C = 2
+     type B = 1
+     type C = 2
 
-       if (B == string) {
-           return ["B is string", C]
-       }
-       return ["B is not string", C]
+     if (B == string) {
+       return ["B is string", C]
+     }
+     return ["B is not string", C]
    }
    ```
    ↓ 
