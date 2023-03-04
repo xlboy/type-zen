@@ -22,6 +22,7 @@
     "@vitest/ui": "^0.28.5",
     "lodash-es": "^4.17.21",
     "moo": "^0.5.2",
+    "nanoid": "^4.0.1",
     "nearley": "^2.20.1",
     "node-watch": "^0.7.3",
     "randexp": "^0.5.3",

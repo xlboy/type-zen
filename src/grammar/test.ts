@@ -1,6 +1,7 @@
 import nearley from "nearley";
 import langGrammar from "./__lang.auto-generated__";
 import { grammarTemplate } from "./template";
+import { Compiler } from "../api/compiler";
 
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(langGrammar));
 
@@ -28,9 +29,35 @@ try {
   // type D = [...any[]]
   // `
   // const content = `type A = infer u77S4Qw4EcXXeR6NGmvuWY extends Required[8 | false];`;
-  const content =
-    "type A = { [QgZDIA9G5h2A0jYGV3F9 in ([...undefined | void, WDQ2SyynXd6zztx: | [true, ReturnType],])] -?: (ssT0utkp1VE: | [`wwlklksdldfs.1111`, $], ...eg9xKgLDDkge: | [false, unknown]) => xGFkEqLuJa is gQ$AdCtdFHLtyNKrX2yCrr2D6fy | ___$1 }";
-  // const content = `type A = new () => void`
+  // const content2 =
+  //   "type A = { [QgZDIA9G5h2A0jYGV3F9 in ([...undefined | void, WDQ2SyynXd6zztx: | [true, ReturnType],])] -?: (ssT0utkp1VE: | [`wwlklksdldfs.1111`, $], ...eg9xKgLDDkge: | [false, unknown]) => xGFkEqLuJa is gQ$AdCtdFHLtyNKrX2yCrr2D6fy | ___$1 }";
+  /**
+     enum a {};
+  const enum a {};
+  enum A {
+    a = 1
+  }
+
+  $_A_a_s_arrow_fn_rt_ 
+   */
+  const content = `
+  type A = ^{
+    type localVar1 = "d2"
+    type ddd<T> = "t"
+    
+    if ("s" == localVar1) {
+      return "'s' == localVar1!!!!!!!!!!!!!!!!!!!"
+    }
+    
+    if ("d" == localVar1) {
+      return "'d' == localVar1~~~~~~~~~~"
+    }
+
+    return "no,  's' ....."
+  }
+  `;
+
+  //
   //
 
   // const content = `type A = 0 extends () => asserts this is 0 ? 1921291 : 1.11;`
@@ -47,10 +74,17 @@ try {
   console.timeEnd("parser feed");
 
   if (parser.results.length !== 0) {
-    for (const result of parser.results[0]) {
-      console.log(`结果： ${result.compile()}`);
-    }
+    new Compiler({
+      indent: 2,
+      useLineTerminator: true,
+      memberSeparator: false,
+    }).compile(parser.results[0]);
+    // for (const result of parser.results[0]) {
+    //   // console.log(`结果： ${result.compile()}`);
+    // }
   }
+
+  (() => {})();
 
   if (parser.results.length !== 1) {
     parser.results.some((item, index, arr) => {
@@ -69,8 +103,14 @@ try {
 
 type i = 1;
 
+// @ts-ignore
+declare var ab1;
+declare var ab2: void;
+declare let ab3: any;
+declare const ab4: any;
+declare function s(): any;
 declare const fn1: (a: string, b: number) => boolean;
-declare function fn2(a: string, b: number): boolean;
+declare function fn2(a: string, b: number): boolean | typeof fn1;
 type fn3 = (a: string, b: number) => boolean;
 type fn4 = new (a: string, b: number) => boolean;
 type fn5 = {
@@ -99,9 +139,9 @@ interface fn9 {
   d: (self: this, a: unknown) => a is string;
 }
 
-type a = [string?, ...any[]];
+// type a = [string?, ...any[]];
 
-type AA<T> = `SB-${T extends string ? T : string}`;
+type AA<T> = `SD-${T extends string ? T : string}`;
 
 type ACC = string;
 type bb =
@@ -139,7 +179,7 @@ type ACE = 1 extends infer U extends infer C extends infer CC | number
   ? [U, C, CC]
   : never;
 
-const a: bd = {};
+// const a: bd = {};
 
 // type cc = bb[]
 // type b =[a: string, ...b?: any[]];

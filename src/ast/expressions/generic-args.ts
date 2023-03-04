@@ -2,6 +2,7 @@ import zod from "zod";
 import { AST } from "../types";
 import { ExpressionBase } from "./base";
 import { IdentifierExpression } from "./identifier";
+import { Compiler } from "../../api/compiler";
 
 export { GenericArgsExpression };
 
@@ -33,19 +34,20 @@ class GenericArgsExpression extends ExpressionBase<Schema> {
     [, this.values] = args;
   }
 
-  public compile(): string {
-    return [
-      "<",
-      this.values
-        .map((v) => {
-          let str = v.id.compile();
-          if (v.type) str += ` extends ${v.type.compile()}`;
-          if (v.default) str += ` = ${v.default.compile()}`;
-          return str;
-        })
-        .join(", "),
-      ">",
-    ].join("");
+  public compile() {
+    return [];
+    /* return [ */
+    /*   "<", */
+    /*   this.values */
+    /*     .map((v) => { */
+    /*       let str = v.id.compile(); */
+    /*       if (v.type) str += ` extends ${v.type.compile()}`; */
+    /*       if (v.default) str += ` = ${v.default.compile()}`; */
+    /*       return str; */
+    /*     }) */
+    /*     .join(", "), */
+    /*   ">", */
+    /* ].join(""); */
   }
 
   public toString(): string {

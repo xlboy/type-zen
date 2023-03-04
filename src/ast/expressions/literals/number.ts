@@ -7,7 +7,7 @@ export { NumberLiteralExpression };
 class NumberLiteralExpression extends ExpressionBase {
   public kind = AST.SyntaxKind.E.NumberLiteral;
 
-  private value: string;
+  public value: string;
 
   constructor(pos: AST.Position, [mooToken]: [moo.Token]) {
     super(pos);

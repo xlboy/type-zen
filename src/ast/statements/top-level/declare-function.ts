@@ -1,8 +1,8 @@
 import zod from "zod";
-import { Function } from "../expressions/function";
-import { IdentifierExpression } from "../expressions/identifier";
-import { AST } from "../types";
-import { StatementBase } from "./base";
+import { Function } from "../../expressions/function";
+import { IdentifierExpression } from "../../expressions/identifier";
+import { AST } from "../../types";
+import { TopLevelStatementBase } from "./base";
 
 export { DeclareFunctionStatement };
 
@@ -20,11 +20,11 @@ const schema = zod
 
 type Schema = zod.infer<typeof schema>;
 
-class DeclareFunctionStatement extends StatementBase<Schema> {
+class DeclareFunctionStatement extends TopLevelStatementBase<Schema> {
   public kind = AST.SyntaxKind.S.DeclareFunction;
 
   public name: IdentifierExpression;
-  public body: Function.Mode.NormalExpression | undefined;
+  public body?: Function.Mode.NormalExpression;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);
@@ -37,14 +37,14 @@ class DeclareFunctionStatement extends StatementBase<Schema> {
     this.body = args[2];
   }
 
-  public compile(): string {
-    let str = `declare function ${this.name.compile()}`;
-
-    if (this.body) {
-      str += this.body.compile();
-    }
-
-    return str + ";";
+  public compile()  {
+    // let str = `declare function ${this.name.compile()}`;
+    //
+    // if (this.body) {
+    //   str += this.body.compile();
+    // }
+    //
+    // return str + ";";
   }
 
   public toString(): string {

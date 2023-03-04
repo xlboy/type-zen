@@ -143,7 +143,7 @@ namespace Function {
     export abstract class ArrowExpression extends ExpressionBase {
       public kind = AST.SyntaxKind.E.Function_Arrow;
 
-      public genericArgs: GenericArgsExpression | undefined;
+      public genericArgs?: GenericArgsExpression;
       public body: Body.Expression;
       public return: Return.Expression;
 
@@ -177,6 +177,7 @@ namespace Function {
         }
       }
       public compile(): string {
+        this.getPath();
         const mainContent = `${this.body.compile()} => ${this.return.compile()}`;
 
         if (this.genericArgs) {
@@ -194,9 +195,9 @@ namespace Function {
     export class NormalExpression extends ExpressionBase {
       public kind = AST.SyntaxKind.E.Function_Normal;
 
-      public genericArgs: GenericArgsExpression | undefined;
+      public genericArgs?: GenericArgsExpression;
       public body: Body.Expression;
-      public return: Return.Expression | undefined;
+      public return?: Return.Expression;
 
       private static readonly schema = zod
         .tuple([

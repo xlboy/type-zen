@@ -6,6 +6,8 @@ namespace AST {
     end: { line: number; col: number };
   }
 
+  export interface Compile {}
+
   export namespace SyntaxKind {
     // Expression
     export enum E {
@@ -47,6 +49,7 @@ namespace AST {
       If = "If",
       Enum = "Enum",
       SugarBlock = "SugarBlock",
+      Return = "Return",
     }
   }
 }

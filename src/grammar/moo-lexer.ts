@@ -25,8 +25,9 @@ const lexer = moo.compile({
   ],
   restOrSpread: ["..."],
   extend: ["extends", "=="],
+  return: ["return"],
   arrowFnSymbol: "=>",
-  symbol: [":", ";", ".", ",", "?", "|", "<", ">", "=", "-", "&"],
+  symbol: [":", ";", ".", ",", "?", "|", "<", ">", "=", "-", "&", "^"],
   lbracket: ["{", "[", "("],
   rbracket: ["}", "]", ")"],
 

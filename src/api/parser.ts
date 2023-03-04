@@ -92,10 +92,4 @@ class Parser {
 
     return [];
   }
-
-  public toText(content: string): string {
-    const ast = this.toAST();
-
-    return ast.map((node) => node.compile()).join("\r");
-  }
 }

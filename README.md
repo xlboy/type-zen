@@ -113,7 +113,7 @@ type InsidePrototype<T> = ^{
       } else if (FilteredValue == Function) {
         return  never;
       } else if (FilteredValue == any[]) {
-        if (FilteredValue[number] == infer FValueItem) {
+        for (infer FValueItem of FilteredValue[number]) {
           if (FValueItem == ast.Base) {
             return Array<TestNode<any>>
           }

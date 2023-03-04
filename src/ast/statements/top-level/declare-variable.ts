@@ -1,8 +1,8 @@
 import zod from "zod";
-import { ExpressionBase } from "../expressions/base";
-import { IdentifierExpression } from "../expressions/identifier";
-import { AST } from "../types";
-import { StatementBase } from "./base";
+import { ExpressionBase } from "../../expressions/base";
+import { IdentifierExpression } from "../../expressions/identifier";
+import { AST } from "../../types";
+import { TopLevelStatementBase } from "./base";
 
 export { DeclareVariableStatement };
 
@@ -21,12 +21,12 @@ const schema = zod
 
 type Schema = zod.infer<typeof schema>;
 
-class DeclareVariableStatement extends StatementBase<Schema> {
+class DeclareVariableStatement extends TopLevelStatementBase<Schema> {
   public kind = AST.SyntaxKind.S.DeclareVariable;
 
   public declareType: Schema[1];
   public name: IdentifierExpression;
-  public value: ExpressionBase | undefined;
+  public value?: ExpressionBase;
 
   constructor(pos: AST.Position, args: Schema) {
     super(pos);

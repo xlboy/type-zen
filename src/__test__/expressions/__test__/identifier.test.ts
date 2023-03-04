@@ -12,7 +12,7 @@ describe("valid", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            identifier: utils.createNode({
+            name: utils.createNode({
               instance: ast.IdentifierExpression,
               output: template,
             }),

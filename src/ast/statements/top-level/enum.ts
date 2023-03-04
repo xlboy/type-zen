@@ -1,10 +1,10 @@
 import zod from "zod";
-import { ExpressionBase } from "../expressions/base";
-import { IdentifierExpression } from "../expressions/identifier";
-import { NumberLiteralExpression } from "../expressions/literals/number";
-import { StringLiteralExpression } from "../expressions/literals/string";
-import { AST } from "../types";
-import { StatementBase } from "./base";
+import { IdentifierExpression } from "../../expressions/identifier";
+import { NumberLiteralExpression } from "../../expressions/literals/number";
+import { StringLiteralExpression } from "../../expressions/literals/string";
+import { AST } from "../../types";
+import { TopLevelStatementBase } from "./base";
+import { ExpressionBase } from "../../expressions/base";
 
 export { EnumMemberExpression, EnumStatement };
 
@@ -22,7 +22,7 @@ class EnumMemberExpression extends ExpressionBase {
     .or(zod.tuple([zod.instanceof(IdentifierExpression)]));
 
   public name: IdentifierExpression;
-  public value: NumberLiteralExpression | StringLiteralExpression | undefined;
+  public value?: NumberLiteralExpression | StringLiteralExpression;
 
   constructor(
     pos: AST.Position,
@@ -45,7 +45,7 @@ class EnumMemberExpression extends ExpressionBase {
   }
 }
 
-class EnumStatement extends StatementBase {
+class EnumStatement extends TopLevelStatementBase {
   public kind = AST.SyntaxKind.S.Enum;
 
   private static readonly schema = zod.tuple([

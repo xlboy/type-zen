@@ -4,6 +4,7 @@
 
 e_main -> e_mainWithoutUnion {% id %}
     | e_union {% id %}
+    | s_sugarBlock {% id %}
 
 # 之所以要将 “除 union 的表达式” 抽取出来，是为了让 **union 表达式内部的递归** 避免递归了其本身，这会导致极大程度的性能损耗、溢出…  
 e_mainWithoutUnion -> 
@@ -19,6 +20,7 @@ e_mainWithoutUnion ->
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
     | e_keyof {% id %}
+    # | s_sugarBlock {% id %}
 
 
 #region  //*=========== function ===========

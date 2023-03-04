@@ -1,6 +1,7 @@
 import moo from "moo";
 import { AST } from "../../types";
 import { ExpressionBase } from "../base";
+import { Compiler } from "../../../api/compiler";
 
 export { StringLiteralExpression };
 
@@ -9,13 +10,13 @@ class StringLiteralExpression extends ExpressionBase {
 
   public value: string;
 
-  constructor(pos: AST.Position, [mooToken]: [moo.Token]) {
+  constructor(pos: AST.Position, args: [moo.Token]) {
     super(pos);
-    this.value = mooToken.value;
+    this.value = args[0].value;
   }
 
-  public compile(): string {
-    return this.value;
+  public compile() {
+    return Compiler.Utils.createNodeFlow(this.value, this.pos).get();
   }
 
   public toString(): string {
