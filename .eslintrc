@@ -1,0 +1,56 @@
+{
+  "ignorePatterns": [".history"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "plugins": ["@typescript-eslint", "prettier", "simple-import-sort"],
+  "rules": {
+    "prettier/prettier": 2,
+    "@typescript-eslint/no-unused-vars": 1,
+    "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/camelcase": 0,
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/ban-ts-ignore": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/consistent-type-imports": 2,
+    "@typescript-eslint/ban-types": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-misused-new": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "no-var": 0,
+    /*
+      https://eslint.org/docs/rules/padding-line-between-statements#rule-details
+      and
+      https://github.com/typescript-eslint/typescript-eslint/blob/v4.32.0/packages/eslint-plugin/docs/rules/padding-line-between-statements.md
+    */
+    "@typescript-eslint/padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "prev": ["const", "let", "var", "block-like", "import", "interface"],
+        "next": "*"
+      },
+      { "blankLine": "always", "prev": "*", "next": ["return"] },
+      { "blankLine": "always", "prev": "import", "next": ["return"] },
+      {
+        "blankLine": "any",
+        "prev": ["const", "let", "var"],
+        "next": ["const", "let", "var"]
+      },
+      { "blankLine": "any", "prev": ["import"], "next": ["import"] }
+    ],
+    "prefer-spread": 0,
+    //#region  //*=========== Import Sort ===========
+    "simple-import-sort/exports": 0,
+    "simple-import-sort/imports": "error"
+    //#endregion  //*======== Import Sort ===========
+  }
+}
