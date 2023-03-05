@@ -1,7 +1,7 @@
-import nearley from "nearley";
-import langGrammar from "./__lang.auto-generated__";
-import { grammarTemplate } from "./template";
-import { Compiler } from "../api/compiler";
+import nearley from 'nearley';
+
+import { compiler } from '../compiler';
+import langGrammar from './__lang.auto-generated__';
 
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(langGrammar));
 
@@ -49,8 +49,8 @@ try {
       return "'s' == localVar1!!!!!!!!!!!!!!!!!!!"
     }
     
-    if ("d" == localVar1) {
-      return "'d' == localVar1~~~~~~~~~~"
+    if ("d2" == localVar1) {
+      return "'d2' == localVar1~~~~~~~~~~"
     }
 
     return "no,  's' ....."
@@ -69,27 +69,21 @@ try {
   // const content = `type aaaa = SSSwcgj<string>`;
   // console.log(content);
 
-  console.time("parser feed");
+  console.time('parser feed');
   parser.feed(content);
-  console.timeEnd("parser feed");
+  console.timeEnd('parser feed');
 
   if (parser.results.length !== 0) {
-    new Compiler({
-      indent: 2,
-      useLineTerminator: true,
-      memberSeparator: false,
-    }).compile(parser.results[0]);
+    compiler.compile(parser.results[0]);
     // for (const result of parser.results[0]) {
     //   // console.log(`结果： ${result.compile()}`);
     // }
   }
 
-  (() => {})();
-
   if (parser.results.length !== 1) {
     parser.results.some((item, index, arr) => {
       if (index > 100) return true;
-      console.error("语法错误", item === arr[index + 1]);
+      console.error('语法错误', item === arr[index + 1]);
     });
   }
 } catch (error: any) {
@@ -97,7 +91,8 @@ try {
     /^(?:invalid syntax|Syntax error) at line (\d+) col (\d+):\n\n {2}[^\n]+\n {2,}\^/;
   const basedOnRegex = /A ("(?:[^"]|\\")+"|.+ token) based on:/g;
 
-  const nearleyMsg = error.message.replace(lineColRegex, "");
+  const nearleyMsg = error.message.replace(lineColRegex, '');
+
   console.error(error);
 }
 
@@ -146,14 +141,14 @@ type AA<T> = `SD-${T extends string ? T : string}`;
 type ACC = string;
 type bb =
   | {
-      [K in "b"]: any;
+      [K in 'b']: any;
     }
   | {
       [1]?: any;
       name?: any;
     }
   | {
-      [K in 1 extends 1 ? "分手快乐" : "" as "1" | 2 | K]-?: any;
+      [K in 1 extends 1 ? '分手快乐' : '' as '1' | 2 | K]-?: any;
     }
   | {
       name: string;
@@ -162,17 +157,17 @@ type bb =
   | {
       (a: string, b: number, undefined: any): boolean;
       new (a: string, b: number): boolean;
-      (a: string, b: number): boolean;
-      new (a: string, b: number): boolean;
+      // (a: string, b: number): boolean;
+      // new (a: string, b: number): boolean;
       new: () => void;
     }
   | {
       [K in ACC]: () => void;
     };
 
-type sdfsdfsdf = `dsfsdf`["length"] extends {} ? [] : 2;
+type sdfsdfsdf = `dsfsdf`['length'] extends {} ? [] : 2;
 type bd = {
-  [K in "1" as K["length"]]: string;
+  [K in '1' as K['length']]: string;
 };
 
 type ACE = 1 extends infer U extends infer C extends infer CC | number

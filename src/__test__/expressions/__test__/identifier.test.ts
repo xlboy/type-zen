@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NearleyError, Parser } from "../../../api/parser";
+import { NearleyError, Parser } from "../../../parser";
 import * as ast from "../../../ast";
 import { identifierTemplates, unionExpressions } from "..";
 import * as utils from "../../utils";

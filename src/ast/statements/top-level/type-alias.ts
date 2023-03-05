@@ -1,11 +1,12 @@
-import zod from "zod";
-import { Compiler } from "../../../api/compiler";
-import { ASTBase } from "../../base";
-import { ExpressionBase } from "../../expressions/base";
-import { GenericArgsExpression } from "../../expressions/generic-args";
-import { IdentifierExpression } from "../../expressions/identifier";
-import { AST } from "../../types";
-import { TopLevelStatementBase } from "./base";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '../..';
+import { ASTBase } from '../../base';
+import { SyntaxKind } from '../../constants';
+import type { ExpressionBase } from '../../expressions/base';
+import { GenericArgsExpression } from '../../expressions/generic-args';
+import { IdentifierExpression } from '../../expressions/identifier';
+import { TopLevelStatementBase } from './base';
 
 export { TypeAliasStatement };
 
@@ -13,38 +14,35 @@ const schema = zod.tuple([
   zod.any() /* type */,
   zod.instanceof(IdentifierExpression),
   zod.instanceof(GenericArgsExpression).or(zod.undefined()),
-  zod.instanceof(ASTBase) /* value */,
+  zod.instanceof(ASTBase) /* value */
 ]);
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeAliasStatement extends TopLevelStatementBase<Schema> {
-  public kind = AST.SyntaxKind.S.TypeAlias;
+class TypeAliasStatement extends TopLevelStatementBase {
+  public kind = SyntaxKind.S.TypeAlias;
 
   public name: IdentifierExpression;
   public value: ExpressionBase;
   public arguments?: GenericArgsExpression;
 
-  constructor(pos: AST.Position, args: Schema) {
+  constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     [, this.name, this.arguments, this.value] = args;
   }
 
   public compile() {
-    const nodes = Compiler.Utils.createNodeFlow("type")
-      .add(" ")
+    const nodes = this.compileUtils
+      .createNodeFlow('type')
+      .add(' ')
       .add(this.name.compile());
 
     if (this.arguments) {
       nodes.add(this.arguments.compile());
     }
 
-    nodes.add(" = ").add(this.value.compile());
-
-    if (Compiler.Utils.getConfig().useLineTerminator) {
-      nodes.add(";");
-    }
+    nodes.add(' = ').add(this.value.compile());
 
     return [...this.compiledNodeToPrepend, nodes.get()];
   }

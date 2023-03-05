@@ -1,7 +1,9 @@
-import zod from "zod";
-import { AST } from "../types";
-import { ExpressionBase } from "./base";
-import { IdentifierExpression } from "./identifier";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from './base';
+import { IdentifierExpression } from './identifier';
 
 export { ConditionExpression, InferExpression };
 
@@ -14,34 +16,35 @@ const conditionSchema = zod.tuple([
   zod.any() /* ? */,
   zod.instanceof(ExpressionBase) /* b */,
   zod.any() /* : */,
-  zod.instanceof(ExpressionBase) /* c */,
+  zod.instanceof(ExpressionBase) /* c */
 ]);
+
 type ConditionSchema = zod.infer<typeof conditionSchema>;
 
-class ConditionExpression extends ExpressionBase<ConditionSchema> {
-  public kind = AST.SyntaxKind.E.Condition;
+class ConditionExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.Condition;
 
   public left: ExpressionBase;
   public right: ExpressionBase;
   public then: ExpressionBase;
   public else: ExpressionBase;
 
-  constructor(pos: AST.Position, args: ConditionSchema) {
+  constructor(pos: ASTNodePosition, args: ConditionSchema) {
     super(pos);
     this.checkArgs(args, conditionSchema);
     [this.left, , this.right, , this.then, , this.else] = args;
   }
 
-  public compile(): string {
-    return [
-      this.left.compile(),
-      "extends",
-      this.right.compile(),
-      "?",
-      this.then.compile(),
-      ":",
-      this.else.compile(),
-    ].join(" ");
+  public compile() {
+    return this.compileUtils
+      .createNodeFlow(this.left.compile())
+      .add(' extends ')
+      .add(this.right.compile())
+      .add(' ? ')
+      .add(this.then.compile())
+      .add(' : ')
+      .add(this.else.compile())
+      .get();
   }
 
   public toString(): string {
@@ -60,18 +63,19 @@ const inferSchema = zod
       zod.instanceof(IdentifierExpression),
       zod.array(
         zod.instanceof(ExpressionBase) /* string, name, ... */
-      ) /* extends string extends name... */,
+      ) /* extends string extends name... */
     ])
   );
+
 type InferSchema = zod.infer<typeof inferSchema>;
 
-class InferExpression extends ExpressionBase<InferSchema> {
-  public kind = AST.SyntaxKind.E.Infer;
+class InferExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.Infer;
 
   public name: IdentifierExpression;
   public extendsTypes?: ExpressionBase[];
 
-  constructor(pos: AST.Position, args: InferSchema) {
+  constructor(pos: ASTNodePosition, args: InferSchema) {
     super(pos);
     this.checkArgs(args, inferSchema);
     this.initArgs(args);
@@ -84,16 +88,24 @@ class InferExpression extends ExpressionBase<InferSchema> {
     }
   }
 
-  public compile(): string {
-    const content = `infer ${this.name.compile()}`;
+  public compile() {
+    const nodeFlow = this.compileUtils.createNodeFlow('infer ').add(this.name.compile());
 
     if (this.extendsTypes && this.extendsTypes.length > 0) {
-      return `${content} extends ${this.extendsTypes
-        .map((item) => item.compile())
-        .join(" extends ")}`;
+      nodeFlow.add(' extends ');
+
+      for (let i = 0; i < this.extendsTypes.length; i++) {
+        const item = this.extendsTypes[i];
+
+        if (i !== 0) {
+          nodeFlow.add(' extends ');
+        }
+
+        nodeFlow.add(item.compile());
+      }
     }
 
-    return content;
+    return nodeFlow.get();
   }
 
   public toString(): string {

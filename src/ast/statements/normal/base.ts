@@ -1,9 +1,8 @@
-import { Compiler } from "../../../api/compiler";
-import { ASTBase } from "../../base";
-import { AST } from "../../types";
+import type { CompiledNode } from '../../../compiler';
+import { ASTBase } from '../../base';
 
 export { NormalStatementBase };
 
-abstract class NormalStatementBase<S = any> extends ASTBase<S> {
-  public abstract compile(): Compiler.Node[];
+abstract class NormalStatementBase extends ASTBase {
+  public abstract compile(): CompiledNode[];
 }

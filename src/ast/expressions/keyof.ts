@@ -1,28 +1,31 @@
-import zod from "zod";
-import { AST } from "../types";
-import { ExpressionBase } from "./base";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from './base';
 
 export { KeyofExpression };
 
 const schema = zod.tuple([
   zod.any() /* keyof*/,
-  zod.instanceof(ExpressionBase) /* source */,
+  zod.instanceof(ExpressionBase) /* source */
 ]);
+
 type Schema = zod.infer<typeof schema>;
 
-class KeyofExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.Keyof;
+class KeyofExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.Keyof;
 
   public source: ExpressionBase;
 
-  constructor(pos: AST.Position, args: Schema) {
+  constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     this.source = args[1];
   }
 
-  public compile(): string {
-    return `keyof ${this.source.compile()}`;
+  public compile() {
+    return this.compileUtils.createNodeFlow('keyof ').add(this.source.compile()).get();
   }
 
   public toString(): string {

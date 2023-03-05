@@ -1,7 +1,8 @@
-import * as ast from "../ast";
+import type { ASTNodePosition } from '../ast';
+import * as AST from '../ast';
 
-type NodeConstructor = ast.Base & {
-  new (pos: ast.Type.Position, args: any[]): void;
+type NodeConstructor = AST.ASTBase & {
+  new (pos: ASTNodePosition, args: any[]): void;
 };
 
 export function toASTNode(nodeConstructor: NodeConstructor) {
@@ -10,9 +11,10 @@ export function toASTNode(nodeConstructor: NodeConstructor) {
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
   //  ↑）
   //
-  type NearleyArg = ast.Base | moo.Token | null;
+  type NearleyArg = AST.ASTBase | moo.Token | null;
+
   return (args: Array<NearleyArg>) => {
-    const cleanArgs = cleanseArgs(args);
+    const cleanArgs = removeNull(args);
 
     if (cleanArgs.length === 0) return;
 
@@ -26,22 +28,20 @@ export function toASTNode(nodeConstructor: NodeConstructor) {
   };
 
   type CleanArg = NonNullable<NearleyArg>;
-  /**
-   * 净化 args，过滤掉 *null, ...*
-   */
-  function cleanseArgs(args: Array<NearleyArg>): Array<CleanArg> {
+
+  function removeNull(args: Array<NearleyArg>): Array<CleanArg> {
     return args
-      .filter((arg) => arg !== null)
-      .map((arg) => {
-        if (Array.isArray(arg)) return cleanseArgs(arg);
+      .filter(arg => arg !== null)
+      .map(arg => {
+        if (Array.isArray(arg)) return removeNull(arg);
         else return arg;
       }) as any;
   }
 
-  function getPosRange(args: Array<CleanArg>): ast.Type.Position {
-    const pos: ast.Type.Position = {
+  function getPosRange(args: Array<CleanArg>): ASTNodePosition {
+    const pos: ASTNodePosition = {
       start: { line: 0, col: 0 },
-      end: { line: 0, col: 0 },
+      end: { line: 0, col: 0 }
     };
 
     const firstArg = args[0];
@@ -63,16 +63,17 @@ export function toASTNode(nodeConstructor: NodeConstructor) {
     } else {
       pos.end.line = lastArg.line + lastArg.lineBreaks;
 
-      const lastLine = lastArg.value.includes("\n")
-        ? lastArg.value.slice(lastArg.value.lastIndexOf("\n") + 1)
+      const lastLine = lastArg.value.includes('\n')
+        ? lastArg.value.slice(lastArg.value.lastIndexOf('\n') + 1)
         : lastArg.value;
+
       pos.end.col = lastArg.col + lastLine.length;
     }
 
     return pos;
 
-    function isASTBaseInstance(arg: any): arg is ast.Base {
-      return arg instanceof ast.Base;
+    function isASTBaseInstance(arg: any): arg is AST.ASTBase {
+      return arg instanceof AST.ASTBase;
     }
   }
 }
@@ -84,42 +85,46 @@ export function filterAndToASTNode(
   const [, , reject] = args;
 
   switch (nodeConstructor as any) {
-    case ast.ArrayExpression: {
-      const [mainNode] = args[0] as [ast.Base];
+    case AST.ArrayExpression: {
+      const [mainNode] = args[0] as [AST.ASTBase];
 
       if (
-        mainNode instanceof ast.Function.Mode.ArrowExpression ||
-        mainNode instanceof ast.Function.Mode.ConstructorExpression ||
-        mainNode instanceof ast.ConditionExpression
+        mainNode instanceof AST.Function.Mode.ArrowExpression ||
+        mainNode instanceof AST.Function.Mode.ConstructorExpression ||
+        mainNode instanceof AST.ConditionExpression
       ) {
         console.log(
           `[filterAndToASTNode]: ArrayExpression -> ${mainNode.toString()} : reject`
         );
+
         return reject;
       }
 
-      if (mainNode instanceof ast.UnionExpression) {
+      if (mainNode instanceof AST.UnionExpression) {
         if (!mainNode.isExtended) {
           console.log(
             `[filterAndToASTNode]: ArrayExpression -> UnionExpression : reject`
           );
+
           return reject;
         }
       }
+
       break;
     }
 
-    case ast.KeyofExpression: {
-      const [, sourceNode] = args[0] as [any, ast.Base];
+    case AST.KeyofExpression: {
+      const [, sourceNode] = args[0] as [any, AST.ASTBase];
 
       if (
-        sourceNode instanceof ast.IntersectionExpression ||
-        sourceNode instanceof ast.UnionExpression
+        sourceNode instanceof AST.IntersectionExpression ||
+        sourceNode instanceof AST.UnionExpression
       ) {
         if (!sourceNode.isExtended) {
           console.log(
             `[filterAndToASTNode]: KeyofExpression -> ${sourceNode.kind} : reject`
           );
+
           return reject;
         }
       }
@@ -127,65 +132,70 @@ export function filterAndToASTNode(
       break;
     }
 
-    case ast.IntersectionExpression:
-    case ast.UnionExpression: {
-      const [nodes] = args[0] as [ast.Base[]];
+    case AST.IntersectionExpression:
+    case AST.UnionExpression: {
+      const [nodes] = args[0] as [AST.ASTBase[]];
 
       if (
-        nodes[0] instanceof ast.Function.Mode.ArrowExpression ||
-        nodes[0] instanceof ast.Function.Mode.ConstructorExpression ||
-        nodes[0] instanceof ast.InferExpression
+        nodes[0] instanceof AST.Function.Mode.ArrowExpression ||
+        nodes[0] instanceof AST.Function.Mode.ConstructorExpression ||
+        nodes[0] instanceof AST.InferExpression
       ) {
         console.log(
           `[filterAndToASTNode]: ${nodeConstructor.name} -> ${nodes[0].kind} : reject`
         );
+
         return reject;
       }
 
       const hasConditionExpression = nodes.some(
-        (node) => node instanceof ast.ConditionExpression
+        node => node instanceof AST.ConditionExpression
       );
+
       if (hasConditionExpression) {
         console.log(
           `[filterAndToASTNode]: ${nodeConstructor.name} -> ConditionExpression : reject`
         );
+
         return reject;
       }
 
       break;
     }
 
-    case ast.GetKeyValueExpression: {
-      const [sourceNode] = args[0] as (ast.Base | null)[];
+    case AST.GetKeyValueExpression: {
+      const [sourceNode] = args[0] as (AST.ASTBase | null)[];
 
       if (
-        sourceNode instanceof ast.Function.Mode.ArrowExpression ||
-        sourceNode instanceof ast.Function.Mode.ConstructorExpression ||
-        sourceNode instanceof ast.ConditionExpression ||
-        sourceNode instanceof ast.UnionExpression ||
-        sourceNode instanceof ast.InferExpression ||
-        sourceNode instanceof ast.KeyofExpression
+        sourceNode instanceof AST.Function.Mode.ArrowExpression ||
+        sourceNode instanceof AST.Function.Mode.ConstructorExpression ||
+        sourceNode instanceof AST.ConditionExpression ||
+        sourceNode instanceof AST.UnionExpression ||
+        sourceNode instanceof AST.InferExpression ||
+        sourceNode instanceof AST.KeyofExpression
       ) {
         console.log(
           `[filterAndToASTNode]: GetKeyValueExpression -> ${sourceNode.kind} : reject`
         );
+
         return reject;
       }
+
       break;
     }
 
-    case ast.ConditionExpression: {
-      const [leftNode] = args[0] as (ast.Base | null)[];
+    case AST.ConditionExpression: {
+      const [leftNode] = args[0] as (AST.ASTBase | null)[];
 
       if (
-        leftNode instanceof ast.Function.Mode.ArrowExpression ||
-        leftNode instanceof ast.Function.Mode.ConstructorExpression
+        leftNode instanceof AST.Function.Mode.ArrowExpression ||
+        leftNode instanceof AST.Function.Mode.ConstructorExpression
       ) {
-        console.log(
-          `[filterAndToASTNode]: ConditionExpression -> Function : reject`
-        );
+        console.log(`[filterAndToASTNode]: ConditionExpression -> Function : reject`);
+
         return reject;
       }
+
       break;
     }
   }

@@ -1,6 +1,8 @@
-import zod from "zod";
-import { AST } from "../types";
-import { ExpressionBase } from "./base";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from './base';
 
 export { UnionExpression };
 
@@ -11,18 +13,19 @@ const schema = zod
       zod.any() /* | */,
       zod.any() /* [*/,
       zod.array(zod.instanceof(ExpressionBase)),
-      zod.any() /* ] */,
+      zod.any() /* ] */
     ])
   );
+
 type Schema = zod.infer<typeof schema>;
 
-class UnionExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.Union;
+class UnionExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.Union;
 
   public isExtended: boolean;
   public values: Array<ExpressionBase>;
 
-  constructor(pos: AST.Position, args: Schema) {
+  constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     this.initArgs(args);
@@ -38,8 +41,18 @@ class UnionExpression extends ExpressionBase<Schema> {
     }
   }
 
-  public compile(): string {
-    return this.values.map((value) => value.compile()).join(" | ");
+  public compile() {
+    const nodeFlow = this.compileUtils.createNodeFlow();
+
+    for (let i = 0; i < this.values.length; i++) {
+      if (i !== 0) {
+        nodeFlow.add(' | ');
+      }
+
+      nodeFlow.add(this.values[i].compile());
+    }
+
+    return nodeFlow.get();
   }
 
   public toString(): string {

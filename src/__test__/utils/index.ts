@@ -1,15 +1,16 @@
-import { expect } from "vitest";
-import { Parser } from "../../api/parser";
-import * as ast from "../../ast";
-import type { TestNode, TestSource } from "./types";
+import { expect } from 'vitest';
+
+import { ASTBase } from '../../ast';
+import { Parser } from '../../parser';
+import type { TestNode, TestSource } from './types';
 
 export {
-  createSource,
-  createNode,
   assertSource,
+  createNode,
+  createSource,
   mergeString,
   permuteObjects,
-  type TestNode,
+  type TestNode
 };
 
 function createSource<N>(source: TestSource<N>): typeof source {
@@ -21,18 +22,19 @@ function createNode<T>(node: TestNode<T>) {
 }
 
 function assertSource<T>(source: TestSource<T>) {
-  let astNodes!: ast.Base<any>[];
+  let astNodes!: ASTBase[];
+
   try {
     astNodes = new Parser(source.content).toAST();
-} catch (error) {
-    expect({ error, content: source.content }).toMatchSnapshot("parser-error");
+  } catch (error) {
+    expect({ error, content: source.content }).toMatchSnapshot('parser-error');
     throw error;
-}
+  }
 
   expect(astNodes.length).not.toBe(0);
 
   if (astNodes.length !== 1) {
-    expect(source.content).toMatchSnapshot("divergence");
+    expect(source.content).toMatchSnapshot('divergence');
   }
 
   source.nodes.forEach((sourceNodeInfo, index) => {
@@ -42,21 +44,21 @@ function assertSource<T>(source: TestSource<T>) {
       expect({
         error,
         compile: astNodes[index].compile(),
-        info: sourceNodeInfo,
-      }).toMatchSnapshot("error");
+        info: sourceNodeInfo
+      }).toMatchSnapshot('error');
       throw error;
     }
   });
 }
 
-function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
+function assertNode(node: ASTBase, info: TestNode<ASTBase>) {
   expect(node).instanceOf(info.instance);
 
   for (const key in info) {
     const nodeVal = (node as any)[key];
     const infoVal = (info as any)[key];
 
-    if (nodeVal instanceof ast.Base) {
+    if (nodeVal instanceof ASTBase) {
       if (infoVal) {
         assertNode(nodeVal, infoVal);
         continue;
@@ -64,37 +66,36 @@ function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
     }
 
     switch (key) {
-      case "output":
+      case 'output':
         expect(node.compile()).toBe(info.output);
         break;
 
-      case "pos":
+      case 'pos':
         expect(node.pos).toMatchObject(info.pos!);
         break;
 
-      case "kind":
+      case 'kind':
         expect(node.kind).toBe(info.kind);
         break;
 
       default: {
         const recursiveHandle = (nodeVal: any, infoVal: any) => {
           if (!nodeVal || !infoVal) return;
-          if (typeof nodeVal === "function") return;
+          if (typeof nodeVal === 'function') return;
 
           if (Array.isArray(nodeVal) && Array.isArray(infoVal)) {
             infoVal.forEach((info, index) => {
               const node = nodeVal[index] as
-                | ast.Base
+                | ASTBase
                 | Record<string, unknown>
                 | undefined;
-              if (node instanceof ast.Base) {
+
+              if (node instanceof ASTBase) {
                 assertNode(node, info);
               } else {
-                if (
-                  Object.prototype.toString.call(node) === "[object Object]"
-                ) {
+                if (Object.prototype.toString.call(node) === '[object Object]') {
                   for (const nKey in node) {
-                    if (node[nKey] instanceof ast.Base && info[nKey]) {
+                    if (node[nKey] instanceof ASTBase && info[nKey]) {
                       assertNode((node as any)[nKey], info[nKey]);
                     } else {
                       expect(node[nKey]).toBe(info[nKey]);
@@ -103,12 +104,9 @@ function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
                 }
               }
             });
-          } else if (nodeVal instanceof ast.Base) {
+          } else if (nodeVal instanceof ASTBase) {
             assertNode(nodeVal, infoVal);
-          } else if (
-            typeof nodeVal === "object" &&
-            typeof infoVal === "object"
-          ) {
+          } else if (typeof nodeVal === 'object' && typeof infoVal === 'object') {
             for (const iKey in infoVal) {
               recursiveHandle(nodeVal[iKey], infoVal[iKey]);
             }
@@ -124,17 +122,13 @@ function assertNode(node: ast.Base, info: TestNode<ast.Base>) {
 }
 
 function mergeString<T extends string>(...args: T[]): T {
-  return args.join("") as T;
+  return args.join('') as T;
 }
 
 /**
  * 对象数组的全排列，可以指定最小长度和最大长度
  */
-function permuteObjects<T>(
-  objs: T[],
-  minLength = 1,
-  maxLength = objs.length
-): T[][] {
+function permuteObjects<T>(objs: T[], minLength = 1, maxLength = objs.length): T[][] {
   if (minLength > objs.length) {
     return [];
   }
@@ -157,10 +151,12 @@ function permuteObjects<T>(
     for (let i = 0; i < arr.length; i++) {
       const curr = arr.slice();
       const next = curr.splice(i, 1);
+
       permute(curr.slice(), memo.concat(next));
     }
   }
 
   permute(objs);
+
   return result;
 }

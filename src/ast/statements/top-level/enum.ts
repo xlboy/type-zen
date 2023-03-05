@@ -1,44 +1,45 @@
-import zod from "zod";
-import { IdentifierExpression } from "../../expressions/identifier";
-import { NumberLiteralExpression } from "../../expressions/literals/number";
-import { StringLiteralExpression } from "../../expressions/literals/string";
-import { AST } from "../../types";
-import { TopLevelStatementBase } from "./base";
-import { ExpressionBase } from "../../expressions/base";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '../..';
+import { SyntaxKind } from '../../constants';
+import { ExpressionBase } from '../../expressions/base';
+import { IdentifierExpression } from '../../expressions/identifier';
+import { NumberLiteralExpression } from '../../expressions/literals/number';
+import { StringLiteralExpression } from '../../expressions/literals/string';
+import { TopLevelStatementBase } from './base';
 
 export { EnumMemberExpression, EnumStatement };
 
 class EnumMemberExpression extends ExpressionBase {
-  public kind = AST.SyntaxKind.E.EnumMember;
+  public kind = SyntaxKind.E.EnumMember;
 
   private static readonly schema = zod
     .tuple([
       zod.instanceof(IdentifierExpression),
       // TODO：待完善，此处甚至可以为JS的表达式…
-      zod
-        .instanceof(NumberLiteralExpression)
-        .or(zod.instanceof(StringLiteralExpression)),
+      zod.instanceof(NumberLiteralExpression).or(zod.instanceof(StringLiteralExpression))
     ])
     .or(zod.tuple([zod.instanceof(IdentifierExpression)]));
 
   public name: IdentifierExpression;
   public value?: NumberLiteralExpression | StringLiteralExpression;
 
-  constructor(
-    pos: AST.Position,
-    args: zod.infer<typeof EnumMemberExpression.schema>
-  ) {
+  constructor(pos: ASTNodePosition, args: zod.infer<typeof EnumMemberExpression.schema>) {
     super(pos);
     this.checkArgs(args, EnumMemberExpression.schema);
     [this.name, this.value] = args;
   }
 
-  public compile(): string {
-    let str = this.name.compile();
+  public compile() {
+    const nodeFlow = this.compileUtils.createNodeFlow();
 
-    if (this.value) str += ` = ${this.value.compile()}`;
+    nodeFlow.add(this.name.compile());
 
-    return str;
+    if (this.value) {
+      nodeFlow.add(' = ').add(this.value.compile());
+    }
+
+    return nodeFlow.get();
   }
   public toString(): string {
     return this.kind;
@@ -46,45 +47,59 @@ class EnumMemberExpression extends ExpressionBase {
 }
 
 class EnumStatement extends TopLevelStatementBase {
-  public kind = AST.SyntaxKind.S.Enum;
+  public kind = SyntaxKind.S.Enum;
 
   private static readonly schema = zod.tuple([
     zod.any() /* enum/const - moo.Token */,
     zod.instanceof(IdentifierExpression),
     zod.array(zod.instanceof(EnumMemberExpression)),
-    zod.any() /* } */,
+    zod.any() /* } */
   ]);
 
   public name: IdentifierExpression;
   public members: EnumMemberExpression[];
   private isConstDeclare: boolean;
 
-  constructor(pos: AST.Position, args: zod.infer<typeof EnumStatement.schema>) {
+  constructor(pos: ASTNodePosition, args: zod.infer<typeof EnumStatement.schema>) {
     super(pos);
     this.checkArgs(args, EnumStatement.schema);
-
     const firstToken = args[0] as moo.Token;
-    this.isConstDeclare = firstToken.value === "const";
 
+    this.isConstDeclare = firstToken.value === 'const';
     [, this.name, this.members] = args;
   }
 
-  public compile(): string {
-    let str = `enum ${this.name.compile()} {`;
+  public compile() {
+    const nodeFlow = this.compileUtils.createNodeFlow();
 
-    if (this.members.length === 0) {
-      str += `};`;
-    } else {
-      str += `\n`;
-      for (const member of this.members) {
-        str += `  ${member.compile()};\n`;
-      }
-      str += `};`;
+    if (this.isConstDeclare) {
+      nodeFlow.add('const ');
     }
 
-    if (this.isConstDeclare) str = `const ${str}`;
+    nodeFlow.add('enum ').add(this.name.compile()).add(' {');
 
-    return str;
+    if (this.members.length === 0) {
+      nodeFlow.add('}');
+    } else {
+      nodeFlow.add('\n');
+      for (let i = 0; i < this.members.length; i++) {
+        const member = this.members[i];
+
+        nodeFlow
+          .add(' '.repeat(this.compileUtils.getConfig().indent))
+          .add(member.compile());
+
+        if (i !== this.members.length - 1) {
+          nodeFlow.add(',');
+        }
+
+        nodeFlow.add('\n');
+      }
+
+      nodeFlow.add('}');
+    }
+
+    return [nodeFlow.get()];
   }
   public toString(): string {
     return this.kind;

@@ -1,21 +1,23 @@
-import moo from "moo";
-import { AST } from "../../types";
-import { ExpressionBase } from "../base";
+import type moo from 'moo';
+
+import type { ASTNodePosition } from '../..';
+import { SyntaxKind } from '../../constants';
+import { ExpressionBase } from '../base';
 
 export { NumberLiteralExpression };
 
 class NumberLiteralExpression extends ExpressionBase {
-  public kind = AST.SyntaxKind.E.NumberLiteral;
+  public kind = SyntaxKind.E.NumberLiteral;
 
   public value: string;
 
-  constructor(pos: AST.Position, [mooToken]: [moo.Token]) {
+  constructor(pos: ASTNodePosition, [mooToken]: [moo.Token]) {
     super(pos);
     this.value = mooToken.value;
   }
 
-  public compile(): string {
-    return this.value;
+  public compile() {
+    return this.compileUtils.createNodeFlow(this.value, this.pos).get();
   }
 
   public toString(): string {

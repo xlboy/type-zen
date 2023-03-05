@@ -1,25 +1,25 @@
-import moo from "moo";
-import { AST } from "../../types";
-import { ExpressionBase } from "../base";
+import type moo from 'moo';
+
+import type { ASTNodePosition } from '../..';
+import { SyntaxKind } from '../../constants';
+import { ExpressionBase } from '../base';
 
 export { LiteralKeywordExpression };
 
 class LiteralKeywordExpression extends ExpressionBase {
-  public kind = AST.SyntaxKind.E.LiteralKeyword;
+  public kind = SyntaxKind.E.LiteralKeyword;
   private value: string;
 
-  constructor(pos: AST.Position, [mooToken]: [token: moo.Token]) {
+  constructor(pos: ASTNodePosition, [mooToken]: [token: moo.Token]) {
     super(pos);
     this.value = mooToken.value;
   }
 
-  public compile(): string {
-    return this.value;
+  public compile() {
+    return this.compileUtils.createNodeFlow(this.value, this.pos).get();
   }
 
   public toString(): string {
-    return `${this.value[0].toLocaleUpperCase()}${this.value.substring(
-      1
-    )}Keyword`;
+    return `${this.value[0].toLocaleUpperCase()}${this.value.substring(1)}Keyword`;
   }
 }

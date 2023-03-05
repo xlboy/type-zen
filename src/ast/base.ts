@@ -1,36 +1,27 @@
-import { ReadonlyDeep } from "type-fest";
-import zod from "zod";
-import { AST } from "./types";
+import type zod from 'zod';
+
+import { ASTCompileBase } from '../compiler';
+import type { ASTNodePosition } from './';
+import type { SyntaxKind } from './constants';
 
 export { ASTBase };
 
-const compileStack: ASTBase[] = [];
+abstract class ASTBase extends ASTCompileBase {
+  public pos: ASTNodePosition;
 
-abstract class ASTBase<S = any> {
-  public pos: AST.Position;
+  public abstract kind: SyntaxKind.E | SyntaxKind.S;
 
-  public abstract kind: AST.SyntaxKind.E | AST.SyntaxKind.S;
-
-  constructor(pos: AST.Position) {
+  constructor(pos: ASTNodePosition) {
+    super();
     this.pos = pos;
-    this.compile = this.rewriteCompile();
   }
-
-  /**
-   * @returns 返回编译后的代码
-   */
-  public abstract compile(...args: any[]): any;
 
   /**
    * @returns 返回节点的名称
    */
   public abstract toString(): string;
 
-  protected getCompileChain(): ReadonlyDeep<ASTBase>[] {
-    return compileStack;
-  }
-
-  protected checkArgs(args: S, schema: zod.Schema<S>) {
+  protected checkArgs<T>(args: T, schema: zod.Schema<T>) {
     try {
       schema.parse(args);
     } catch (error) {
@@ -41,17 +32,5 @@ abstract class ASTBase<S = any> {
       );
       throw error;
     }
-  }
-
-  private rewriteCompile() {
-    const oldCompileFn = this.compile.bind(this);
-    const fn = () => {
-      compileStack.push(this);
-      const compileResult = oldCompileFn();
-      compileStack.pop();
-      return compileResult;
-    };
-
-    return fn as typeof this.compile;
   }
 }

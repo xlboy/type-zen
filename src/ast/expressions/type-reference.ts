@@ -1,7 +1,9 @@
-import zod from "zod";
-import { AST } from "../types";
-import { ExpressionBase } from "./base";
-import { IdentifierExpression } from "./identifier";
+import zod from 'zod';
+
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from './base';
+import { IdentifierExpression } from './identifier';
 
 export { TypeReferenceExpression };
 
@@ -12,19 +14,19 @@ const schema = zod
       zod.instanceof(IdentifierExpression),
       zod.any() /* < */,
       zod.array(zod.instanceof(ExpressionBase)),
-      zod.any() /* > */,
+      zod.any() /* > */
     ])
   );
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeReferenceExpression extends ExpressionBase<Schema> {
-  public kind = AST.SyntaxKind.E.TypeReference;
+class TypeReferenceExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.TypeReference;
 
   public name: IdentifierExpression;
   public arguments: Array<ExpressionBase> = [];
 
-  constructor(pos: AST.Position, args: Schema) {
+  constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
     [this.name] = args;
@@ -33,17 +35,28 @@ class TypeReferenceExpression extends ExpressionBase<Schema> {
     }
   }
 
-  public compile(): string {
+  public compile() {
+    const nodeFlow = this.compileUtils.createNodeFlow();
+
+    nodeFlow.add(this.name.compile());
+
     if (this.arguments.length === 0) {
-      return this.name.compile();
+      return nodeFlow.get();
     }
 
-    return [
-      this.name.compile(),
-      "<",
-      this.arguments.map((arg) => arg.compile()).join(", "),
-      ">",
-    ].join("");
+    nodeFlow.add('<');
+
+    for (let i = 0; i < this.arguments.length; i++) {
+      if (i !== 0) {
+        nodeFlow.add(', ');
+      }
+
+      nodeFlow.add(this.arguments[i].compile());
+    }
+
+    nodeFlow.add('>');
+
+    return nodeFlow.get();
   }
 
   public toString(): string {
