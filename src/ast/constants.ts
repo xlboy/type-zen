@@ -3,7 +3,7 @@ export { SyntaxKind };
 namespace SyntaxKind {
   // Expression
   export enum E {
-    Union = 'Untion',
+    Union = 'Union',
     Intersection = 'Intersection',
     Identifier = 'Identifier',
     LiteralKeyword = 'LiteralKeyword',
