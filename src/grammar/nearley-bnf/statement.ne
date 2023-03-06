@@ -50,7 +50,7 @@ s_enum_member_eof -> ("," | ";") _ {% n %}
 #region  //*=========== sugar block ===========
 s_sugarBlock -> "^" _ s_sugarBlock_content {% args => args.at(-1) %}
 
-s_sugarBlock_content -> "{" _ (s_sugarBlock_content_block blockSeparator):+ _ "}" 
+s_sugarBlock_content -> "{" _ (s_sugarBlock_content_block blockSeparator):+ "}" 
     {% args => toASTNode(ast.SugarBlockStatement)([args[0], args[2].map(id), args.at(-1)]) %}
     
 s_sugarBlock_content_block -> s_typeAlias {% id %}
@@ -59,12 +59,13 @@ s_sugarBlock_content_block -> s_typeAlias {% id %}
 #endregion  //*======== sugar block ===========
     
 #region  //*=========== if ===========
-s_if -> s_if_start {% id %}
-    # | s_if_start _ "else" _ "{" s_sugarBlock _ "}"
-    # | s_if_start _ "else" _ s_if
-
-s_if_start -> "if" _ "(" s_if_condition ")" _ s_sugarBlock_content 
+s_if -> "if" _ "(" s_if_condition ")" _ s_sugarBlock_content
     {% args => toASTNode(ast.IfStatement)([args[0], args[3], args.at(-1)]) %}
+    | "if" _ "(" s_if_condition ")" _ s_sugarBlock_content _ "else" _ s_sugarBlock_content
+    {% args => toASTNode(ast.IfStatement)([args[0], args[3], args[6], args.at(-1)]) %}
+    | "if" _ "(" s_if_condition ")" _ s_sugarBlock_content _ "else" nonEmptySpace:+ s_if
+    {% args => toASTNode(ast.IfStatement)([args[0], args[3], args[6], args.at(-1)]) %}
+
 
 s_if_condition -> e_main e_condition_extend e_main {% args => ({ left: args[0], right: args.at(-1) }) %}
 #endregion  //*======== if ===========

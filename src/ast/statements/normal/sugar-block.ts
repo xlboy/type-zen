@@ -3,7 +3,7 @@ import zod from 'zod';
 
 import type { CompiledNode } from '../../../compiler';
 import type { ASTNodePosition } from '../..';
-import { ASTBase } from '../../base';
+import type { ASTBase } from '../../base';
 import { SyntaxKind } from '../../constants';
 import { Object } from '../../expressions/object';
 import { TypeReferenceExpression } from '../../expressions/type-reference';
@@ -12,7 +12,6 @@ import { DeclareFunctionStatement } from '../top-level/declare-function';
 import { DeclareVariableStatement } from '../top-level/declare-variable';
 import { TypeAliasStatement } from '../top-level/type-alias';
 import { NormalStatementBase } from './base';
-// import { IfStatement } from "./if";
 import { ReturnStatement } from './return';
 
 export { SugarBlockStatement };
@@ -23,7 +22,7 @@ const schema = zod.tuple([
     zod
       .instanceof(TypeAliasStatement)
       // TODO：  循环引用…
-      .or(zod.instanceof(ASTBase)) // IfStatement
+      .or(zod.custom<ASTBase>((data: any) => data.kind === SyntaxKind.S.If))
       .or(zod.instanceof(ReturnStatement))
   ),
   zod.any() /* } */
@@ -113,14 +112,14 @@ class SugarBlockStatement extends NormalStatementBase {
             : insideNodeFlow;
 
           // 这里的 stmt，一般为 if, for
-          const compiltedResult = stmt.compile();
+          const compiltedNodes: CompiledNode[] = stmt.compile();
 
           // 如果是最后一个结果，那么就不需要包装了（之所以要包装是因为“下一个执行流需要上一个执行流的结果来决定是否执行”）
           if (isLast) {
-            insideNodeFlow.add(compiltedResult);
+            insideNodeFlow.add(compiltedNodes);
           } else {
             currentSpaceName = this.generateRandomName();
-            this.nodeResultWrapper(insideNodeFlow, compiltedResult, currentSpaceName);
+            this.compiledNodesWrapper(insideNodeFlow, compiltedNodes, currentSpaceName);
           }
         }
       }
@@ -172,28 +171,28 @@ class SugarBlockStatement extends NormalStatementBase {
   //  对“编译好的节点”进行包装，比如： if块
   //  “if块” 代表着一个“结果”，这个结果会影响上下文的执行流
   // 每往下走一个“执行”，都需要根据上文的“结果”（if块的结果）来决定是否执行
-  private nodeResultWrapper(
+  private compiledNodesWrapper(
     flow: ReturnType<typeof this.compileUtils.createNodeFlow>,
-    nodeResult: CompiledNode[],
+    compiledNodes: CompiledNode[],
     spaceName: string
   ) {
-    const nodeResultName = this.generateRandomName();
+    const nameOfCompiledNodes = this.generateRandomName();
 
     //  (表达式) extends infer 当前结果 ? 当前结果 extends 未返回符号 ？ 未返回符号 : 当前结果 : never
     flow
       .add('(')
-      .add(nodeResult)
+      .add(compiledNodes)
       .add(`)`)
       .add(' extends ')
-      .add(`infer ${nodeResultName}`)
+      .add(`infer ${nameOfCompiledNodes}`)
       .add(' ? ')
-      .add(nodeResultName)
+      .add(nameOfCompiledNodes)
       .add(' extends ')
       .add(this.compileUtils.getConstants().UnreturnedSymbol)
       .add(' ? ')
       .createSpace(spaceName);
 
-    flow.add(' : ').add(nodeResultName).add(' : ').add('never');
+    flow.add(' : ').add(nameOfCompiledNodes).add(' : ').add('never');
   }
 
   private generateRandomName() {
