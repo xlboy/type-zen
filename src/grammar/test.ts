@@ -41,20 +41,25 @@ try {
   $_A_a_s_arrow_fn_rt_ 
    */
   const content = `
-  type A = ^{
-    type localVar1 = "d2"
-    type ddd<T> = "t"
-    
-    if ("s" == localVar1) {
-      return "'s' == localVar1!!!!!!!!!!!!!!!!!!!"
-    }
-    
-    if ("d2" == localVar1) {
-      return "'d2' == localVar1~~~~~~~~~~"
+  type Name = "xlboy"
+
+  type A<T> = ^{
+    if (T == Name) {
+      return "这是我的名称"
+    } else if (T == number) {
+      if (T == 1) {
+        return "传了个 数字1 进来"
+      }
+      return "传了个其他数字进来"
     }
 
-    return "no,  's' ....."
+    return ["即不是 number 也不是名？…是 ->", T]
   }
+
+  type Test1 = A<"xlboy">
+  type Test2 = A<1>
+  type Test3 = A<2333>
+  type Test4 = A<| [":)", "酷酷酷"]>
   `;
 
   //
@@ -74,16 +79,19 @@ try {
   console.timeEnd('parser feed');
 
   if (parser.results.length !== 0) {
-    compiler.compile(parser.results[0]);
+    console.log(compiler.compile(parser.results[0]).toText());
+
     // for (const result of parser.results[0]) {
-    //   // console.log(`结果： ${result.compile()}`);
+    // console.log(`结果： ${JSON.stringify(result.compile())}`);
     // }
   }
 
   if (parser.results.length !== 1) {
     parser.results.some((item, index, arr) => {
       if (index > 100) return true;
-      console.error('语法错误', item === arr[index + 1]);
+      console.log(`结果： ${JSON.stringify(item[0].compile())}`);
+
+      // console.error('语法错误', item === arr[index + 1]);
     });
   }
 } catch (error: any) {

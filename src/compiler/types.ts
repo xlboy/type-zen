@@ -4,7 +4,7 @@ export type { CompiledNode, CompilerConfig };
 
 interface CompiledNode {
   text: string;
-  pos?: {
+  pos: {
     result?: ASTNodePosition;
     source?: ASTNodePosition;
   };
