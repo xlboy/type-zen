@@ -1,9 +1,7 @@
-import { customAlphabet } from 'nanoid';
 import zod from 'zod';
 
 import type { CompiledNode } from '../../../compiler';
 import type { ASTNodePosition } from '../..';
-import type { ASTBase } from '../../base';
 import { SyntaxKind } from '../../constants';
 import { Object } from '../../expressions/object';
 import { TypeReferenceExpression } from '../../expressions/type-reference';
@@ -12,6 +10,7 @@ import { DeclareFunctionStatement } from '../top-level/declare-function';
 import { DeclareVariableStatement } from '../top-level/declare-variable';
 import { TypeAliasStatement } from '../top-level/type-alias';
 import { NormalStatementBase } from './base';
+import type { IfStatement } from './if';
 import { ReturnStatement } from './return';
 
 export { SugarBlockStatement };
@@ -21,8 +20,7 @@ const schema = zod.tuple([
   zod.array(
     zod
       .instanceof(TypeAliasStatement)
-      // TODO：  循环引用…
-      .or(zod.custom<ASTBase>((data: any) => data.kind === SyntaxKind.S.If))
+      .or(zod.custom<IfStatement>((data: any) => data.kind === SyntaxKind.S.If))
       .or(zod.instanceof(ReturnStatement))
   ),
   zod.any() /* } */
@@ -53,79 +51,124 @@ class SugarBlockStatement extends NormalStatementBase {
 
     for (let i = 0; i < this.statements.length; i++) {
       const stmt = this.statements[i];
-      const isLast = i === this.statements.length - 1;
+      const isLastStmt = i === this.statements.length - 1;
 
       if (this.shouldHoistStatement(stmt)) {
-        const [topLevelStmt] = compileChain;
-
-        if (topLevelStmt instanceof TopLevelStatementBase) {
-          if (stmt instanceof TypeAliasStatement) {
-            const outputName = `$_${this.getCompilePath()}_${
-              stmt.name.value
-            }__${this.generateRandomName()}`;
-            const nodeFlowToHoist = this.compileUtils
-              .createNodeFlow('type ')
-              .add(outputName, stmt.name.pos)
-              .add(stmt.arguments!.compile())
-              .add(' = ')
-              .add(stmt.value.compile())
-              .add('\n');
-
-            topLevelStmt.prependCompiledNode(nodeFlowToHoist.get());
-          }
-        } else {
-          throw new Error('topLevelStmt is not TopLevelStatementBase');
-        }
+        handleStatementHoist.call(this, stmt);
       } else {
-        // 在非“提升语句”中遇到了“局部变量声名语句 ”
-        if (stmt instanceof TypeAliasStatement) {
-          if (!localVarProcessing) {
-            localVarProcessing = true;
-            insideNodeFlow.add('[').add(stmt.value.compile());
-          } else {
-            insideNodeFlow.add(', ').add(stmt.value.compile());
-          }
+        const isTypeAliasStmt = stmt instanceof TypeAliasStatement;
 
-          localVarNames.push(stmt.name.compile());
-        } else {
-          if (localVarProcessing) {
-            insideNodeFlow.add(']').add(' extends ').add('[');
+        handleLocalVar.call(this, stmt);
 
-            for (let i = 0; i < localVarNames.length; i++) {
-              if (i !== 0) {
-                insideNodeFlow.add(', ');
-              }
-
-              insideNodeFlow.add('infer ').add(localVarNames[i]);
-            }
-
-            insideNodeFlow.add(']').add(' ? ');
-            insideNodeFlow.createSpace((currentSpaceName = this.generateRandomName()));
-
-            insideNodeFlow.add(' : ').add('never');
-            localVarNames = [];
-            localVarProcessing = false;
-          }
-
+        if (!isTypeAliasStmt) {
           insideNodeFlow = currentSpaceName
             ? insideNodeFlow.getSpace(currentSpaceName)
             : insideNodeFlow;
 
-          // 这里的 stmt，一般为 if, for
-          const compiltedNodes: CompiledNode[] = stmt.compile();
+          const currentLogicalNodes = stmt.compile();
 
-          // 如果是最后一个结果，那么就不需要包装了（之所以要包装是因为“下一个执行流需要上一个执行流的结果来决定是否执行”）
-          if (isLast) {
-            insideNodeFlow.add(compiltedNodes);
+          // 如果是最后一个结果，那么就不需要包装了（之所以要包装是因为“下一个执行流需要上一个执行流（逻辑块）的结果来决定是否执行”）
+          if (isLastStmt) {
+            insideNodeFlow.add(currentLogicalNodes);
           } else {
-            currentSpaceName = this.generateRandomName();
-            this.compiledNodesWrapper(insideNodeFlow, compiltedNodes, currentSpaceName);
+            currentSpaceName = this.compileUtils.generateRandomName();
+            this.executionFlowWrapper(
+              insideNodeFlow,
+              currentLogicalNodes,
+              currentSpaceName
+            );
           }
         }
       }
     }
 
     return rootNodeFlow.get();
+
+    function handleStatementHoist(
+      this: SugarBlockStatement,
+      stmt: Schema[1][number]
+    ): void {
+      const [topLevelStmt] = compileChain;
+
+      if (topLevelStmt instanceof TopLevelStatementBase) {
+        if (stmt instanceof TypeAliasStatement) {
+          const outputName = `$_${getCompilePath.call(this)}_${
+            stmt.name.value
+          }__${this.compileUtils.generateRandomName()}`;
+          const nodeFlowToHoist = this.compileUtils
+            .createNodeFlow('type ')
+            .add(outputName, stmt.name.pos)
+            .add(stmt.arguments!.compile())
+            .add(' = ')
+            .add(stmt.value.compile())
+            .add('\n');
+
+          topLevelStmt.prependCompiledNode(nodeFlowToHoist.get());
+        }
+      } else {
+        throw new Error('topLevelStmt is not TopLevelStatementBase');
+      }
+
+      function getCompilePath(this: SugarBlockStatement) {
+        const compileChain = this.compileUtils.getChain();
+        let path = '';
+
+        for (const node of compileChain) {
+          if (
+            node instanceof TypeAliasStatement ||
+            node instanceof DeclareFunctionStatement ||
+            node instanceof DeclareVariableStatement ||
+            node instanceof TypeReferenceExpression ||
+            node instanceof Object.Content.IndexSignatureExpression ||
+            node instanceof Object.Content.MethodExpression ||
+            node instanceof Object.Content.NormalExpression ||
+            node instanceof Object.Content.MappedExpression
+          ) {
+            path += node.name.value + '_';
+          } else if (node instanceof Object.Content.LiteralIndexExpression) {
+            path += node.literalName.value + '_';
+          } else {
+            path += node.kind + '_';
+          }
+        }
+
+        return path;
+      }
+    }
+
+    function handleLocalVar(this: SugarBlockStatement, stmt: Schema[1][number]): void {
+      if (stmt instanceof TypeAliasStatement) {
+        if (!localVarProcessing) {
+          localVarProcessing = true;
+          insideNodeFlow.add('[').add(stmt.value.compile());
+        } else {
+          insideNodeFlow.add(', ').add(stmt.value.compile());
+        }
+
+        localVarNames.push(stmt.name.compile());
+      } else {
+        if (localVarProcessing) {
+          insideNodeFlow.add(']').add(' extends ').add('[');
+
+          for (let i = 0; i < localVarNames.length; i++) {
+            if (i !== 0) {
+              insideNodeFlow.add(', ');
+            }
+
+            insideNodeFlow.add('infer ').add(localVarNames[i]);
+          }
+
+          insideNodeFlow.add(']').add(' ? ');
+          insideNodeFlow.createSpace(
+            (currentSpaceName = this.compileUtils.generateRandomName())
+          );
+
+          insideNodeFlow.add(' : ').add('never');
+          localVarNames = [];
+          localVarProcessing = false;
+        }
+      }
+    }
   }
 
   public toString(): string {
@@ -142,62 +185,28 @@ class SugarBlockStatement extends NormalStatementBase {
     return false;
   }
 
-  private getCompilePath() {
-    const compileChain = this.compileUtils.getChain();
-    let path = '';
-
-    for (const node of compileChain) {
-      if (
-        node instanceof TypeAliasStatement ||
-        node instanceof DeclareFunctionStatement ||
-        node instanceof DeclareVariableStatement ||
-        node instanceof TypeReferenceExpression ||
-        node instanceof Object.Content.IndexSignatureExpression ||
-        node instanceof Object.Content.MethodExpression ||
-        node instanceof Object.Content.NormalExpression ||
-        node instanceof Object.Content.MappedExpression
-      ) {
-        path += node.name.value + '_';
-      } else if (node instanceof Object.Content.LiteralIndexExpression) {
-        path += node.literalName.value + '_';
-      } else {
-        path += node.kind + '_';
-      }
-    }
-
-    return path;
-  }
-
-  //  对“编译好的节点”进行包装，比如： if块
-  //  “if块” 代表着一个“结果”，这个结果会影响上下文的执行流
-  // 每往下走一个“执行”，都需要根据上文的“结果”（if块的结果）来决定是否执行
-  private compiledNodesWrapper(
-    flow: ReturnType<typeof this.compileUtils.createNodeFlow>,
-    compiledNodes: CompiledNode[],
-    spaceName: string
+  //  对“当前逻辑”进行包装（如：if块） -> 根据“当前逻辑”的结果（“if块” 的 return 结果）来决定下文的执行流（nextNodeSpaceName 对应的执行空间）
+  private executionFlowWrapper(
+    nodeFlow: ReturnType<typeof this.compileUtils.createNodeFlow>,
+    currentLogicalNodes: CompiledNode[],
+    nextExecFlowSpaceName: string
   ) {
-    const nameOfCompiledNodes = this.generateRandomName();
+    const nameOfCurrLogicalNodes = this.compileUtils.generateRandomName();
 
-    //  (表达式) extends infer 当前结果 ? 当前结果 extends 未返回符号 ？ 未返回符号 : 当前结果 : never
-    flow
+    //  (当前逻辑) extends infer 节点结果 ? 节点结果 extends 未返回符号 ？ 下一个逻辑的占用空间 : 节点结果 : never
+    nodeFlow
       .add('(')
-      .add(compiledNodes)
+      .add(currentLogicalNodes)
       .add(`)`)
       .add(' extends ')
-      .add(`infer ${nameOfCompiledNodes}`)
+      .add(`infer ${nameOfCurrLogicalNodes}`)
       .add(' ? ')
-      .add(nameOfCompiledNodes)
+      .add(nameOfCurrLogicalNodes)
       .add(' extends ')
       .add(this.compileUtils.getConstants().UnreturnedSymbol)
       .add(' ? ')
-      .createSpace(spaceName);
+      .createSpace(nextExecFlowSpaceName);
 
-    flow.add(' : ').add(nameOfCompiledNodes).add(' : ').add('never');
-  }
-
-  private generateRandomName() {
-    const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz');
-
-    return 'r_' + nanoid(5);
+    nodeFlow.add(' : ').add(nameOfCurrLogicalNodes).add(' : ').add('never');
   }
 }

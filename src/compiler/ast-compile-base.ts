@@ -1,3 +1,4 @@
+import { customAlphabet } from 'nanoid';
 import type { O } from 'ts-toolbelt';
 import type { ReadonlyDeep } from 'type-fest';
 
@@ -40,6 +41,11 @@ abstract class ASTCompileBase {
       },
       getChain: (): ReadonlyDeep<ASTBase>[] => {
         return compileStack as any;
+      },
+      generateRandomName() {
+        const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz');
+
+        return 'r_' + nanoid(4);
       },
       createNodeFlow: createCompiledNodeFlow,
       getConstants: () =>
