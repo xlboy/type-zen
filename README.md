@@ -109,9 +109,11 @@ type IsNumber<V> = V extends number ? true : false;
 
   ```typescript
   type A = [1, 2] extends [infer B, infer C]
-    ? B extends string
-      ? ['B is string', C]
-      : ['B is not string', C]
+    ? (B extends string ? ['B is string', C] : UnreturnedSymbol) extends infer r_ugfq
+      ? r_ugfq extends UnreturnedSymbol
+        ? ['B is not string', C]
+        : r_ugfq
+      : never
     : never;
   ```
 
