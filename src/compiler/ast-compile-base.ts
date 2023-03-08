@@ -2,7 +2,13 @@ import { customAlphabet } from 'nanoid';
 import type { O } from 'ts-toolbelt';
 import type { ReadonlyDeep } from 'type-fest';
 
-import type { ASTBase, ASTNodePosition } from '../ast';
+import {
+  ASTBase,
+  ASTNodePosition,
+  SugarBlockStatement,
+  TypeReferenceExpression
+} from '../ast';
+import { SyntaxKind } from '../ast/constants';
 import { compiler } from './compiler';
 import type { CompiledNode, CompilerConfig } from './types';
 
@@ -51,7 +57,17 @@ abstract class ASTCompileBase {
       getConstants: () =>
         ({
           UnreturnedSymbol: 'UnreturnedSymbol'
-        } as const)
+        } as const),
+      getNearestSugarBlockStmt(): ReadonlyDeep<SugarBlockStatement> | undefined {
+        const compileChain = this.getChain();
+
+        for (let i = compileChain.length - 1; i >= 0; i--) {
+          const stmt = compileChain[i];
+          if (stmt.kind === SyntaxKind.S.SugarBlock) {
+            return stmt as any;
+          }
+        }
+      }
     };
 
     function createCompiledNodeFlow(

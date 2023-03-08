@@ -1,9 +1,10 @@
 import zod from 'zod';
 
-import type { ASTNodePosition } from '..';
+import { ASTNodePosition, SugarBlockStatement } from '..';
 import { SyntaxKind } from '../constants';
 import { ExpressionBase } from './base';
 import { IdentifierExpression } from './identifier';
+import { CompiledNode } from '../../compiler';
 
 export { TypeReferenceExpression };
 
@@ -38,7 +39,7 @@ class TypeReferenceExpression extends ExpressionBase {
   public compile() {
     const nodeFlow = this.compileUtils.createNodeFlow();
 
-    nodeFlow.add(this.name.compile());
+    nodeFlow.add(this.getRealName());
 
     if (this.arguments.length === 0) {
       return nodeFlow.get();
@@ -61,5 +62,19 @@ class TypeReferenceExpression extends ExpressionBase {
 
   public toString(): string {
     return this.kind;
+  }
+
+  private getRealName(): CompiledNode[] {
+    const nearestSugarBlockStmt = this.compileUtils.getNearestSugarBlockStmt();
+
+    if (nearestSugarBlockStmt) {
+      const outputName = nearestSugarBlockStmt.toHoistIdentifierMap.get(this.name.value);
+
+      if (outputName) {
+        return [{ text: outputName, pos: {} }];
+      }
+    }
+
+    return this.name.compile();
   }
 }

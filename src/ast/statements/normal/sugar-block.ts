@@ -33,6 +33,11 @@ class SugarBlockStatement extends NormalStatementBase {
 
   public statements: Schema[1];
 
+  public toHoistIdentifierMap = new Map<
+    /* Origin Name */ string,
+    /* Output Name */ string
+  >();
+
   constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
@@ -95,6 +100,9 @@ class SugarBlockStatement extends NormalStatementBase {
           const outputName = `$_${getCompilePath.call(this)}_${
             stmt.name.value
           }__${this.compileUtils.generateRandomName()}`;
+
+          this.toHoistIdentifierMap.set(stmt.name.value, outputName);
+
           const nodeFlowToHoist = this.compileUtils
             .createNodeFlow('type ')
             .add(outputName, stmt.name.pos)
