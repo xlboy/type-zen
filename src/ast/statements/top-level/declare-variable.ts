@@ -42,7 +42,7 @@ class DeclareVariableStatement extends TopLevelStatementBase {
   public compile() {
     const nodeFlow = this.compileUtils.createNodeFlow();
 
-    nodeFlow.add('declare  ').add(this.declareType).add(' ').add(this.name.compile());
+    nodeFlow.add('declare ').add(this.declareType).add(' ').add(this.name.compile());
 
     if (this.value) {
       nodeFlow.add(': ').add(this.value.compile());

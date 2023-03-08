@@ -10,7 +10,7 @@ it("normal", () => {
       nodes: [
         utils.createNode({
           instance: ast.TypeAliasStatement,
-          output: `type A = ${expr.node.output};`,
+          output: `type A = ${expr.node.output}`,
           value: expr.node,
         }),
       ],

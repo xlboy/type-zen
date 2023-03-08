@@ -8,6 +8,7 @@ import { tupleExpressions } from "./tuple";
 import { typeReferenceExpressions } from "./type-reference";
 import { objectExpressions } from "./object";
 import { bracketSurroundExpressions } from "./bracket-surround";
+import { SyntaxKind } from "../../ast/constants";
 export { expressions as keyofExpressions };
 
 const otherExpressions = [
@@ -23,7 +24,7 @@ const expressions: Expression[] = otherExpressions.map((expr) => ({
   content: `keyof       ${expr.content}`,
   node: utils.createNode({
     instance: ast.KeyofExpression,
-    kind: ast.Type.SyntaxKind.E.Keyof,
+    kind: SyntaxKind.E.Keyof,
     output: `keyof ${expr.node.output}`,
     source: expr.node,
   }),

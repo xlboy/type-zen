@@ -44,7 +44,7 @@ s_enum_member -> id _ "=" _ (e_number | e_string)
     {% args => toASTNode(ast.EnumMemberExpression)([args[0], args.at(-1)[0]]) %}
     | id _ {% args => toASTNode(ast.EnumMemberExpression)([args[0]]) %}
 
-s_enum_member_eof -> ("," | ";") _ {% n %}
+s_enum_member_eof -> "," _ {% n %} | null
 #endregion  //*======== enum ===========
 
 #region  //*=========== sugar block ===========

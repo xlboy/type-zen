@@ -1,5 +1,6 @@
 import { Expression } from ".";
 import * as ast from "../../ast";
+import { SyntaxKind } from "../../ast/constants";
 import * as utils from "../utils";
 import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
@@ -25,7 +26,7 @@ const expressions = (() => {
       content: expr.map(({ content }) => content).join(" & "),
       node: utils.createNode({
         instance: ast.IntersectionExpression,
-        kind: ast.Type.SyntaxKind.E.Intersection,
+        kind: SyntaxKind.E.Intersection,
         output: expr.map(({ node }) => node.output).join(" & "),
         values: expr.map(({ node }) => node),
         isExtended: false,
@@ -40,7 +41,7 @@ const expressions = (() => {
       ),
       node: utils.createNode({
         instance: ast.IntersectionExpression,
-        kind: ast.Type.SyntaxKind.E.Intersection,
+        kind: SyntaxKind.E.Intersection,
         output: expr.map(({ node }) => node.output).join(" & "),
         values: expr.map(({ node }) => node),
         isExtended: true,

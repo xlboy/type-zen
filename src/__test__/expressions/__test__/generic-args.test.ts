@@ -11,7 +11,7 @@ describe.concurrent("normal", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type A${expr.node.output} = 1;`,
+            output: `type A${expr.node.output} = 1`,
             arguments: expr.node,
             value: utils.createNode({
               instance: ast.NumberLiteralExpression,
@@ -30,7 +30,7 @@ describe.concurrent("normal", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type B${expr.node.output} = '';`,
+            output: `type B${expr.node.output} = ''`,
             arguments: expr.node,
             value: utils.createNode({
               instance: ast.StringLiteralExpression,

@@ -25,6 +25,11 @@ export { IfStatement } from './statements/normal/if';
 export { ReturnStatement } from './statements/normal/return';
 export { SugarBlockStatement } from './statements/normal/sugar-block';
 
+export { NormalStatementBase } from './statements/normal/base';
+export { TopLevelStatementBase } from './statements/top-level/base';
+
+export { ExpressionBase } from './expressions/base';
+
 export interface ASTNodePosition {
   start: { line: number; col: number };
   end: { line: number; col: number };

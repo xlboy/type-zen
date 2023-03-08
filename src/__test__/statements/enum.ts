@@ -1,8 +1,9 @@
-import _ from "lodash-es";
-import { Statement } from ".";
-import * as ast from "../../ast";
-import * as expr from "../expressions";
-import * as utils from "../utils";
+import _ from 'lodash-es';
+import { Statement } from '.';
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as expr from '../expressions';
+import * as utils from '../utils';
 
 export { statements as enumStatements };
 
@@ -12,38 +13,37 @@ for (let i = 0; i < 100; i++) {
   const memberNum = _.random(1, 10);
 
   const memberNodes: utils.TestNode[] = [];
-  let enumOutput = "";
-  let enumContent = "";
+  let enumOutput = '';
+  let enumContent = '';
 
   for (let i = 0; i < memberNum; i++) {
+    const isLast = i === memberNum - 1;
     const memberId = _.sample(expr.identifierTemplates)!;
     const hasValue = _.random(0, 1) === 1;
     const value = hasValue
-      ? _.sample([
-          ...expr.literalExpressions.number,
-          ...expr.literalExpressions.string,
-        ])!
+      ? _.sample([...expr.literalExpressions.number, ...expr.literalExpressions.string])!
       : undefined;
 
-    const eofChar = _.sample([",", ";"])!;
+    const output = memberId + (hasValue ? ` = ${value!.node.output}` : '');
 
-    const output =
-      memberId + (hasValue ? ` = ${value!.node.output}` : "");
+    enumOutput += `\n  ${output}`;
+    enumContent += `\n  ${memberId}` + (hasValue ? ` = ${value!.node.output}` : '');
 
-    enumOutput += `  ${output};\n`;
-    enumContent +=
-      `\n  ${memberId}` +
-      (hasValue ? ` = ${value!.node.output}` : "") +
-      eofChar;
+    if (!isLast) {
+      enumOutput += ',';
+      enumContent += ',';
+    } else {
+      enumOutput += '\n';
+    }
 
     const node = utils.createNode({
       instance: ast.EnumMemberExpression,
-      kind: ast.Type.SyntaxKind.E.EnumMember,
+      kind: SyntaxKind.E.EnumMember,
       output,
       name: utils.createNode({
         instance: ast.IdentifierExpression,
-        output: memberId,
-      }),
+        output: memberId
+      })
     });
 
     if (hasValue) node.value = value!.node;
@@ -54,26 +54,22 @@ for (let i = 0; i < 100; i++) {
   const enumId = _.sample(expr.identifierTemplates);
   const hasConst = _.random(0, 1) === 1;
 
-  enumOutput =
-    (hasConst ? "const " : "") + `enum ${enumId} {\n` + enumOutput + "};";
+  enumOutput = (hasConst ? 'const ' : '') + `enum ${enumId} {` + enumOutput + '}';
 
   enumContent =
-    (hasConst ? "const " : "") +
-    `enum         ${enumId} {\n` +
-    enumContent +
-    "\n}";
+    (hasConst ? 'const ' : '') + `enum         ${enumId} {` + enumContent + '\n}';
 
   statements.push({
     content: enumContent,
     node: utils.createNode({
       instance: ast.EnumStatement,
-      kind: ast.Type.SyntaxKind.S.Enum,
+      kind: SyntaxKind.S.Enum,
       output: enumOutput,
       name: utils.createNode({
         instance: ast.IdentifierExpression,
-        output: enumId,
+        output: enumId
       }),
-      members: memberNodes,
-    }),
+      members: memberNodes
+    })
   });
 }

@@ -12,6 +12,7 @@ import { unionExpressions } from "../union";
 import { intersectionExpressions } from "../intersection";
 import { identifierTemplates } from "../identifier";
 import _ from "lodash-es";
+import { SyntaxKind } from "../../../ast/constants";
 
 export { expressions as returnExpressions };
 
@@ -52,7 +53,7 @@ for (const expr of otherExpressions) {
     content: utils.mergeString("asserts ", id, " is ", expr.content),
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.Function_Return,
+      kind: SyntaxKind.E.FunctionReturn,
       output: utils.mergeString("asserts ", id, " is ", expr.node.output!),
       assertSource,
       type: "aserrt-is",
@@ -64,7 +65,7 @@ for (const expr of otherExpressions) {
     content: utils.mergeString(id, " is ", expr.content),
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.Function_Return,
+      kind: SyntaxKind.E.FunctionReturn,
       output: utils.mergeString(id, " is ", expr.node.output!),
       assertSource,
       type: "is",
@@ -76,7 +77,7 @@ for (const expr of otherExpressions) {
     content: expr.content,
     node: utils.createNode({
       instance: ast.Function.Return.Expression,
-      kind: ast.Type.SyntaxKind.E.Function_Return,
+      kind: SyntaxKind.E.FunctionReturn,
       output: expr.node.output,
       target: expr.node,
     }),

@@ -5,8 +5,7 @@ import type { ReadonlyDeep } from 'type-fest';
 import {
   ASTBase,
   ASTNodePosition,
-  SugarBlockStatement,
-  TypeReferenceExpression
+  SugarBlockStatement
 } from '../ast';
 import { SyntaxKind } from '../ast/constants';
 import { compiler } from './compiler';

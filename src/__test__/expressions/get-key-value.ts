@@ -4,6 +4,7 @@ import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
 import type { Expression } from "./";
 import { unionExpressions } from "./union";
+import { SyntaxKind } from "../../ast/constants";
 
 export { expressions as getKeyValueExpressions };
 
@@ -15,7 +16,7 @@ typeReferenceExpressions.forEach((ref) => {
       content: `${ref.content}[${lit.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
-        kind: ast.Type.SyntaxKind.E.GetKeyValue,
+        kind: SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${lit.node.output}]`,
         source: ref.node,
         key: lit.node,
@@ -28,7 +29,7 @@ typeReferenceExpressions.forEach((ref) => {
       content: `${ref.content}[${ref2.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
-        kind: ast.Type.SyntaxKind.E.GetKeyValue,
+        kind: SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${ref2.node.output}]`,
         source: ref.node,
         key: ref2.node,
@@ -41,7 +42,7 @@ typeReferenceExpressions.forEach((ref) => {
       content: `${ref.content}[${union.content}]`,
       node: utils.createNode({
         instance: ast.GetKeyValueExpression,
-        kind: ast.Type.SyntaxKind.E.GetKeyValue,
+        kind: SyntaxKind.E.GetKeyValue,
         output: `${ref.node.output}[${union.node.output}]`,
         source: ref.node,
         key: union.node,

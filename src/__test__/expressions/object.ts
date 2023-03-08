@@ -1,17 +1,18 @@
-import _ from "lodash-es";
-import * as ast from "../../ast";
-import * as utils from "../utils";
-import type { Expression } from "./";
-import { arrayExpressions } from "./array";
-import { bracketSurroundExpressions } from "./bracket-surround";
-import { conditionExpressions } from "./condition";
-import { functionExpressions } from "./function";
-import { getKeyValueExpressions } from "./get-key-value";
-import { identifierTemplates } from "./identifier";
-import { intersectionExpressions } from "./intersection";
-import { literalExpressions } from "./literal";
-import { tupleExpressions } from "./tuple";
-import { unionExpressions } from "./union";
+import _ from 'lodash-es';
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as utils from '../utils';
+import type { Expression } from './';
+import { arrayExpressions } from './array';
+import { bracketSurroundExpressions } from './bracket-surround';
+import { conditionExpressions } from './condition';
+import { functionExpressions } from './function';
+import { getKeyValueExpressions } from './get-key-value';
+import { identifierTemplates } from './identifier';
+import { intersectionExpressions } from './intersection';
+import { literalExpressions } from './literal';
+import { tupleExpressions } from './tuple';
+import { unionExpressions } from './union';
 
 export { expressions as objectExpressions };
 
@@ -21,7 +22,7 @@ type ObjectContentName = Uncapitalize<
   ? T
   : never;
 type ObjectExpressions = {
-  simple: Record<ObjectContentName | "empty", Expression[]>;
+  simple: Record<ObjectContentName | 'empty', Expression[]>;
   complex: Record<ObjectContentName, Expression[]>;
   all: Expression[];
 };
@@ -33,7 +34,7 @@ const expressions: ObjectExpressions = {
     indexSignature: [],
     literalIndex: [],
     mapped: [],
-    normal: [],
+    normal: []
   },
   simple: {
     call: [],
@@ -43,16 +44,21 @@ const expressions: ObjectExpressions = {
     literalIndex: [],
     mapped: [],
     normal: [],
-    empty: [],
+    empty: []
   },
-  all: [],
+  all: []
 };
 
 function generateObjectOutput(contents: string[]) {
   return utils.mergeString(
-    "{\n",
-    contents.map((item) => `  ${item};`).join("\n"),
-    "\n}"
+    '{\n',
+    contents
+      .map(
+        item =>
+          `  ${item};` /* ';' 结尾（取决于 compiler.config.memberSeparator，默认为 ';'） */
+      )
+      .join('\n'),
+    '\n}'
   );
 }
 
@@ -62,39 +68,39 @@ function generateObjectOutput(contents: string[]) {
       content: `{}`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: "{}",
-        contents: [],
-      }),
+        kind: SyntaxKind.E.Object,
+        output: '{}',
+        contents: []
+      })
     },
     {
       content: `{       \n    \n\n}`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: "{}",
-        contents: [],
-      }),
-    },
+        kind: SyntaxKind.E.Object,
+        output: '{}',
+        contents: []
+      })
+    }
   ];
   expressions.simple.call = [
     {
       content: `{ (): void }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["(): void"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['(): void']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.CallExpression,
             return: utils.createNode({
               instance: ast.Function.Return.Expression,
-              output: "void",
+              output: 'void'
             }),
-            output: "(): void",
-          }),
-        ],
-      }),
+            output: '(): void'
+          })
+        ]
+      })
     },
     {
       content: `{ 
@@ -105,12 +111,12 @@ function generateObjectOutput(contents: string[]) {
       }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([
-          "(name: string, age?: number): string",
-          "(): void",
-          "()",
-          "<T>()",
+          '(name: string, age?: number): string',
+          '(): void',
+          '()',
+          '<T>()'
         ]),
         contents: [
           utils.createNode({
@@ -121,67 +127,67 @@ function generateObjectOutput(contents: string[]) {
                 {
                   id: utils.createNode({
                     instance: ast.IdentifierExpression,
-                    output: "name",
+                    output: 'name'
                   }),
                   type: utils.createNode({
                     instance: ast.LiteralKeywordExpression,
-                    output: "string",
+                    output: 'string'
                   }),
                   optional: false,
-                  rest: false,
+                  rest: false
                 },
                 {
                   id: utils.createNode({
                     instance: ast.IdentifierExpression,
-                    output: "age",
+                    output: 'age'
                   }),
                   type: utils.createNode({
                     instance: ast.LiteralKeywordExpression,
-                    output: "number",
+                    output: 'number'
                   }),
                   optional: true,
-                  rest: false,
-                },
-              ],
+                  rest: false
+                }
+              ]
             }),
             return: utils.createNode({
               instance: ast.Function.Return.Expression,
-              output: "string",
+              output: 'string'
             }),
-            output: "(name: string, age?: number): string",
+            output: '(name: string, age?: number): string'
           }),
           utils.createNode({
             instance: ast.Object.Content.CallExpression,
             return: utils.createNode({
               instance: ast.Function.Return.Expression,
-              output: "void",
+              output: 'void'
             }),
-            output: "(): void",
+            output: '(): void'
           }),
           utils.createNode({
             instance: ast.Object.Content.CallExpression,
-            output: "()",
+            output: '()'
           }),
           utils.createNode({
             instance: ast.Object.Content.CallExpression,
-            output: "<T>()",
+            output: '<T>()',
             genericArgs: utils.createNode({
               instance: ast.GenericArgsExpression,
               values: [
                 {
                   id: utils.createNode({
                     instance: ast.IdentifierExpression,
-                    output: "T",
+                    output: 'T'
                   }),
                   default: void 0,
-                  type: void 0,
-                },
-              ],
-            }),
-          }),
-        ],
-      }),
-    },
+                  type: void 0
+                }
+              ]
+            })
+          })
+        ]
+      })
+    }
   ];
 
   expressions.simple.constructor = [
@@ -189,8 +195,8 @@ function generateObjectOutput(contents: string[]) {
       content: `{ new (): void }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["new (): void"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['new (): void']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.ConstructorExpression,
@@ -198,13 +204,13 @@ function generateObjectOutput(contents: string[]) {
               instance: ast.Function.Mode.NormalExpression,
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "void",
-              }),
+                output: 'void'
+              })
             }),
-            output: "new (): void",
-          }),
-        ],
-      }),
+            output: 'new (): void'
+          })
+        ]
+      })
     },
     {
       content: `{ 
@@ -213,10 +219,10 @@ function generateObjectOutput(contents: string[]) {
       }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([
-          "new (name: string, age?: number): string",
-          "new (): void",
+          'new (name: string, age?: number): string',
+          'new (): void'
         ]),
         contents: [
           utils.createNode({
@@ -229,35 +235,35 @@ function generateObjectOutput(contents: string[]) {
                   {
                     id: utils.createNode({
                       instance: ast.IdentifierExpression,
-                      output: "name",
+                      output: 'name'
                     }),
                     type: utils.createNode({
                       instance: ast.LiteralKeywordExpression,
-                      output: "string",
+                      output: 'string'
                     }),
                     optional: false,
-                    rest: false,
+                    rest: false
                   },
                   {
                     id: utils.createNode({
                       instance: ast.IdentifierExpression,
-                      output: "age",
+                      output: 'age'
                     }),
                     type: utils.createNode({
                       instance: ast.LiteralKeywordExpression,
-                      output: "number",
+                      output: 'number'
                     }),
                     optional: true,
-                    rest: false,
-                  },
-                ],
+                    rest: false
+                  }
+                ]
               }),
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "string",
-              }),
+                output: 'string'
+              })
             }),
-            output: "new (name: string, age?: number): string",
+            output: 'new (name: string, age?: number): string'
           }),
           utils.createNode({
             instance: ast.Object.Content.ConstructorExpression,
@@ -265,42 +271,42 @@ function generateObjectOutput(contents: string[]) {
               instance: ast.Function.Mode.NormalExpression,
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "void",
-              }),
+                output: 'void'
+              })
             }),
-            output: "new (): void",
-          }),
-        ],
-      }),
-    },
+            output: 'new (): void'
+          })
+        ]
+      })
+    }
   ];
   expressions.simple.method = [
     {
       content: `{ foo(): void }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["foo(): void"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['foo(): void']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Method,
+            kind: SyntaxKind.E.ObjectMethod,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "foo",
+              output: 'foo'
             }),
             body: utils.createNode({
               instance: ast.Function.Mode.NormalExpression,
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "void",
-              }),
+                output: 'void'
+              })
             }),
             optional: false,
-            output: "foo(): void",
-          }),
-        ],
-      }),
+            output: 'foo(): void'
+          })
+        ]
+      })
     },
     {
       content: `{ 
@@ -309,18 +315,15 @@ function generateObjectOutput(contents: string[]) {
       }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput([
-          "foo(age?: number): any",
-          "bar?(): void",
-        ]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['foo(age?: number): any', 'bar?(): void']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Method,
+            kind: SyntaxKind.E.ObjectMethod,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "foo",
+              output: 'foo'
             }),
             optional: false,
             body: utils.createNode({
@@ -331,43 +334,43 @@ function generateObjectOutput(contents: string[]) {
                   {
                     id: utils.createNode({
                       instance: ast.IdentifierExpression,
-                      output: "age",
+                      output: 'age'
                     }),
                     type: utils.createNode({
                       instance: ast.LiteralKeywordExpression,
-                      output: "number",
+                      output: 'number'
                     }),
                     optional: true,
-                    rest: false,
-                  },
-                ],
+                    rest: false
+                  }
+                ]
               }),
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "any",
-              }),
+                output: 'any'
+              })
             }),
-            output: "foo(age?: number): any",
+            output: 'foo(age?: number): any'
           }),
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "bar",
+              output: 'bar'
             }),
             optional: true,
             body: utils.createNode({
               instance: ast.Function.Mode.NormalExpression,
               return: utils.createNode({
                 instance: ast.Function.Return.Expression,
-                output: "void",
-              }),
+                output: 'void'
+              })
             }),
-            output: "bar?(): void",
-          }),
-        ],
-      }),
-    },
+            output: 'bar?(): void'
+          })
+        ]
+      })
+    }
   ];
 
   expressions.simple.normal = [
@@ -375,64 +378,64 @@ function generateObjectOutput(contents: string[]) {
       content: `{ name: string }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["name: string"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['name: string']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Normal,
+            kind: SyntaxKind.E.ObjectNormal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "name",
+              output: 'name'
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "string",
+              output: 'string'
             }),
             optional: false,
-            output: "name: string",
-          }),
-        ],
-      }),
+            output: 'name: string'
+          })
+        ]
+      })
     },
     {
       content: `{ name: string, age?: number }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["name: string", "age?: number"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['name: string', 'age?: number']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Normal,
+            kind: SyntaxKind.E.ObjectNormal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "name",
+              output: 'name'
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "string",
+              output: 'string'
             }),
             optional: false,
-            output: "name: string",
+            output: 'name: string'
           }),
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Normal,
+            kind: SyntaxKind.E.ObjectNormal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "age",
+              output: 'age'
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "number",
+              output: 'number'
             }),
             optional: true,
-            output: "age?: number",
-          }),
-        ],
-      }),
-    },
+            output: 'age?: number'
+          })
+        ]
+      })
+    }
   ];
 
   expressions.simple.literalIndex = [
@@ -440,94 +443,94 @@ function generateObjectOutput(contents: string[]) {
       content: "{ ['age']: number }",
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput(["['age']: number"]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
-            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
+            kind: SyntaxKind.E.ObjectLiteralIndex,
             literalName: utils.createNode({
               instance: ast.StringLiteralExpression,
-              output: "'age'",
+              output: "'age'"
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "number",
+              output: 'number'
             }),
             optional: false,
-            output: "['age']: number",
-          }),
-        ],
-      }),
+            output: "['age']: number"
+          })
+        ]
+      })
     },
     {
       content: "{ ['age']: number, [123]?: string }",
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["['age']: number", "[123]?: string"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(["['age']: number", '[123]?: string']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
-            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
+            kind: SyntaxKind.E.ObjectLiteralIndex,
             literalName: utils.createNode({
               instance: ast.StringLiteralExpression,
-              output: "'age'",
+              output: "'age'"
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "number",
+              output: 'number'
             }),
             optional: false,
-            output: "['age']: number",
+            output: "['age']: number"
           }),
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
-            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
+            kind: SyntaxKind.E.ObjectLiteralIndex,
             literalName: utils.createNode({
               instance: ast.NumberLiteralExpression,
-              output: "123",
+              output: '123'
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "string",
+              output: 'string'
             }),
             optional: true,
-            output: "[123]?: string",
-          }),
-        ],
-      }),
-    },
+            output: '[123]?: string'
+          })
+        ]
+      })
+    }
   ];
 
   expressions.simple.indexSignature = [
     {
-      content: "{ [key: string]: any }",
+      content: '{ [key: string]: any }',
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["[key: string]: any"]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['[key: string]: any']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.IndexSignatureExpression,
-            kind: ast.Type.SyntaxKind.E.Object_IndexSignature,
+            kind: SyntaxKind.E.ObjectIndexSignature,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "key",
+              output: 'key'
             }),
             nameType: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "string",
+              output: 'string'
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "any",
+              output: 'any'
             }),
-            output: "[key: string]: any",
-          }),
-        ],
-      }),
-    },
+            output: '[key: string]: any'
+          })
+        ]
+      })
+    }
   ];
 
   expressions.simple.mapped = [
@@ -535,158 +538,156 @@ function generateObjectOutput(contents: string[]) {
       content: "{ [K in 'name' | 'age']: string }",
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput(["[K in 'name' | 'age']: string"]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MappedExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Mapped,
+            kind: SyntaxKind.E.ObjectMapped,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "K",
+              output: 'K'
             }),
             inSource: utils.createNode({
               instance: ast.UnionExpression,
-              kind: ast.Type.SyntaxKind.E.Union,
+              kind: SyntaxKind.E.Union,
               output: "'name' | 'age'",
               values: [
                 utils.createNode({
                   instance: ast.StringLiteralExpression,
-                  output: "'name'",
+                  output: "'name'"
                 }),
                 utils.createNode({
                   instance: ast.StringLiteralExpression,
-                  output: "'age'",
-                }),
-              ],
+                  output: "'age'"
+                })
+              ]
             }),
             value: utils.createNode({
               instance: ast.LiteralKeywordExpression,
-              output: "string",
+              output: 'string'
             }),
             output: "[K in 'name' | 'age']: string",
             asTarget: false,
-            operator: [false, false],
-          }),
-        ],
-      }),
+            operator: [false, false]
+          })
+        ]
+      })
     },
     {
-      content: "{ [K in Union[number] as Filter<K>]?: Array<K> }",
+      content: '{ [K in Union[number] as Filter<K>]?: Array<K> }',
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput([
-          "[K in Union[number] as Filter<K>]?: Array<K>",
-        ]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['[K in Union[number] as Filter<K>]?: Array<K>']),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MappedExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Mapped,
+            kind: SyntaxKind.E.ObjectMapped,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: "K",
+              output: 'K'
             }),
             inSource: utils.createNode({
               instance: ast.GetKeyValueExpression,
-              output: "Union[number]",
+              output: 'Union[number]',
               source: utils.createNode({
                 instance: ast.TypeReferenceExpression,
-                output: "Union",
+                output: 'Union'
               }),
               key: utils.createNode({
                 instance: ast.LiteralKeywordExpression,
-                output: "number",
-              }),
+                output: 'number'
+              })
             }),
             value: utils.createNode({
               instance: ast.TypeReferenceExpression,
-              output: "Array<K>",
+              output: 'Array<K>',
               name: utils.createNode({
                 instance: ast.IdentifierExpression,
-                output: "Array",
-              }),
+                output: 'Array'
+              })
             }),
-            output: "[K in Union[number] as Filter<K>]?: Array<K>",
+            output: '[K in Union[number] as Filter<K>]?: Array<K>',
             asTarget: utils.createNode({
               instance: ast.TypeReferenceExpression,
-              output: "Filter<K>",
+              output: 'Filter<K>',
               name: utils.createNode({
                 instance: ast.IdentifierExpression,
-                output: "Filter",
+                output: 'Filter'
               }),
               arguments: [
                 utils.createNode({
                   instance: ast.TypeReferenceExpression,
-                  output: "K",
-                }),
-              ],
+                  output: 'K'
+                })
+              ]
             }),
-            operator: [false as any, true],
-          }),
-        ],
-      }),
-    },
+            operator: [false as any, true]
+          })
+        ]
+      })
+    }
   ];
 })();
 
 (function initComplex() {
-  expressions.complex.call = functionExpressions.normal.map((item) => {
+  expressions.complex.call = functionExpressions.normal.map(item => {
     return {
       content: `{ ${item.content} }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([item.node.output!]),
-        contents: [item.node],
-      }),
+        contents: [item.node]
+      })
     };
   });
 
-  expressions.complex.constructor = functionExpressions.normal.map((item) => {
+  expressions.complex.constructor = functionExpressions.normal.map(item => {
     return {
       content: `{ new ${item.content} }`,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
-        output: generateObjectOutput(["new " + item.node.output!]),
+        kind: SyntaxKind.E.Object,
+        output: generateObjectOutput(['new ' + item.node.output!]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.ConstructorExpression,
             body: item.node,
-            output: "new " + item.node.output,
-          }),
-        ],
-      }),
+            output: 'new ' + item.node.output
+          })
+        ]
+      })
     };
   });
 
-  expressions.complex.method = functionExpressions.normal.map((item) => {
+  expressions.complex.method = functionExpressions.normal.map(item => {
     const optional = _.random(0, 1) === 1;
     const id = _.sample(identifierTemplates)!;
-    const content = "{ " + id + (optional ? "?" : "") + item.content + " }";
-    const output = id + (optional ? "?" : "") + item.node.output!;
+    const content = '{ ' + id + (optional ? '?' : '') + item.content + ' }';
+    const output = id + (optional ? '?' : '') + item.node.output!;
 
     return {
       content,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([output]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MethodExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Method,
+            kind: SyntaxKind.E.ObjectMethod,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: id,
+              output: id
             }),
             optional,
             body: item.node,
-            output,
-          }),
-        ],
-      }),
+            output
+          })
+        ]
+      })
     };
   });
 
@@ -699,49 +700,48 @@ function generateObjectOutput(contents: string[]) {
     ..._.sampleSize(literalExpressions.all, 100),
     ..._.sampleSize(tupleExpressions, 100),
     ..._.sampleSize(unionExpressions.all, 100),
-    ..._.sampleSize(intersectionExpressions.all, 100),
+    ..._.sampleSize(intersectionExpressions.all, 100)
   ];
 
-  expressions.complex.normal = otherExpressions.map((item) => {
+  expressions.complex.normal = otherExpressions.map(item => {
     const id = _.sample(identifierTemplates)!;
     const optional = _.random(0, 1) === 1;
-    const content =
-      "{ " + id + (optional ? "?" : "") + ": " + item.content + " }";
-    const output = id + (optional ? "?" : "") + ": " + item.node.output!;
+    const content = '{ ' + id + (optional ? '?' : '') + ': ' + item.content + ' }';
+    const output = id + (optional ? '?' : '') + ': ' + item.node.output!;
 
     return {
       content,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([output]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.NormalExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Normal,
+            kind: SyntaxKind.E.ObjectNormal,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: id,
+              output: id
             }),
             optional,
             value: item.node,
-            output,
-          }),
-        ],
-      }),
+            output
+          })
+        ]
+      })
     };
   });
 
   expressions.complex.literalIndex = _.sampleSize(
     [...literalExpressions.number, ...literalExpressions.string],
     100
-  ).map((literalName) => {
+  ).map(literalName => {
     const value = _.sample(otherExpressions)!;
     const optional = _.random(0, 1) === 1;
-    const content = `{ [${literalName.content}]${optional ? "?" : ""}: ${
+    const content = `{ [${literalName.content}]${optional ? '?' : ''}: ${
       value.content
     } }`;
-    const output = `[${literalName.node.output}]${optional ? "?" : ""}: ${
+    const output = `[${literalName.node.output}]${optional ? '?' : ''}: ${
       value.node.output
     }`;
 
@@ -749,24 +749,24 @@ function generateObjectOutput(contents: string[]) {
       content,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([output]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.LiteralIndexExpression,
-            kind: ast.Type.SyntaxKind.E.Object_LiteralIndex,
+            kind: SyntaxKind.E.ObjectLiteralIndex,
             literalName: literalName.node,
             optional,
             value: value.node,
-            output,
-          }),
-        ],
-      }),
+            output
+          })
+        ]
+      })
     };
   });
 
   expressions.complex.indexSignature = _.sampleSize(otherExpressions, 100).map(
-    (nameType) => {
+    nameType => {
       const id = _.sample(identifierTemplates)!;
       const value = _.sample(otherExpressions)!;
       const content = `{ [${id}: ${nameType.content}]: ${value.content} }`;
@@ -776,57 +776,57 @@ function generateObjectOutput(contents: string[]) {
         content,
         node: utils.createNode({
           instance: ast.Object.Expression,
-          kind: ast.Type.SyntaxKind.E.Object,
+          kind: SyntaxKind.E.Object,
           output: generateObjectOutput([output]),
           contents: [
             utils.createNode({
               instance: ast.Object.Content.IndexSignatureExpression,
-              kind: ast.Type.SyntaxKind.E.Object_IndexSignature,
+              kind: SyntaxKind.E.ObjectIndexSignature,
               value: value.node,
               name: utils.createNode({
                 instance: ast.IdentifierExpression,
-                output: id,
+                output: id
               }),
               nameType: nameType.node,
-              output,
-            }),
-          ],
-        }),
+              output
+            })
+          ]
+        })
       };
     }
   );
 
-  expressions.complex.mapped = otherExpressions.map((value) => {
+  expressions.complex.mapped = otherExpressions.map(value => {
     const id = _.sample(identifierTemplates)!;
     const operator = {
       remove: _.random(0, 1) === 1,
-      optional: _.random(0, 1) === 1,
+      optional: _.random(0, 1) === 1
     };
     const inSource = _.sample(otherExpressions)!;
     const asTarget = _.random(0, 1) === 1 ? _.sample(otherExpressions)! : false;
 
     const content = utils.mergeString(
-      "{ [",
+      '{ [',
       id,
-      " in ",
+      ' in ',
       inSource.content,
-      asTarget ? " as " + asTarget.content : "",
-      "]",
-      operator.remove ? " -?" : operator.optional ? "?" : "",
-      ": ",
+      asTarget ? ' as ' + asTarget.content : '',
+      ']',
+      operator.remove ? ' -?' : operator.optional ? '?' : '',
+      ': ',
       value.content,
-      " }"
+      ' }'
     );
 
     const output = utils.mergeString(
-      "[",
+      '[',
       id,
-      " in ",
+      ' in ',
       inSource.node.output!,
-      asTarget ? " as " + asTarget.node.output : "",
-      "]",
-      operator.remove ? "-?" : operator.optional ? "?" : "",
-      ": ",
+      asTarget ? ' as ' + asTarget.node.output : '',
+      ']',
+      operator.remove ? '-?' : operator.optional ? '?' : '',
+      ': ',
       value.node.output!
     );
 
@@ -834,31 +834,31 @@ function generateObjectOutput(contents: string[]) {
       content,
       node: utils.createNode({
         instance: ast.Object.Expression,
-        kind: ast.Type.SyntaxKind.E.Object,
+        kind: SyntaxKind.E.Object,
         output: generateObjectOutput([output]),
         contents: [
           utils.createNode({
             instance: ast.Object.Content.MappedExpression,
-            kind: ast.Type.SyntaxKind.E.Object_Mapped,
+            kind: SyntaxKind.E.ObjectMapped,
             value: value.node,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: id,
+              output: id
             }),
             inSource: inSource.node,
             asTarget: asTarget ? asTarget.node : false,
             operator: operator.remove
               ? [true, true]
               : ([false, operator.optional] as any),
-            output,
-          }),
-        ],
-      }),
+            output
+          })
+        ]
+      })
     };
   });
 })();
 
 expressions.all = [
   ..._.values(expressions.simple).flat(Infinity),
-  ..._.values(expressions.complex).flat(Infinity),
+  ..._.values(expressions.complex).flat(Infinity)
 ] as any;

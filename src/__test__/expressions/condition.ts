@@ -9,6 +9,7 @@ import { typeReferenceExpressions } from "./type-reference";
 import { Expression } from "./";
 import { unionExpressions } from "./union";
 import { identifierTemplates } from "./identifier";
+import { SyntaxKind } from "../../ast/constants";
 export { conditionExpressions, inferExpressions };
 
 const otherExpressions = [
@@ -34,7 +35,7 @@ const inferExpressions: Record<"extended" | "native" | "all", Expression[]> =
         instance: ast.IdentifierExpression,
         output: _.sample(identifierTemplates)!,
       });
-      const extendsTypes: utils.TestNode<ast.Base>[] = [];
+      const extendsTypes: utils.TestNode<ast.ASTBase>[] = [];
       const hasExtendsTypes = _.random(0, 1) === 1;
 
       let native = {
@@ -62,7 +63,7 @@ const inferExpressions: Record<"extended" | "native" | "all", Expression[]> =
         content: `infer ${native.content}`,
         node: utils.createNode({
           instance: ast.InferExpression,
-          kind: ast.Type.SyntaxKind.E.Infer,
+          kind: SyntaxKind.E.Infer,
           output: `infer ${native.output}`,
           name: id,
           extendsTypes,
@@ -73,7 +74,7 @@ const inferExpressions: Record<"extended" | "native" | "all", Expression[]> =
         content: `infer ${extended.content}`,
         node: utils.createNode({
           instance: ast.InferExpression,
-          kind: ast.Type.SyntaxKind.E.Infer,
+          kind: SyntaxKind.E.Infer,
           output: `infer ${extended.output}`,
           name: id,
           extendsTypes,
@@ -125,7 +126,7 @@ const conditionExpressions: Record<"extended" | "native" | "all", Expression[]> 
 
       const node = utils.createNode({
         instance: ast.ConditionExpression,
-        kind: ast.Type.SyntaxKind.E.Condition,
+        kind: SyntaxKind.E.Condition,
         output: utils.mergeString(
           left.node.output!,
           " extends ",

@@ -2,6 +2,7 @@ import * as ast from "../../ast";
 import * as utils from "../utils";
 import { identifierTemplates } from "./identifier";
 import { Expression } from "./";
+import { SyntaxKind } from "../../ast/constants";
 
 export { expressions as typeReferenceExpressions };
 
@@ -21,7 +22,7 @@ const expressions: Expression[] = (() => {
     node: utils.createNode({
       instance: ast.TypeReferenceExpression,
       output: template,
-      kind: ast.Type.SyntaxKind.E.TypeReference,
+      kind: SyntaxKind.E.TypeReference,
       name: utils.createNode({
         instance: ast.IdentifierExpression,
         output: template,

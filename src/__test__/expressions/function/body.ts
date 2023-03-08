@@ -11,6 +11,7 @@ import { tupleExpressions } from "../tuple";
 import { typeReferenceExpressions } from "../type-reference";
 import type { Expression } from "../";
 import { unionExpressions } from "../union";
+import { SyntaxKind } from "../../../ast/constants";
 
 export { expressions as bodyExpressions };
 
@@ -74,7 +75,7 @@ for (
       content: `(${content})`,
       node: utils.createNode({
         instance: ast.Function.Body.Expression,
-        kind: ast.Type.SyntaxKind.E.Function_Body,
+        kind: SyntaxKind.E.FunctionBody,
         output: `(${output})`,
         args: currentArgs,
       }),

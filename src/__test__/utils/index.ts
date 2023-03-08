@@ -1,6 +1,12 @@
 import { expect } from 'vitest';
 
-import { ASTBase } from '../../ast';
+import {
+  ASTBase,
+  ExpressionBase,
+  NormalStatementBase,
+  TopLevelStatementBase
+} from '../../ast';
+import { CompiledNode } from '../../compiler';
 import { Parser } from '../../parser';
 import type { TestNode, TestSource } from './types';
 
@@ -22,28 +28,30 @@ function createNode<T>(node: TestNode<T>) {
 }
 
 function assertSource<T>(source: TestSource<T>) {
-  let astNodes!: ASTBase[];
+  let topLevelStmts!: TopLevelStatementBase[];
+  // let compiledNodes: CompiledNode[];
 
   try {
-    astNodes = new Parser(source.content).toAST();
+    topLevelStmts = new Parser(source.content).toAST();
+    // compiledNodes = compiler.compile(topLevelStmts).toNodes();
   } catch (error) {
     expect({ error, content: source.content }).toMatchSnapshot('parser-error');
     throw error;
   }
 
-  expect(astNodes.length).not.toBe(0);
+  expect(topLevelStmts.length).not.toBe(0);
 
-  if (astNodes.length !== 1) {
+  if (topLevelStmts.length !== 1) {
     expect(source.content).toMatchSnapshot('divergence');
   }
 
   source.nodes.forEach((sourceNodeInfo, index) => {
     try {
-      assertNode(astNodes[index], sourceNodeInfo);
+      assertNode(topLevelStmts[index], sourceNodeInfo);
     } catch (error) {
       expect({
         error,
-        compile: astNodes[index].compile(),
+        compile: topLevelStmts[index].compile(),
         info: sourceNodeInfo
       }).toMatchSnapshot('error');
       throw error;
@@ -51,7 +59,10 @@ function assertSource<T>(source: TestSource<T>) {
   });
 }
 
-function assertNode(node: ASTBase, info: TestNode<ASTBase>) {
+function assertNode(
+  node: TopLevelStatementBase | NormalStatementBase | ExpressionBase,
+  info: TestNode<ASTBase>
+) {
   expect(node).instanceOf(info.instance);
 
   for (const key in info) {
@@ -67,7 +78,12 @@ function assertNode(node: ASTBase, info: TestNode<ASTBase>) {
 
     switch (key) {
       case 'output':
-        expect(node.compile()).toBe(info.output);
+        const output = (
+          node.compile().flat(Infinity) as CompiledNode[]
+        ) /* 可能是“顶级语句”（二维），也可能是“普通语句”（一维）  */
+          .map(cNode => cNode.text)
+          .join('');
+        expect(output).toBe(info.output);
         break;
 
       case 'pos':

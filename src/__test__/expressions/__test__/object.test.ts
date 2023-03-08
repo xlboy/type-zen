@@ -15,7 +15,7 @@ function testObject(
       nodes: [
         utils.createNode({
           instance: ast.TypeAliasStatement,
-          output: `type A = ${node.output};`,
+          output: `type A = ${node.output}`,
           name: utils.createNode({
             instance: ast.IdentifierExpression,
             output: "A",

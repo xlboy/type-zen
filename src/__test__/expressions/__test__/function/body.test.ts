@@ -2,6 +2,7 @@ import { it } from "vitest";
 import * as ast from "../../../../ast";
 import { functionExpressions } from "../..";
 import * as utils from "../../../utils";
+import { SyntaxKind } from "../../../../ast/constants";
 
 it("normal", () => {
   functionExpressions.body.forEach((expr) => {
@@ -10,10 +11,10 @@ it("normal", () => {
       nodes: [
         utils.createNode({
           instance: ast.TypeAliasStatement,
-          output: `type B = ${expr.node.output} => void;`,
+          output: `type B = ${expr.node.output} => void`,
           value: utils.createNode({
             instance: ast.Function.Mode.ArrowExpression,
-            kind: ast.Type.SyntaxKind.E.Function_Arrow,
+            kind: SyntaxKind.E.FunctionArrow,
             body: expr.node,
           }),
         }),

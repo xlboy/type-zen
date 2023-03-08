@@ -7,6 +7,7 @@ import { typeReferenceExpressions } from "./type-reference";
 import type { Expression } from "./";
 import { bracketSurroundExpressions } from "./bracket-surround";
 import _ from "lodash-es";
+import { SyntaxKind } from "../../ast/constants";
 
 export { expressions as arrayExpressions };
 
@@ -22,7 +23,7 @@ const expressions: Expression[] = otherExpressions.map((expr) => ({
   content: `${expr.content}[]`,
   node: utils.createNode({
     instance: ast.ArrayExpression,
-    kind: ast.Type.SyntaxKind.E.Array,
+    kind: SyntaxKind.E.Array,
     output: `${expr.node.output}[]`,
     source: expr.node,
   }),

@@ -7,6 +7,7 @@ import { tupleExpressions } from "./tuple";
 import { typeReferenceExpressions } from "./type-reference";
 import type { Expression } from "./";
 import { unionExpressions } from "./union";
+import { SyntaxKind } from "../../ast/constants";
 export { expressions as bracketSurroundExpressions };
 
 const otherExpressions = [
@@ -21,7 +22,7 @@ const expressions: Expression[] = otherExpressions.map((expr) => ({
   content: `(${expr.content})`,
   node: utils.createNode({
     instance: ast.BracketSurroundExpression,
-    kind: ast.Type.SyntaxKind.E.BracketSurround,
+    kind: SyntaxKind.E.BracketSurround,
     output: `(${expr.node.output})`,
     value: expr.node,
   }),

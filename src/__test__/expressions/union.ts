@@ -3,6 +3,7 @@ import * as utils from "../utils";
 import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
 import type { Expression } from "./";
+import { SyntaxKind } from "../../ast/constants";
 
 export { expressions as unionExpressions };
 
@@ -25,7 +26,7 @@ const expressions = (() => {
       content: expr.map(({ content }) => content).join(" | "),
       node: utils.createNode({
         instance: ast.UnionExpression,
-        kind: ast.Type.SyntaxKind.E.Union,
+        kind: SyntaxKind.E.Union,
         output: expr.map(({ node }) => node.output).join(" | "),
         values: expr.map(({ node }) => node),
         isExtended: false,
@@ -40,7 +41,7 @@ const expressions = (() => {
       ),
       node: utils.createNode({
         instance: ast.UnionExpression,
-        kind: ast.Type.SyntaxKind.E.Union,
+        kind: SyntaxKind.E.Union,
         output: expr.map(({ node }) => node.output).join(" | "),
         values: expr.map(({ node }) => node),
         isExtended: true,

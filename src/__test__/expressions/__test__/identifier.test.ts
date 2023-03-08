@@ -8,7 +8,7 @@ describe("valid", () => {
   it("no arguments", () => {
     identifierTemplates.forEach((template) => {
       utils.createSource({
-        content: `type ${template} = any;`,
+        content: `type ${template} = any`,
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
@@ -43,7 +43,7 @@ it("invalid", () => {
   ];
   it("error throw: UnexpectedInput", () => {
     for (const id of templates) {
-      const fn = () => new Parser(`type ${id} = 1;`).toAST();
+      const fn = () => new Parser(`type ${id} = 1`).toAST();
       expect(fn).throw();
 
       try {

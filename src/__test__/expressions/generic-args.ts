@@ -6,6 +6,7 @@ import { literalExpressions } from "./literal";
 import { typeReferenceExpressions } from "./type-reference";
 import type { Expression } from "./";
 import { unionExpressions } from "./union";
+import { SyntaxKind } from "../../ast/constants";
 
 export { expressions as genericArgsExpressions };
 
@@ -73,7 +74,7 @@ permutedIdGroup.forEach((ids) => {
     node: utils.createNode({
       instance: ast.GenericArgsExpression,
       output: generateContent(true),
-      kind: ast.Type.SyntaxKind.E.GenericArgs,
+      kind: SyntaxKind.E.GenericArgs,
       values: args,
     }),
   });
@@ -83,7 +84,7 @@ permutedIdGroup.forEach((ids) => {
     node: utils.createNode({
       instance: ast.GenericArgsExpression,
       output: generateContent(true),
-      kind: ast.Type.SyntaxKind.E.GenericArgs,
+      kind: SyntaxKind.E.GenericArgs,
       values: args,
     }),
   });

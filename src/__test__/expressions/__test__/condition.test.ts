@@ -11,7 +11,7 @@ describe("condition", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type A = ${expr.node.output};`,
+            output: `type A = ${expr.node.output}`,
             value: expr.node,
           }),
         ],
@@ -26,7 +26,7 @@ describe("condition", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type A = ${expr.node.output};`,
+            output: `type A = ${expr.node.output}`,
             value: expr.node,
           }),
         ],
@@ -43,7 +43,7 @@ describe("infer", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type A = ${expr.node.output};`,
+            output: `type A = ${expr.node.output}`,
             value: expr.node,
           }),
         ],
@@ -58,7 +58,7 @@ describe("infer", () => {
         nodes: [
           utils.createNode({
             instance: ast.TypeAliasStatement,
-            output: `type A = ${expr.node.output};`,
+            output: `type A = ${expr.node.output}`,
             value: expr.node,
           }),
         ],

@@ -1,8 +1,9 @@
-import _ from "lodash-es";
-import { Statement } from ".";
-import * as ast from "../../ast";
-import * as expr from "../expressions";
-import * as utils from "../utils";
+import _ from 'lodash-es';
+import { Statement } from '.';
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as expr from '../expressions';
+import * as utils from '../utils';
 
 export { statements as declareFunctionStatements };
 
@@ -21,16 +22,14 @@ for (let index = 0; index < 2000; index++) {
     output += body.node.output;
   }
 
-  output += ";";
-
   const node = utils.createNode({
     instance: ast.DeclareFunctionStatement,
-    kind: ast.Type.SyntaxKind.S.DeclareFunction,
+    kind: SyntaxKind.S.DeclareFunction,
     output,
     name: utils.createNode({
       instance: ast.IdentifierExpression,
-      output: id,
-    }),
+      output: id
+    })
   });
 
   if (hasBody) node.body = body.node;
