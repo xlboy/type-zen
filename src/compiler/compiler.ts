@@ -94,6 +94,9 @@ class Compiler {
         currentLine = currNodeLine;
       }
     }
+    
+    // 删除最后一个换行符
+    filteredResult.pop();
 
     return filteredResult;
   }
