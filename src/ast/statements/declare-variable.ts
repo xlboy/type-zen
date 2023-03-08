@@ -1,10 +1,10 @@
 import zod from 'zod';
 
-import type { ASTNodePosition } from '../..';
-import { SyntaxKind } from '../../constants';
-import { ExpressionBase } from '../../expressions/base';
-import { IdentifierExpression } from '../../expressions/identifier';
-import { TopLevelStatementBase } from './base';
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from '../expressions/base';
+import { IdentifierExpression } from '../expressions/identifier';
+import { StatementBase } from './base';
 
 export { DeclareVariableStatement };
 
@@ -20,7 +20,7 @@ const schema = zod
 
 type Schema = zod.infer<typeof schema>;
 
-class DeclareVariableStatement extends TopLevelStatementBase {
+class DeclareVariableStatement extends StatementBase {
   public kind = SyntaxKind.S.DeclareVariable;
 
   public declareType: Schema[1];

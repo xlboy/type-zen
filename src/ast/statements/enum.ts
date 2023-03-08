@@ -1,12 +1,12 @@
 import zod from 'zod';
 
-import type { ASTNodePosition } from '../..';
-import { SyntaxKind } from '../../constants';
-import { ExpressionBase } from '../../expressions/base';
-import { IdentifierExpression } from '../../expressions/identifier';
-import { NumberLiteralExpression } from '../../expressions/literals/number';
-import { StringLiteralExpression } from '../../expressions/literals/string';
-import { TopLevelStatementBase } from './base';
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from '../expressions/base';
+import { IdentifierExpression } from '../expressions/identifier';
+import { NumberLiteralExpression } from '../expressions/literals/number';
+import { StringLiteralExpression } from '../expressions/literals/string';
+import { StatementBase } from './base';
 
 export { EnumMemberExpression, EnumStatement };
 
@@ -46,7 +46,7 @@ class EnumMemberExpression extends ExpressionBase {
   }
 }
 
-class EnumStatement extends TopLevelStatementBase {
+class EnumStatement extends StatementBase {
   public kind = SyntaxKind.S.Enum;
 
   private static readonly schema = zod.tuple([

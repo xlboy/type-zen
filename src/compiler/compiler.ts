@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es';
 
-import type { TopLevelStatementBase } from '../ast/statements/top-level/base';
+import type { StatementBase } from '../ast/statements/base';
 import type { CompiledNode, CompilerConfig } from './types';
 
 export { compiler };
@@ -12,7 +12,7 @@ class Compiler {
     useLineTerminator: true
   };
 
-  public compile(statements: TopLevelStatementBase[]) {
+  public compile(statements: StatementBase[]) {
     const filteredCompiledNodes = this.filterCompiledNodes(statements);
 
     return {
@@ -32,7 +32,7 @@ class Compiler {
   /**
    * 过滤的范围： 1. 计算节点位置 2. 根据配置添加分号等
    */
-  private filterCompiledNodes(statements: TopLevelStatementBase[]): CompiledNode[] {
+  private filterCompiledNodes(statements: StatementBase[]): CompiledNode[] {
     let currentLine = 1;
     const filteredResult: CompiledNode[] = [];
 

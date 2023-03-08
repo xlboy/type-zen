@@ -17,17 +17,16 @@ export { TupleExpression } from './expressions/tuple';
 export { TypeReferenceExpression } from './expressions/type-reference';
 export { UnionExpression } from './expressions/untion';
 
-export { DeclareFunctionStatement } from './statements/top-level/declare-function';
-export { DeclareVariableStatement } from './statements/top-level/declare-variable';
-export { EnumMemberExpression, EnumStatement } from './statements/top-level/enum';
-export { TypeAliasStatement } from './statements/top-level/type-alias';
-export { IfStatement } from './statements/normal/if';
-export { ReturnStatement } from './statements/normal/return';
-export { SugarBlockStatement } from './statements/normal/sugar-block';
+export { SugarBlockExpression } from './expressions/sugar-block/sugar-block';
+export { SugarBlockIfExpression } from './expressions/sugar-block/if';
+export { SugarBlockReturnExpression } from './expressions/sugar-block/return';
 
-export { NormalStatementBase } from './statements/normal/base';
-export { TopLevelStatementBase } from './statements/top-level/base';
+export { DeclareFunctionStatement } from './statements/declare-function';
+export { DeclareVariableStatement } from './statements/declare-variable';
+export { EnumMemberExpression, EnumStatement } from './statements/enum';
+export { TypeAliasStatement } from './statements/type-alias';
 
+export { StatementBase } from './statements/base';
 export { ExpressionBase } from './expressions/base';
 
 export interface ASTNodePosition {

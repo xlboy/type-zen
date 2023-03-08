@@ -2,11 +2,10 @@ import zod from 'zod';
 
 import type { ASTNodePosition } from '../..';
 import { SyntaxKind } from '../../constants';
-import { ExpressionBase } from '../../expressions/base';
-import { NormalStatementBase } from './base';
-import { SugarBlockStatement } from './sugar-block';
+import { ExpressionBase } from '../base';
+import { SugarBlockExpression } from './sugar-block';
 
-export { IfStatement };
+export { SugarBlockIfExpression };
 
 const commonSchemaTupleSource = [
   zod.any() /* if */,
@@ -14,16 +13,16 @@ const commonSchemaTupleSource = [
     left: zod.instanceof(ExpressionBase),
     right: zod.instanceof(ExpressionBase)
   }) /* condition */,
-  zod.instanceof(SugarBlockStatement) /* then */
+  zod.instanceof(SugarBlockExpression) /* then */
 ] as const;
 
-class IfStatement extends NormalStatementBase {
-  public kind = SyntaxKind.S.If;
+class SugarBlockIfExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.SugarBlockIf;
 
   private static readonly schema = zod
     .tuple([
       ...commonSchemaTupleSource,
-      zod.instanceof(SugarBlockStatement).or(zod.instanceof(IfStatement))
+      zod.instanceof(SugarBlockExpression).or(zod.instanceof(SugarBlockIfExpression))
     ])
     .or(zod.tuple([...commonSchemaTupleSource]));
 
@@ -31,18 +30,18 @@ class IfStatement extends NormalStatementBase {
     left: ExpressionBase;
     right: ExpressionBase;
   };
-  public then: SugarBlockStatement;
-  public else?: SugarBlockStatement | IfStatement;
+  public then: SugarBlockExpression;
+  public else?: SugarBlockExpression | SugarBlockIfExpression;
 
   constructor(pos: ASTNodePosition, args: any) {
-    const _args = args as zod.infer<typeof IfStatement.schema>;
+    const _args = args as zod.infer<typeof SugarBlockIfExpression.schema>;
 
     super(pos);
-    this.checkArgs(_args, IfStatement.schema);
+    this.checkArgs(_args, SugarBlockIfExpression.schema);
     this.initArgs(args);
   }
 
-  private initArgs(args: zod.infer<typeof IfStatement.schema>) {
+  private initArgs(args: zod.infer<typeof SugarBlockIfExpression.schema>) {
     this.condition = args[1];
     this.then = args[2];
     this.else = args[3];
@@ -63,7 +62,6 @@ class IfStatement extends NormalStatementBase {
       // 从后往前遍历，看看“当前节点”是否在“前节点”（糖块）中的最后面
       // 如果是，则证明后面还有逻辑链要处理，添加 UnreturnedSymbol
       // 如不是，则证明后面没有逻辑链要处理，则添加 never 进行返回
-      // nodeFlow.add(this.compileUtils.getConstants().UnreturnedSymbol);
       const compileChain = this.compileUtils.getChain();
       let i = compileChain.length - 1;
       let isLastNodeInContextSugarBlock = false;
@@ -72,12 +70,15 @@ class IfStatement extends NormalStatementBase {
         const prevNode = compileChain.at(i - 1);
 
         if (
-          !(prevNode instanceof SugarBlockStatement || prevNode instanceof IfStatement)
+          !(
+            prevNode instanceof SugarBlockExpression ||
+            prevNode instanceof SugarBlockIfExpression
+          )
         ) {
           break;
         }
 
-        if (prevNode instanceof SugarBlockStatement) {
+        if (prevNode instanceof SugarBlockExpression) {
           const lastStmt = prevNode.statements.at(-1);
           const currentNode = compileChain.at(i);
 

@@ -1,35 +1,39 @@
 import zod from 'zod';
 
+import { ASTNodePosition } from '../..';
 import type { CompiledNode } from '../../../compiler';
-import type { ASTNodePosition } from '../..';
 import { SyntaxKind } from '../../constants';
 import { Object } from '../../expressions/object';
 import { TypeReferenceExpression } from '../../expressions/type-reference';
-import { TopLevelStatementBase } from '../top-level/base';
-import { DeclareFunctionStatement } from '../top-level/declare-function';
-import { DeclareVariableStatement } from '../top-level/declare-variable';
-import { TypeAliasStatement } from '../top-level/type-alias';
-import { NormalStatementBase } from './base';
-import type { IfStatement } from './if';
-import { ReturnStatement } from './return';
+import { StatementBase } from '../../statements/base';
+import { DeclareFunctionStatement } from '../../statements/declare-function';
+import { DeclareVariableStatement } from '../../statements/declare-variable';
+import { TypeAliasStatement } from '../../statements/type-alias';
+import { ExpressionBase } from '../base';
+import type { SugarBlockIfExpression } from './if';
+import { SugarBlockReturnExpression } from './return';
 
-export { SugarBlockStatement };
+export { SugarBlockExpression };
 
 const schema = zod.tuple([
   zod.any() /* { */,
   zod.array(
     zod
       .instanceof(TypeAliasStatement)
-      .or(zod.custom<IfStatement>((data: any) => data.kind === SyntaxKind.S.If))
-      .or(zod.instanceof(ReturnStatement))
+      .or(
+        zod.custom<SugarBlockIfExpression>(
+          (data: any) => data.kind === SyntaxKind.E.SugarBlockIf
+        )
+      )
+      .or(zod.instanceof(SugarBlockReturnExpression))
   ),
   zod.any() /* } */
 ]);
 
 type Schema = zod.infer<typeof schema>;
 
-class SugarBlockStatement extends NormalStatementBase {
-  public kind = SyntaxKind.S.SugarBlock;
+class SugarBlockExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.SugarBlock;
 
   public statements: Schema[1];
 
@@ -90,12 +94,12 @@ class SugarBlockStatement extends NormalStatementBase {
     return rootNodeFlow.get();
 
     function handleStatementHoist(
-      this: SugarBlockStatement,
+      this: SugarBlockExpression,
       stmt: Schema[1][number]
     ): void {
-      const [topLevelStmt] = compileChain;
+      const [firstStatement] = compileChain as [StatementBase | never];
 
-      if (topLevelStmt instanceof TopLevelStatementBase) {
+      if (firstStatement instanceof StatementBase) {
         if (stmt instanceof TypeAliasStatement) {
           const outputName = `$_${getCompilePath.call(this)}_${
             stmt.name.value
@@ -111,13 +115,13 @@ class SugarBlockStatement extends NormalStatementBase {
             .add(stmt.value.compile())
             .add('\n');
 
-          topLevelStmt.prependCompiledNode(nodeFlowToHoist.get());
+          firstStatement.prependCompiledNode(nodeFlowToHoist.get());
         }
       } else {
-        throw new Error('topLevelStmt is not TopLevelStatementBase');
+        throw new Error('SugarBlockExpression: Invalid compile chain');
       }
 
-      function getCompilePath(this: SugarBlockStatement) {
+      function getCompilePath(this: SugarBlockExpression) {
         const compileChain = this.compileUtils.getChain();
         let path = '';
 
@@ -144,7 +148,7 @@ class SugarBlockStatement extends NormalStatementBase {
       }
     }
 
-    function handleLocalVar(this: SugarBlockStatement, stmt: Schema[1][number]): void {
+    function handleLocalVar(this: SugarBlockExpression, stmt: Schema[1][number]): void {
       if (stmt instanceof TypeAliasStatement) {
         if (!localVarProcessing) {
           localVarProcessing = true;

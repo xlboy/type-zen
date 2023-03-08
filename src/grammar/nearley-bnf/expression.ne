@@ -1,5 +1,6 @@
 @lexer lexer
 
+
 @include "./tools.ne"
 
 e_main -> e_mainWithoutUnion {% id %}
@@ -19,7 +20,7 @@ e_mainWithoutUnion ->
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
     | e_keyof {% id %}
-    | s_sugarBlock {% id %}
+    | e_sugarBlock {% id %}
 
 
 #region  //*=========== function ===========
@@ -76,6 +77,34 @@ e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) 
 
 #endregion  //*======== function ===========
 
+
+#region  //*=========== sugar block ===========
+e_sugarBlock -> "^" _ e_sugarBlock_content {% args => args.at(-1) %}
+
+e_sugarBlock_content -> "{" _ (e_sugarBlock_content_block blockSeparator):+ "}" 
+    {% args => toASTNode(ast.SugarBlockExpression)([args[0], args[2].map(id), args.at(-1)]) %}
+    
+e_sugarBlock_content_block -> s_typeAlias {% id %}
+    | e_sugarBlock_if {% id %}
+    | e_sugarBlock_return {% id %}
+
+
+#region  //*=========== if ===========
+e_sugarBlock_if -> "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content
+    {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args.at(-1)]) %}
+    | "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content _ "else" _ e_sugarBlock_content
+    {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args[6], args.at(-1)]) %}
+    | "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content _ "else" nonEmptySpace:+ e_sugarBlock_if
+    {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args[6], args.at(-1)]) %}
+
+
+e_sugarBlock_if_condition -> e_main e_condition_extend e_main {% args => ({ left: args[0], right: args.at(-1) }) %}
+#endregion  //*======== if ===========
+
+e_sugarBlock_return -> "return" nonEmptySpace:+ e_main 
+    {% args => toASTNode(ast.SugarBlockReturnExpression)([args[0], args.at(-1)]) %}
+#endregion  //*======== sugar block ===========
+    
 #region  //*=========== object ===========
 e_object -> 
     "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}

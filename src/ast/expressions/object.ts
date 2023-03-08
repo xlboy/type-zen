@@ -195,7 +195,7 @@ namespace _Object {
         zod.instanceof(ExpressionBase) /* inSource */,
         zod.instanceof(ExpressionBase).or(zod.literal(false)) /* asTarget */,
         zod.tuple([zod.boolean() /* remove(-) */, zod.boolean() /* optional(?) */]),
-        zod.instanceof(ExpressionBase) /* value(string) */
+        zod.instanceof(ExpressionBase)
       ]);
 
       public name: IdentifierExpression;

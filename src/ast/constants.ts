@@ -19,11 +19,13 @@ namespace SyntaxKind {
     GetKeyValue = 'GetKeyValue',
     Tuple = 'Tuple',
     Array = 'Array',
+
     FunctionBody = 'FunctionBody',
     FunctionReturn = 'FunctionReturn',
     FunctionArrow = 'FunctionArrow',
     FunctionNormal = 'FunctionNormal',
     FunctionConstructor = 'FunctionConstructor',
+
     Object = 'Object',
     ObjectMapped = 'ObjectMapped',
     ObjectMethod = 'ObjectMethod',
@@ -31,7 +33,11 @@ namespace SyntaxKind {
     ObjectNameOnly = 'ObjectNameOnly',
     ObjectIndexSignature = 'ObjectIndexSignature',
     ObjectLiteralIndex = 'ObjectLiteralIndex',
-    EnumMember = 'EnumMember'
+    EnumMember = 'EnumMember',
+
+    SugarBlock = 'SugarBlock',
+    SugarBlockIf = 'SugarBlockIf',
+    SugarBlockReturn = 'SugarBlockReturn'
   }
 
   // Statement
@@ -39,9 +45,6 @@ namespace SyntaxKind {
     TypeAlias = 'TypeAlias',
     DeclareVariable = 'DeclareVariable',
     DeclareFunction = 'DeclareFunction',
-    If = 'If',
-    Enum = 'Enum',
-    SugarBlock = 'SugarBlock',
-    Return = 'Return'
+    Enum = 'Enum'
   }
 }

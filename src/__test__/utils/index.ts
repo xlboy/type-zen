@@ -1,11 +1,6 @@
 import { expect } from 'vitest';
 
-import {
-  ASTBase,
-  ExpressionBase,
-  NormalStatementBase,
-  TopLevelStatementBase
-} from '../../ast';
+import { ASTBase, ExpressionBase, StatementBase } from '../../ast';
 import { CompiledNode } from '../../compiler';
 import { Parser } from '../../parser';
 import type { TestNode, TestSource } from './types';
@@ -28,30 +23,28 @@ function createNode<T>(node: TestNode<T>) {
 }
 
 function assertSource<T>(source: TestSource<T>) {
-  let topLevelStmts!: TopLevelStatementBase[];
-  // let compiledNodes: CompiledNode[];
+  let statements!: StatementBase[];
 
   try {
-    topLevelStmts = new Parser(source.content).toAST();
-    // compiledNodes = compiler.compile(topLevelStmts).toNodes();
+    statements = new Parser(source.content).toAST();
   } catch (error) {
     expect({ error, content: source.content }).toMatchSnapshot('parser-error');
     throw error;
   }
 
-  expect(topLevelStmts.length).not.toBe(0);
+  expect(statements.length).not.toBe(0);
 
-  if (topLevelStmts.length !== 1) {
+  if (statements.length !== 1) {
     expect(source.content).toMatchSnapshot('divergence');
   }
 
   source.nodes.forEach((sourceNodeInfo, index) => {
     try {
-      assertNode(topLevelStmts[index], sourceNodeInfo);
+      assertNode(statements[index], sourceNodeInfo);
     } catch (error) {
       expect({
         error,
-        compile: topLevelStmts[index].compile(),
+        compile: statements[index].compile(),
         info: sourceNodeInfo
       }).toMatchSnapshot('error');
       throw error;
@@ -59,10 +52,7 @@ function assertSource<T>(source: TestSource<T>) {
   });
 }
 
-function assertNode(
-  node: TopLevelStatementBase | NormalStatementBase | ExpressionBase,
-  info: TestNode<ASTBase>
-) {
+function assertNode(node: StatementBase | ExpressionBase, info: TestNode<ASTBase>) {
   expect(node).instanceOf(info.instance);
 
   for (const key in info) {

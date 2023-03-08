@@ -3,10 +3,9 @@ import zod from 'zod';
 import type { ASTNodePosition } from '../..';
 import { ASTBase } from '../../base';
 import { SyntaxKind } from '../../constants';
-import type { ExpressionBase } from '../../expressions/base';
-import { NormalStatementBase } from './base';
+import { ExpressionBase } from '../base';
 
-export { ReturnStatement };
+export { SugarBlockReturnExpression };
 
 const schema = zod.tuple([
   zod.any() /* return */,
@@ -16,8 +15,8 @@ const schema = zod.tuple([
 ]);
 
 type Schema = zod.infer<typeof schema>;
-class ReturnStatement extends NormalStatementBase {
-  public kind = SyntaxKind.S.Return;
+class SugarBlockReturnExpression extends ExpressionBase {
+  public kind = SyntaxKind.E.SugarBlockReturn;
 
   public body: ExpressionBase;
 

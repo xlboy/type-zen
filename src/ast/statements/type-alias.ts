@@ -1,12 +1,11 @@
 import zod from 'zod';
 
-import type { ASTNodePosition } from '../..';
-import { ASTBase } from '../../base';
-import { SyntaxKind } from '../../constants';
-import type { ExpressionBase } from '../../expressions/base';
-import { GenericArgsExpression } from '../../expressions/generic-args';
-import { IdentifierExpression } from '../../expressions/identifier';
-import { TopLevelStatementBase } from './base';
+import type { ASTNodePosition } from '..';
+import { SyntaxKind } from '../constants';
+import { ExpressionBase } from '../expressions/base';
+import { GenericArgsExpression } from '../expressions/generic-args';
+import { IdentifierExpression } from '../expressions/identifier';
+import { StatementBase } from './base';
 
 export { TypeAliasStatement };
 
@@ -14,12 +13,12 @@ const schema = zod.tuple([
   zod.any() /* type */,
   zod.instanceof(IdentifierExpression),
   zod.instanceof(GenericArgsExpression).or(zod.undefined()),
-  zod.instanceof(ASTBase) /* value */
+  zod.instanceof(ExpressionBase) /* value */
 ]);
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeAliasStatement extends TopLevelStatementBase {
+class TypeAliasStatement extends StatementBase {
   public kind = SyntaxKind.S.TypeAlias;
 
   public name: IdentifierExpression;

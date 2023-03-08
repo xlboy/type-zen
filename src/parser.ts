@@ -1,7 +1,7 @@
 import nearley from 'nearley';
 
 import type { ASTBase } from './ast';
-import { TopLevelStatementBase } from './ast/statements/top-level/base';
+import { StatementBase } from './ast/statements/base';
 import langGrammar from './grammar/__lang.auto-generated__';
 
 export { NearleyError, Parser };
@@ -68,7 +68,7 @@ class Parser {
 
   constructor(private readonly content: string) {}
 
-  public toAST(): TopLevelStatementBase[] {
+  public toAST(): StatementBase[] {
     try {
       this.parser.feed(this.content);
     } catch (error) {

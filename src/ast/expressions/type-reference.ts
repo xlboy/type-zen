@@ -65,7 +65,7 @@ class TypeReferenceExpression extends ExpressionBase {
   }
 
   private getRealName(): CompiledNode[] {
-    const nearestSugarBlockStmt = this.compileUtils.getNearestSugarBlockStmt();
+    const nearestSugarBlockStmt = this.compileUtils.getNearestSugarBlockExpr();
 
     if (nearestSugarBlockStmt) {
       const outputName = nearestSugarBlockStmt.toHoistIdentifierMap.get(this.name.value);

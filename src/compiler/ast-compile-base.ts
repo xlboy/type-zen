@@ -5,7 +5,7 @@ import type { ReadonlyDeep } from 'type-fest';
 import {
   ASTBase,
   ASTNodePosition,
-  SugarBlockStatement
+  SugarBlockExpression
 } from '../ast';
 import { SyntaxKind } from '../ast/constants';
 import { compiler } from './compiler';
@@ -57,13 +57,13 @@ abstract class ASTCompileBase {
         ({
           UnreturnedSymbol: 'UnreturnedSymbol'
         } as const),
-      getNearestSugarBlockStmt(): ReadonlyDeep<SugarBlockStatement> | undefined {
+      getNearestSugarBlockExpr(): ReadonlyDeep<SugarBlockExpression> | undefined {
         const compileChain = this.getChain();
 
         for (let i = compileChain.length - 1; i >= 0; i--) {
-          const stmt = compileChain[i];
-          if (stmt.kind === SyntaxKind.S.SugarBlock) {
-            return stmt as any;
+          const expr = compileChain[i];
+          if (expr.kind === SyntaxKind.E.SugarBlock) {
+            return expr as any;
           }
         }
       }
