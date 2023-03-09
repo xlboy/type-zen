@@ -1,18 +1,19 @@
-import { TestNode } from "../utils";
-import { identifierTemplates } from "./identifier";
-import { literalExpressions } from "./literal";
-import { typeReferenceExpressions } from "./type-reference";
-import { unionExpressions } from "./union";
-import { intersectionExpressions } from "./intersection";
-import { tupleExpressions } from "./tuple";
-import { getKeyValueExpressions } from "./get-key-value";
-import { genericArgsExpressions } from "./generic-args";
-import { bracketSurroundExpressions } from "./bracket-surround";
-import { conditionExpressions, inferExpressions } from "./condition";
-import { arrayExpressions } from "./array";
-import { functionExpressions } from "./function";
-import { objectExpressions } from "./object";
-import { keyofExpressions } from "./keyof";
+import type { TestNode } from '../utils';
+import { arrayExpressions } from './array';
+import { bracketSurroundExpressions } from './bracket-surround';
+import { conditionExpressions, inferExpressions } from './condition';
+import { functionExpressions } from './function';
+import { genericArgsExpressions } from './generic-args';
+import { getKeyValueExpressions } from './get-key-value';
+import { identifierTemplates } from './identifier';
+import { intersectionExpressions } from './intersection';
+import { keyofExpressions } from './keyof';
+import { literalExpressions } from './literal';
+import { objectExpressions } from './object';
+import { sugarBlockExpressions } from './sugar-block';
+import { tupleExpressions } from './tuple';
+import { typeReferenceExpressions } from './type-reference';
+import { unionExpressions } from './union';
 
 export { type Expression };
 export {
@@ -31,7 +32,8 @@ export {
   functionExpressions,
   objectExpressions,
   keyofExpressions,
-  mainExpressions,
+  sugarBlockExpressions,
+  mainExpressions
 };
 
 interface Expression {
@@ -53,4 +55,5 @@ const mainExpressions = [
   ...functionExpressions.arrow,
   ...objectExpressions.all,
   ...keyofExpressions,
+  ...sugarBlockExpressions.simple
 ];

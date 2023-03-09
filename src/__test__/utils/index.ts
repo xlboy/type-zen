@@ -75,7 +75,12 @@ function assertNode(node: StatementBase | ExpressionBase, info: TestNode<ASTBase
           .map(cNode => cNode.text)
           .join('');
 
-        expect(output).toBe(info.output);
+        if (info.output instanceof RegExp) {
+          expect(output).toMatch(info.output);
+        } else {
+          expect(output).toBe(info.output);
+        }
+
         break;
 
       case 'pos':

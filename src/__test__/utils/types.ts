@@ -54,5 +54,5 @@ type InsidePrototype<T> = {
 
 type TestNode<T = any> = {
   instance: T;
-  output?: string;
+  output?: string | RegExp;
 } & (T extends { prototype: infer P } ? InsidePrototype<P> : InsidePrototype<T>);
