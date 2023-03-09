@@ -1,6 +1,6 @@
 {
   "vitest.enable": true,
-  "vitest.include": ["src/**/__test__/**/*.test.ts"],
+  "vitest.include": ["**/__test__/**/*.test.ts"],
   "vitest.exclude": ["**/node_modules/**", "**/dist/**", "**/.history/**"],
   "vitest.commandLine": "pnpm exec vitest -u --api.host 127.0.0.1",
   "typescript.tsdk": "node_modules/typescript/lib",

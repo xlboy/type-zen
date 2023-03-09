@@ -1,0 +1,55 @@
+{
+  "name": "@type-zen/core",
+  "version": "0.0.1-alpha.1",
+  "description": "A language based on TypeScript type system",
+  "keywords": [
+    "type-language",
+    "types",
+    "type-zen",
+    "typescript"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "ne:build": "tsx scripts/nearley/build",
+    "ne:watch": "tsx scripts/nearley/watch",
+    "lint": "eslint . --ext ts",
+    "test": "vitest run",
+    "type-check": "tsc",
+    "build": "run-s type-check lint test && tsup"
+  },
+  "devDependencies": {
+    "@types/moo": "^0.5.5",
+    "@types/nearley": "^2.11.2",
+    "moo": "^0.5.2",
+    "nanoid": "^4.0.1",
+    "nearley": "^2.20.1",
+    "node-watch": "^0.7.3",
+    "randexp": "^0.5.3",
+    "replace-in-file": "^6.3.5",
+    "zod": "^3.20.6"
+  },
+  "homepage": "https://github.com/xlboy/type-zen/tree/master/packages/core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xlboy/type-zen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xlboy/type-zen/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

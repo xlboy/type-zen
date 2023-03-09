@@ -1,23 +1,14 @@
 {
-  "name": "type-zen",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "ne:build": "nearleyc src/grammar/nearley-bnf/index.ne -o src/grammar/__lang.auto-generated__.ts",
-    "ne:watch": "tsx scripts/watch-lang-ne",
-    "ne:test": "nearley-test src/grammar/__lang.auto-generated__.ts",
-    "ne:rand": "nearley-railroad src/grammar/nearley-bnf/statement.ne -o grammar.html",
-    "test": "vitest run",
-    "type:check": "tsc --noEmit"
+  "name": "type-zen-monorepo",
+  "packageManager": ">=pnpm@7.0.0",
+  "engines": {
+    "node": ">=17.0.0"
   },
-  "keywords": [],
-  "author": "xlboy",
-  "license": "ISC",
+  "scripts": {
+    "clean": "rimraf ./**/node_modules"
+  },
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
-    "@types/moo": "^0.5.5",
-    "@types/nearley": "^2.11.2",
     "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
@@ -27,18 +18,15 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "lodash-es": "^4.17.21",
-    "moo": "^0.5.2",
-    "nanoid": "^4.0.1",
-    "nearley": "^2.20.1",
-    "node-watch": "^0.7.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.4",
-    "randexp": "^0.5.3",
+    "rimraf": "^3.0.2",
     "ts-toolbelt": "^9.6.0",
+    "tsup": "^6.6.3",
     "tsx": "^3.12.3",
     "type-fest": "^3.6.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.2",
-    "vitest": "^0.28.4",
-    "zod": "^3.20.6"
+    "vitest": "^0.28.4"
   }
 }
