@@ -1,11 +1,12 @@
-import { it } from "vitest";
-import * as ast from "../../../../ast";
-import { functionExpressions } from "../..";
-import * as utils from "../../../utils";
-import { SyntaxKind } from "../../../../ast/constants";
+import { it } from 'vitest';
 
-it("normal", () => {
-  functionExpressions.body.forEach((expr) => {
+import * as ast from '../../../../ast';
+import { SyntaxKind } from '../../../../ast/constants';
+import * as utils from '../../../utils';
+import { functionExpressions } from '../..';
+
+it('normal', () => {
+  functionExpressions.body.forEach(expr => {
     utils.assertSource({
       content: `type B = ${expr.content} => void`,
       nodes: [
@@ -15,10 +16,10 @@ it("normal", () => {
           value: utils.createNode({
             instance: ast.Function.Mode.ArrowExpression,
             kind: SyntaxKind.E.FunctionArrow,
-            body: expr.node,
-          }),
-        }),
-      ],
+            body: expr.node
+          })
+        })
+      ]
     });
   });
 });

@@ -1,8 +1,9 @@
 import { describe, it } from 'vitest';
+
 import * as ast from '../../../../ast';
-import { functionExpressions } from '../..';
 import * as utils from '../../../utils';
-import { Expression } from '../../';
+import { functionExpressions } from '../..';
+import type { Expression } from '../../';
 
 function testReturn(expressions: Expression[]) {
   expressions.forEach(expr => {
@@ -21,6 +22,7 @@ function testReturn(expressions: Expression[]) {
     });
   });
 }
+
 describe.concurrent('normal', () => {
   it('assertAndIs', () => {
     testReturn(functionExpressions.return.assertAndIs);

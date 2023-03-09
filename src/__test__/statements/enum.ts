@@ -1,9 +1,10 @@
 import _ from 'lodash-es';
-import { Statement } from '.';
+
 import * as ast from '../../ast';
 import { SyntaxKind } from '../../ast/constants';
 import * as expr from '../expressions';
 import * as utils from '../utils';
+import type { Statement } from '.';
 
 export { statements as enumStatements };
 

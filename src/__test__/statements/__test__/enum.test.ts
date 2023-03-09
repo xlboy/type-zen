@@ -1,12 +1,13 @@
-import { it } from "vitest";
-import { enumStatements } from "..";
-import * as utils from "../../utils";
+import { it } from 'vitest';
 
-it("normal", () => {
-  enumStatements.forEach((stmt) => {
+import * as utils from '../../utils';
+import { enumStatements } from '..';
+
+it('normal', () => {
+  enumStatements.forEach(stmt => {
     utils.assertSource({
       content: stmt.content,
-      nodes: [stmt.node],
+      nodes: [stmt.node]
     });
   });
 });

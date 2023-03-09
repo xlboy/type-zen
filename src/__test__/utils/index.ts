@@ -1,7 +1,8 @@
 import { expect } from 'vitest';
 
-import { ASTBase, ExpressionBase, StatementBase } from '../../ast';
-import { CompiledNode } from '../../compiler';
+import type { ExpressionBase, StatementBase } from '../../ast';
+import { ASTBase } from '../../ast';
+import type { CompiledNode } from '../../compiler';
 import { Parser } from '../../parser';
 import type { TestNode, TestSource } from './types';
 
@@ -73,6 +74,7 @@ function assertNode(node: StatementBase | ExpressionBase, info: TestNode<ASTBase
         ) /* 可能是“顶级语句”（二维），也可能是“普通语句”（一维）  */
           .map(cNode => cNode.text)
           .join('');
+
         expect(output).toBe(info.output);
         break;
 

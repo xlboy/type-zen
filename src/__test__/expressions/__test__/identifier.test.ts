@@ -1,12 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { NearleyError, Parser } from "../../../parser";
-import * as ast from "../../../ast";
-import { identifierTemplates, unionExpressions } from "..";
-import * as utils from "../../utils";
+import { describe, expect, it } from 'vitest';
 
-describe("valid", () => {
-  it("no arguments", () => {
-    identifierTemplates.forEach((template) => {
+import * as ast from '../../../ast';
+import { NearleyError, Parser } from '../../../parser';
+import * as utils from '../../utils';
+import { identifierTemplates, unionExpressions } from '..';
+
+describe('valid', () => {
+  it('no arguments', () => {
+    identifierTemplates.forEach(template => {
       utils.createSource({
         content: `type ${template} = any`,
         nodes: [
@@ -14,36 +15,38 @@ describe("valid", () => {
             instance: ast.TypeAliasStatement,
             name: utils.createNode({
               instance: ast.IdentifierExpression,
-              output: template,
-            }),
-          }),
-        ],
+              output: template
+            })
+          })
+        ]
       });
     });
   });
 
-  it("has arguments", () => {});
+  it('has arguments', () => {});
 });
 
-it("invalid", () => {
+it('invalid', () => {
   const templates = [
-    "1name",
-    "-f123",
-    "#df",
-    "1",
-    "1.1",
-    "1.1.1",
-    "*sdfsdf",
-    "sdfsdf*",
+    '1name',
+    '-f123',
+    '#df',
+    '1',
+    '1.1',
+    '1.1.1',
+    '*sdfsdf',
+    'sdfsdf*',
     "sdf'",
-    "jjjsdf;",
-    "sdf,",
-    "sdf.",
-    "sdf?",
+    'jjjsdf;',
+    'sdf,',
+    'sdf.',
+    'sdf?'
   ];
-  it("error throw: UnexpectedInput", () => {
+
+  it('error throw: UnexpectedInput', () => {
     for (const id of templates) {
       const fn = () => new Parser(`type ${id} = 1`).toAST();
+
       expect(fn).throw();
 
       try {

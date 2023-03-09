@@ -1,10 +1,10 @@
 import zod from 'zod';
 
-import { ASTNodePosition, SugarBlockStatement } from '..';
+import type { CompiledNode } from '../../compiler';
+import type { ASTNodePosition } from '..';
 import { SyntaxKind } from '../constants';
 import { ExpressionBase } from './base';
 import { IdentifierExpression } from './identifier';
-import { CompiledNode } from '../../compiler';
 
 export { TypeReferenceExpression };
 

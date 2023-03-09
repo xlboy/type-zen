@@ -2,11 +2,7 @@ import { customAlphabet } from 'nanoid';
 import type { O } from 'ts-toolbelt';
 import type { ReadonlyDeep } from 'type-fest';
 
-import {
-  ASTBase,
-  ASTNodePosition,
-  SugarBlockExpression
-} from '../ast';
+import type { ASTBase, ASTNodePosition, SugarBlockExpression } from '../ast';
 import { SyntaxKind } from '../ast/constants';
 import { compiler } from './compiler';
 import type { CompiledNode, CompilerConfig } from './types';
@@ -62,6 +58,7 @@ abstract class ASTCompileBase {
 
         for (let i = compileChain.length - 1; i >= 0; i--) {
           const expr = compileChain[i];
+
           if (expr.kind === SyntaxKind.E.SugarBlock) {
             return expr as any;
           }

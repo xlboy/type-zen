@@ -1,7 +1,8 @@
-import { it } from "vitest";
-import * as ast from "../../../ast";
-import { intersectionExpressions } from "..";
-import * as utils from "../../utils";
+import { it } from 'vitest';
+
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import { intersectionExpressions } from '..';
 
 function testIntersection(
   expressions: {
@@ -18,23 +19,23 @@ function testIntersection(
           output: `type B = ${node.output}`,
           name: utils.createNode({
             instance: ast.IdentifierExpression,
-            output: "B",
+            output: 'B'
           }),
-          value: node,
-        }),
-      ],
+          value: node
+        })
+      ]
     });
   });
 }
 
-it("native", () => {
+it('native', () => {
   testIntersection(intersectionExpressions.native);
 });
 
-it("extended", () => {
+it('extended', () => {
   testIntersection(intersectionExpressions.extended);
 });
 
-it("all", () => {
+it('all', () => {
   testIntersection(intersectionExpressions.all);
 });

@@ -1,23 +1,23 @@
-import * as ast from "../../ast";
-import * as utils from "../utils";
-import { identifierTemplates } from "./identifier";
-import { Expression } from "./";
-import { SyntaxKind } from "../../ast/constants";
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as utils from '../utils';
+import type { Expression } from './';
+import { identifierTemplates } from './identifier';
 
 export { expressions as typeReferenceExpressions };
 
 const expressions: Expression[] = (() => {
   const templates = [
-    "Array",
-    "Partial",
-    "Readonly",
-    "Record",
-    "Required",
-    "ReturnType",
-    ...identifierTemplates,
+    'Array',
+    'Partial',
+    'Readonly',
+    'Record',
+    'Required',
+    'ReturnType',
+    ...identifierTemplates
   ];
 
-  return templates.map((template) => ({
+  return templates.map(template => ({
     content: template,
     node: utils.createNode({
       instance: ast.TypeReferenceExpression,
@@ -25,9 +25,9 @@ const expressions: Expression[] = (() => {
       kind: SyntaxKind.E.TypeReference,
       name: utils.createNode({
         instance: ast.IdentifierExpression,
-        output: template,
+        output: template
       }),
-      arguments: [],
-    }),
+      arguments: []
+    })
   }));
 })();

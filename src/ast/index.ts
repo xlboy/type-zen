@@ -29,6 +29,8 @@ export { TypeAliasStatement } from './statements/type-alias';
 export { StatementBase } from './statements/base';
 export { ExpressionBase } from './expressions/base';
 
+export { SyntaxKind } from './constants';
+
 export interface ASTNodePosition {
   start: { line: number; col: number };
   end: { line: number; col: number };

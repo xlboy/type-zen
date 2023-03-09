@@ -1,9 +1,10 @@
-import type { Expression } from "../";
-import { bodyExpressions } from "./body";
-import { returnExpressions } from "./return";
-import * as utils from "../../utils";
-import * as ast from "../../../ast";
-import _ from "lodash-es";
+import _ from 'lodash-es';
+
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import type { Expression } from '../';
+import { bodyExpressions } from './body';
+import { returnExpressions } from './return';
 
 export { expressions as arrowExpressions };
 
@@ -12,7 +13,7 @@ const expressions: Expression[] = [];
 const allReturnExpressions = [
   ...returnExpressions.assertAndIs,
   ...returnExpressions.isOnly,
-  ...returnExpressions.normal,
+  ...returnExpressions.normal
 ];
 
 for (const body of _.sampleSize(bodyExpressions, 1000)) {
@@ -23,8 +24,8 @@ for (const body of _.sampleSize(bodyExpressions, 1000)) {
         instance: ast.Function.Mode.ArrowExpression,
         output: `${body.node.output} => ${ret.node.output}`,
         body: body.node,
-        return: ret.node,
-      }),
+        return: ret.node
+      })
     });
   }
 }

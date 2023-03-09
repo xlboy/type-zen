@@ -1,7 +1,8 @@
-import { it } from "vitest";
-import * as ast from "../../../ast";
-import { unionExpressions } from "..";
-import * as utils from "../../utils";
+import { it } from 'vitest';
+
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import { unionExpressions } from '..';
 
 function testUnion(
   expressions: {
@@ -18,23 +19,23 @@ function testUnion(
           output: `type B = ${node.output}`,
           name: utils.createNode({
             instance: ast.IdentifierExpression,
-            output: "B",
+            output: 'B'
           }),
-          value: node,
-        }),
-      ],
+          value: node
+        })
+      ]
     });
   });
 }
 
-it("native", () => {
+it('native', () => {
   testUnion(unionExpressions.native);
 });
 
-it("extended", () => {
+it('extended', () => {
   testUnion(unionExpressions.extended);
 });
 
-it("all", () => {
+it('all', () => {
   testUnion(unionExpressions.all);
 });

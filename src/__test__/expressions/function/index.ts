@@ -1,8 +1,8 @@
-import { returnExpressions } from "./return";
-import { bodyExpressions } from "./body";
-import { arrowExpressions } from "./arrow";
-import { normalExpressions } from "./normal";
-import { constructorExpressions } from "./constructor";
+import { arrowExpressions } from './arrow';
+import { bodyExpressions } from './body';
+import { constructorExpressions } from './constructor';
+import { normalExpressions } from './normal';
+import { returnExpressions } from './return';
 
 export { expressions as functionExpressions };
 
@@ -11,5 +11,5 @@ const expressions = {
   body: bodyExpressions,
   arrow: arrowExpressions,
   normal: normalExpressions,
-  constructor: constructorExpressions,
+  constructor: constructorExpressions
 };

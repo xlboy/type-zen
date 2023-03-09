@@ -7,38 +7,48 @@ interface TestSource<N> {
   nodes: Array<TestNode<any>>;
 }
 
-type KeyFilter<K> = K extends 'toString' | 'compile' ? never : K;
+type $_InsidePrototype_SugarBlock__KeyFilter__r_pebh<K> = K extends 'toString' | 'compile'
+  ? never
+  : K;
 type InsidePrototype<T> = {
-  [K in keyof T as KeyFilter<K>]?: [NonNullable<T[K]>] extends [infer FilteredValue]
-    ? FilteredValue extends ASTBase
-      ? TestNode<T[K] & any>
-      : FilteredValue extends Function
-      ? never
-      : FilteredValue extends any[]
-      ? FilteredValue[number] extends infer FValueItem
-        ? (
-            FValueItem extends ASTBase ? Array<TestNode<any>> : UnreturnedSymbol
-          ) extends infer r_xnpm
-          ? r_xnpm extends UnreturnedSymbol
-            ? Array<{
-                [_K in keyof FValueItem]?: (
-                  NonNullable<FValueItem[_K]> extends ASTBase
-                    ? TestNode<any>
-                    : UnreturnedSymbol
-                ) extends infer r_rxng
-                  ? r_rxng extends UnreturnedSymbol
-                    ? FValueItem[_K] extends infer Item
-                      ? Item extends ASTBase
-                        ? TestNode<any>
-                        : Item
-                      : never
-                    : r_rxng
-                  : never;
-              }>
-            : r_xnpm
+  [K in keyof T as $_InsidePrototype_SugarBlock__KeyFilter__r_pebh<K>]?: [
+    NonNullable<T[K]>
+  ] extends [infer FilteredValue]
+    ? (
+        FilteredValue extends ASTBase ? TestNode<T[K] & any> : UnreturnedSymbol
+      ) extends infer r_sxtu
+      ? r_sxtu extends UnreturnedSymbol
+        ? (FilteredValue extends Function ? never : UnreturnedSymbol) extends infer r_3ln7
+          ? r_3ln7 extends UnreturnedSymbol
+            ? FilteredValue extends any[]
+              ? FilteredValue[number] extends infer FValueItem
+                ? (
+                    FValueItem extends ASTBase ? Array<TestNode<any>> : UnreturnedSymbol
+                  ) extends infer r_702l
+                  ? r_702l extends UnreturnedSymbol
+                    ? Array<{
+                        [_K in keyof FValueItem]?: (
+                          NonNullable<FValueItem[_K]> extends ASTBase
+                            ? TestNode<any>
+                            : UnreturnedSymbol
+                        ) extends infer r_51ma
+                          ? r_51ma extends UnreturnedSymbol
+                            ? FValueItem[_K] extends infer Item
+                              ? Item extends ASTBase
+                                ? TestNode<any>
+                                : Item
+                              : never
+                            : r_51ma
+                          : never;
+                      }>
+                    : r_702l
+                  : never
+                : never
+              : Partial<T[K]>
+            : r_3ln7
           : never
-        : never
-      : Partial<T[K]>
+        : r_sxtu
+      : never
     : never;
 };
 

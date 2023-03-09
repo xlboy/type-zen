@@ -1,12 +1,13 @@
 import _ from 'lodash-es';
+
 import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
 import * as utils from '../utils';
+import type { Expression } from './';
+import { identifierTemplates } from './identifier';
 import { literalExpressions } from './literal';
 import { typeReferenceExpressions } from './type-reference';
-import { Expression } from './';
 import { unionExpressions } from './union';
-import { identifierTemplates } from './identifier';
-import { SyntaxKind } from '../../ast/constants';
 
 export { expressions as tupleExpressions };
 
@@ -27,6 +28,7 @@ for (const pExpressions of permutedExpressionGroup) {
   const values: Value[] = [];
   let output = '[',
     content = '[';
+
   for (let index = 0; index < pExpressions.length; index++) {
     const id = _.random(0, 1) === 1 ? _.sample(identifierTemplates)! : null;
     const deconstruction = _.random(0, 1) === 1;
@@ -34,6 +36,7 @@ for (const pExpressions of permutedExpressionGroup) {
 
     //#region  //*=========== item ===========
     const item: Value = { deconstruction };
+
     item.id = id
       ? utils.createNode({
           instance: ast.IdentifierExpression,
@@ -78,6 +81,7 @@ for (const pExpressions of permutedExpressionGroup) {
       content += ', ';
     } else {
       const trailingComma = _.random(0, 1) === 1;
+
       if (trailingComma) content += ',';
     }
     //#endregion  //*======== output, content ===========

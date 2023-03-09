@@ -1,9 +1,9 @@
-import * as ast from "../../ast";
-import * as utils from "../utils";
-import { literalExpressions } from "./literal";
-import { typeReferenceExpressions } from "./type-reference";
-import type { Expression } from "./";
-import { SyntaxKind } from "../../ast/constants";
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as utils from '../utils';
+import type { Expression } from './';
+import { literalExpressions } from './literal';
+import { typeReferenceExpressions } from './type-reference';
 
 export { expressions as unionExpressions };
 
@@ -12,40 +12,40 @@ const expressions = (() => {
     ...literalExpressions.number,
     ...literalExpressions.string,
     ...literalExpressions.keyword,
-    ...typeReferenceExpressions,
+    ...typeReferenceExpressions
   ];
   const permutedExpressions = utils.permuteObjects(otherExpressions, 2, 2);
   const result = {
     native: [] as Expression[],
     extended: [] as Expression[],
-    all: [] as Expression[],
+    all: [] as Expression[]
   };
 
   for (const expr of permutedExpressions) {
     result.native.push({
-      content: expr.map(({ content }) => content).join(" | "),
+      content: expr.map(({ content }) => content).join(' | '),
       node: utils.createNode({
         instance: ast.UnionExpression,
         kind: SyntaxKind.E.Union,
-        output: expr.map(({ node }) => node.output).join(" | "),
+        output: expr.map(({ node }) => node.output).join(' | '),
         values: expr.map(({ node }) => node),
-        isExtended: false,
-      }),
+        isExtended: false
+      })
     });
 
     result.extended.push({
       content: utils.mergeString(
-        "| [",
-        expr.map(({ content }) => content).join(", "),
-        "]"
+        '| [',
+        expr.map(({ content }) => content).join(', '),
+        ']'
       ),
       node: utils.createNode({
         instance: ast.UnionExpression,
         kind: SyntaxKind.E.Union,
-        output: expr.map(({ node }) => node.output).join(" | "),
+        output: expr.map(({ node }) => node.output).join(' | '),
         values: expr.map(({ node }) => node),
-        isExtended: true,
-      }),
+        isExtended: true
+      })
     });
   }
 

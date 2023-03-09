@@ -1,7 +1,8 @@
-import { describe, it } from "vitest";
-import * as ast from "../../../ast";
-import { objectExpressions } from "..";
-import * as utils from "../../utils";
+import { describe, it } from 'vitest';
+
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import { objectExpressions } from '..';
 
 function testObject(
   expressions: {
@@ -18,75 +19,75 @@ function testObject(
           output: `type A = ${node.output}`,
           name: utils.createNode({
             instance: ast.IdentifierExpression,
-            output: "A",
+            output: 'A'
           }),
-          value: node,
-        }),
-      ],
+          value: node
+        })
+      ]
     });
   });
 }
 
-describe("simple", () => {
-  it("empty", () => {
+describe('simple', () => {
+  it('empty', () => {
     testObject(objectExpressions.simple.empty);
   });
 
-  it("call", () => {
+  it('call', () => {
     testObject(objectExpressions.simple.call);
   });
 
-  it("constructor", () => {
+  it('constructor', () => {
     testObject(objectExpressions.simple.constructor);
   });
 
-  it("method", () => {
+  it('method', () => {
     testObject(objectExpressions.simple.method);
   });
 
-  it("normal", () => {
+  it('normal', () => {
     testObject(objectExpressions.simple.method);
   });
 
-  it("literalIndex", () => {
+  it('literalIndex', () => {
     testObject(objectExpressions.simple.literalIndex);
   });
 
-  it("indexSignature", () => {
+  it('indexSignature', () => {
     testObject(objectExpressions.simple.indexSignature);
   });
 
-  it("mapped", () => {
+  it('mapped', () => {
     testObject(objectExpressions.simple.mapped);
   });
 });
 
-describe("complex", () => {
-  it("call", () => {
+describe('complex', () => {
+  it('call', () => {
     testObject(objectExpressions.complex.call);
   });
 
-  it("constructor", () => {
+  it('constructor', () => {
     testObject(objectExpressions.complex.constructor);
   });
 
-  it("method", () => {
+  it('method', () => {
     testObject(objectExpressions.complex.method);
   });
 
-  it("normal", () => {
+  it('normal', () => {
     testObject(objectExpressions.complex.normal);
   });
 
-  it("literalIndex", () => {
+  it('literalIndex', () => {
     testObject(objectExpressions.complex.literalIndex);
   });
 
-  it("indexSignature", () => {
+  it('indexSignature', () => {
     testObject(objectExpressions.complex.indexSignature);
   });
-  
-  it("mapped", () => {
+
+  it('mapped', () => {
     testObject(objectExpressions.complex.mapped);
   });
 });

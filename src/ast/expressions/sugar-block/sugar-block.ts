@@ -1,7 +1,7 @@
 import zod from 'zod';
 
-import { ASTNodePosition } from '../..';
 import type { CompiledNode } from '../../../compiler';
+import type { ASTNodePosition } from '../..';
 import { SyntaxKind } from '../../constants';
 import { Object } from '../../expressions/object';
 import { TypeReferenceExpression } from '../../expressions/type-reference';

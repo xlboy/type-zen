@@ -1,13 +1,14 @@
-import * as ast from "../../ast";
-import * as utils from "../utils";
-import { getKeyValueExpressions } from "./get-key-value";
-import { literalExpressions } from "./literal";
-import { tupleExpressions } from "./tuple";
-import { typeReferenceExpressions } from "./type-reference";
-import type { Expression } from "./";
-import { bracketSurroundExpressions } from "./bracket-surround";
-import _ from "lodash-es";
-import { SyntaxKind } from "../../ast/constants";
+import _ from 'lodash-es';
+
+import * as ast from '../../ast';
+import { SyntaxKind } from '../../ast/constants';
+import * as utils from '../utils';
+import type { Expression } from './';
+import { bracketSurroundExpressions } from './bracket-surround';
+import { getKeyValueExpressions } from './get-key-value';
+import { literalExpressions } from './literal';
+import { tupleExpressions } from './tuple';
+import { typeReferenceExpressions } from './type-reference';
 
 export { expressions as arrayExpressions };
 
@@ -16,15 +17,15 @@ const otherExpressions = [
   ...typeReferenceExpressions,
   ..._.sampleSize(tupleExpressions, 5000),
   ..._.sampleSize(getKeyValueExpressions, 5000),
-  ..._.sampleSize(bracketSurroundExpressions, 5000),
+  ..._.sampleSize(bracketSurroundExpressions, 5000)
 ];
 
-const expressions: Expression[] = otherExpressions.map((expr) => ({
+const expressions: Expression[] = otherExpressions.map(expr => ({
   content: `${expr.content}[]`,
   node: utils.createNode({
     instance: ast.ArrayExpression,
     kind: SyntaxKind.E.Array,
     output: `${expr.node.output}[]`,
-    source: expr.node,
-  }),
+    source: expr.node
+  })
 }));

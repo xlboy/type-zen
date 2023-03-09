@@ -1,7 +1,6 @@
 import nearley from 'nearley';
 
-import type { ASTBase } from './ast';
-import { StatementBase } from './ast/statements/base';
+import type { StatementBase } from './ast/statements/base';
 import langGrammar from './grammar/__lang.auto-generated__';
 
 export { NearleyError, Parser };

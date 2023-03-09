@@ -1,12 +1,13 @@
-import { it } from "vitest";
-import { declareFunctionStatements } from "..";
-import * as utils from "../../utils";
+import { it } from 'vitest';
 
-it("normal", () => {
-  declareFunctionStatements.forEach((stmt) => {
+import * as utils from '../../utils';
+import { declareFunctionStatements } from '..';
+
+it('normal', () => {
+  declareFunctionStatements.forEach(stmt => {
     utils.assertSource({
       content: stmt.content,
-      nodes: [stmt.node],
+      nodes: [stmt.node]
     });
   });
 });

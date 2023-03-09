@@ -1,11 +1,12 @@
-import { describe, it } from "vitest";
-import * as ast from "../../../ast";
-import { genericArgsExpressions } from "..";
-import * as utils from "../../utils";
+import { describe, it } from 'vitest';
 
-describe.concurrent("normal", () => {
-  it("native", () => {
-    genericArgsExpressions.native.forEach((expr) => {
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import { genericArgsExpressions } from '..';
+
+describe.concurrent('normal', () => {
+  it('native', () => {
+    genericArgsExpressions.native.forEach(expr => {
       utils.assertSource({
         content: `type A${expr.content} = 1`,
         nodes: [
@@ -15,16 +16,16 @@ describe.concurrent("normal", () => {
             arguments: expr.node,
             value: utils.createNode({
               instance: ast.NumberLiteralExpression,
-              output: `1`,
-            }),
-          }),
-        ],
+              output: `1`
+            })
+          })
+        ]
       });
     });
   });
 
-  it("extended", () => {
-    genericArgsExpressions.extended.forEach((expr) => {
+  it('extended', () => {
+    genericArgsExpressions.extended.forEach(expr => {
       utils.assertSource({
         content: `type B${expr.content} = ''`,
         nodes: [
@@ -34,10 +35,10 @@ describe.concurrent("normal", () => {
             arguments: expr.node,
             value: utils.createNode({
               instance: ast.StringLiteralExpression,
-              output: `''`,
-            }),
-          }),
-        ],
+              output: `''`
+            })
+          })
+        ]
       });
     });
   });

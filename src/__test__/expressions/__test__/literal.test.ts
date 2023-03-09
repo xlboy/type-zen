@@ -1,7 +1,8 @@
-import { it } from "vitest";
-import * as ast from "../../../ast";
-import { literalExpressions } from "..";
-import * as utils from "../../utils";
+import { it } from 'vitest';
+
+import * as ast from '../../../ast';
+import * as utils from '../../utils';
+import { literalExpressions } from '..';
 
 function testLiteral(
   expressions: {
@@ -18,27 +19,27 @@ function testLiteral(
           output: `type A = ${node.output}`,
           name: utils.createNode({
             instance: ast.IdentifierExpression,
-            output: "A",
+            output: 'A'
           }),
-          value: node,
-        }),
-      ],
+          value: node
+        })
+      ]
     });
   });
 }
 
-it("number", () => {
+it('number', () => {
   testLiteral(literalExpressions.number);
 });
 
-it("string", () => {
+it('string', () => {
   testLiteral(literalExpressions.string);
 });
 
-it("keyword", () => {
+it('keyword', () => {
   testLiteral(literalExpressions.keyword);
 });
 
-it("all literal", () => {
+it('all literal', () => {
   testLiteral(literalExpressions.all);
 });
