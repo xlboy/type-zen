@@ -35,6 +35,8 @@ const lexer = moo.compile({
     type: moo.keywords({
       keyword: [
         'if',
+        'for',
+        'of',
         'else',
         'in',
         'void',

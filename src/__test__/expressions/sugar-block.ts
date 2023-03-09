@@ -95,6 +95,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
     })
   });
 
+  // if
   expressions.simple.push({
     content: `
       ^{
@@ -212,6 +213,61 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
       output: new RegExp(
         `\\[3\\] extends \\[infer B\\] \\? \\(B extends 3 \\? 1 : B extends 4 \\? \\['sdfsfd'\\] extends \\[infer C\\] \\? \\(C extends 'sss' \\? 'ssss' : UnreturnedSymbol\\) extends infer r_.+? \\? r_.+? extends UnreturnedSymbol \\? 2 : r_.+? : never : never : UnreturnedSymbol\\) extends infer r_.+? \\? r_.+? extends UnreturnedSymbol \\? 3 \\| 4 : r_.+? : never : never`
       )
+    })
+  });
+
+  // for
+  expressions.simple.push({
+    content: `
+      ^{
+        type B = '->>>>';
+        
+        for (infer Item in Union) {
+          return [B, Item]
+        }
+        
+      }`,
+    node: utils.createNode({
+      instance: ast.SugarBlockExpression,
+      statements: [
+        utils.createNode({
+          instance: ast.TypeAliasStatement,
+          name: utils.createNode({
+            instance: ast.IdentifierExpression,
+            output: 'B'
+          }),
+          value: utils.createNode({
+            instance: ast.StringLiteralExpression,
+            output: `'->>>>'`
+          })
+        }),
+        utils.createNode({
+          instance: ast.SugarBlockForExpression,
+          mapping: {
+            name: utils.createNode({
+              instance: ast.IdentifierExpression,
+              output: 'Item'
+            }) as any,
+            source: utils.createNode({
+              instance: ast.TypeReferenceExpression,
+              output: 'Union'
+            }) as any
+          },
+          body: utils.createNode({
+            instance: ast.SugarBlockExpression,
+            statements: [
+              utils.createNode({
+                instance: ast.SugarBlockReturnExpression,
+                body: utils.createNode({
+                  instance: ast.TupleExpression,
+                  output: '[B, Item]'
+                })
+              })
+            ]
+          })
+        })
+      ],
+      output: `['->>>>'] extends [infer B] ? Union extends infer Item ? [B, Item] : never : never`
     })
   });
 })();

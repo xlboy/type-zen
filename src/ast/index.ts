@@ -19,6 +19,7 @@ export { UnionExpression } from './expressions/untion';
 
 export { SugarBlockExpression } from './expressions/sugar-block/sugar-block';
 export { SugarBlockIfExpression } from './expressions/sugar-block/if';
+export { SugarBlockForExpression } from './expressions/sugar-block/for';
 export { SugarBlockReturnExpression } from './expressions/sugar-block/return';
 
 export { DeclareFunctionStatement } from './statements/declare-function';

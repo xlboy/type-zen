@@ -37,6 +37,7 @@ namespace SyntaxKind {
 
     SugarBlock = 'SugarBlock',
     SugarBlockIf = 'SugarBlockIf',
+    SugarBlockFor = 'SugarBlockFor',
     SugarBlockReturn = 'SugarBlockReturn'
   }
 

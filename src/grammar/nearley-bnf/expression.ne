@@ -87,6 +87,7 @@ e_sugarBlock_content -> "{" _ (e_sugarBlock_content_block blockSeparator):+ "}"
 e_sugarBlock_content_block -> s_typeAlias {% id %}
     | e_sugarBlock_if {% id %}
     | e_sugarBlock_return {% id %}
+    | e_sugarBlock_for {% id %}
 
 
 #region  //*=========== if ===========
@@ -100,6 +101,13 @@ e_sugarBlock_if -> "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_conte
 
 e_sugarBlock_if_condition -> e_main e_condition_extend e_main {% args => ({ left: args[0], right: args.at(-1) }) %}
 #endregion  //*======== if ===========
+
+#region  //*=========== for ===========
+e_sugarBlock_for -> "for" _ "(" e_sugarBlock_for_mapping _ ")" _ e_sugarBlock_content
+    {% args => toASTNode(ast.SugarBlockForExpression)([args[0], args[3], args.at(-1)]) %}
+e_sugarBlock_for_mapping -> "infer" nonEmptySpace:+ id nonEmptySpace:+ "in" nonEmptySpace:+ e_main
+    {% args => ({ name: args[2], source: args.at(-1) }) %}
+#endregion  //*======== for ===========
 
 e_sugarBlock_return -> "return" nonEmptySpace:+ e_main 
     {% args => toASTNode(ast.SugarBlockReturnExpression)([args[0], args.at(-1)]) %}

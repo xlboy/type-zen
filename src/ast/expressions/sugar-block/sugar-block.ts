@@ -10,6 +10,7 @@ import { DeclareFunctionStatement } from '../../statements/declare-function';
 import { DeclareVariableStatement } from '../../statements/declare-variable';
 import { TypeAliasStatement } from '../../statements/type-alias';
 import { ExpressionBase } from '../base';
+import type { SugarBlockForExpression } from './for';
 import type { SugarBlockIfExpression } from './if';
 import { SugarBlockReturnExpression } from './return';
 
@@ -21,8 +22,10 @@ const schema = zod.tuple([
     zod
       .instanceof(TypeAliasStatement)
       .or(
-        zod.custom<SugarBlockIfExpression>(
-          (data: any) => data.kind === SyntaxKind.E.SugarBlockIf
+        zod.custom<SugarBlockIfExpression | SugarBlockForExpression>(
+          (data: any) =>
+            data.kind === SyntaxKind.E.SugarBlockIf ||
+            data.kind === SyntaxKind.E.SugarBlockFor
         )
       )
       .or(zod.instanceof(SugarBlockReturnExpression))
