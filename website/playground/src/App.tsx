@@ -77,7 +77,8 @@ type UnreturnedSymbol = typeof returnSymbol;
       options={{
         minimap: {
           enabled: false
-        }
+        },
+        readOnly: true
       }}
     />
   );
