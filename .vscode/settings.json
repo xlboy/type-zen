@@ -4,6 +4,7 @@
   "vitest.exclude": ["**/node_modules/**", "**/dist/**", "**/.history/**"],
   "vitest.commandLine": "pnpm exec vitest -u --api.host 127.0.0.1",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "twind.attributes": ["tw", "apply"],
 
   "eslint.validate": ["javascript", "typescript"],
   "eslint.options": {
