@@ -10,7 +10,8 @@
   ],
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "preset.d.ts"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -25,7 +26,7 @@
   "scripts": {
     "ne:build": "tsx scripts/nearley/build",
     "ne:watch": "tsx scripts/nearley/watch",
-    "lint": "eslint . --ext ts",
+    "lint": "eslint src --ext ts",
     "test": "vitest run",
     "type-check": "tsc",
     "build": "run-s type-check lint test && tsup"

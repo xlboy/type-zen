@@ -1,4 +1,4 @@
-import moo from 'moo';
+import * as moo from 'moo';
 
 const lexer = moo.compile({
   ws: { match: /\s/, lineBreaks: true },

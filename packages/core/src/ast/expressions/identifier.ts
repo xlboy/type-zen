@@ -1,4 +1,4 @@
-import type moo from 'moo';
+import type * as moo from 'moo';
 
 import type { ASTNodePosition } from '..';
 import { SyntaxKind } from '../constants';

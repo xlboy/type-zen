@@ -1,4 +1,4 @@
-import type zod from 'zod';
+import type * as zod from 'zod';
 
 import { ASTCompileBase } from '../compiler';
 import type { ASTNodePosition } from './';
