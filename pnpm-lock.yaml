@@ -81,7 +81,7 @@ importers:
       twind: ^0.16.17
     dependencies:
       '@monaco-editor/react': 4.4.6_biqbaboplfbrettd7655fr4n2y
-      '@type-zen/core': 0.0.1-alpha.5
+      '@type-zen/core': 0.0.1-alpha.7
       ahooks: 3.7.5_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -879,8 +879,8 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@type-zen/core/0.0.1-alpha.5:
-    resolution: {integrity: sha512-Mot/pdrNdldeLeEulwK7b7oJV0Sx0AD8jIEuhvkCt0oWMSYZkx5K3AXtrHD0wrP4JRBk9xa8u0I9W1qcxxe/Fw==}
+  /@type-zen/core/0.0.1-alpha.7:
+    resolution: {integrity: sha512-poRqYgC5fiWmFvbdutQVsWTxktp8DuhVCDRoZFxW2wSbTZHrInB/96XOq47IxTqCIi+CXTSsVt1jAdyH5ikRGg==}
     dev: false
 
   /@types/chai-subset/1.3.3:
