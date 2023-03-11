@@ -1,6 +1,6 @@
 {
   "name": "@type-zen/core",
-  "version": "0.0.1-alpha.6",
+  "version": "0.0.1-alpha.7",
   "description": "A language based on TypeScript type system",
   "keywords": [
     "type-language",
@@ -42,8 +42,5 @@
   },
   "bugs": {
     "url": "https://github.com/xlboy/type-zen/issues"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
