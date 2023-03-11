@@ -13,16 +13,9 @@
     "dist",
     "preset.d.ts"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.node.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
-  },
+  "browser": "./dist/index.browser.mjs",
   "scripts": {
     "ne:build": "tsx scripts/nearley/build",
     "ne:watch": "tsx scripts/nearley/watch",
