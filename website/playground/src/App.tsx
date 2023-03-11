@@ -1,87 +1,48 @@
-import Editor from '@monaco-editor/react';
-import { compiler, Parser } from '@type-zen/core';
-import { useMount } from 'ahooks';
-import { memo, useState } from 'react';
+import useUrlState from '@ahooksjs/use-url-state';
+import { useMount, useUpdateEffect } from 'ahooks';
 import { tw } from 'twind';
 
+import ExampleMenu from './components/ExampleMenu';
+import TSPreview from './components/TSPreview';
+import TypeZenEditor from './components/TypeZenEditor';
+import { useGlobalStore } from './store';
+import { codeCompression } from './utils';
+
 function App() {
-  const [compiledCode, setCompiledCode] = useState('');
-  const defaultZenCode = `
-  type Name = "xlboy"
-
-type A<T> = ^{
-if (T == Name) {
-return "这是我的名称"
-} else if (T == number) {
-if (T == 1) {
-  return "传了个 数字1 进来"
-}
-return "传了个其他数字进来";
-}
-
-return ["即不是 number 也不是名？…是 ->", T]
-}
-
-type Test1 = A<"xlboy">
-type Test2 = A<1>
-type Test3 = A<2333>
-type Test4 = A<| [":)", "酷酷酷"]>
-
-`;
+  const [urlState, setUrlState] = useUrlState({ example: '', code: '' });
+  const { activatedTab, setActivatedTab, setZenCode } = useGlobalStore();
 
   useMount(() => {
-    handleZenCodeChange(defaultZenCode);
+    if (urlState.code) {
+      setZenCode(codeCompression.inflate(decodeURIComponent(urlState.code)));
+    } else {
+      if (urlState.example) {
+        setActivatedTab(urlState.example);
+      } else {
+        setUrlState({ example: 'basic' });
+        setActivatedTab('basic');
+      }
+    }
   });
 
+  useUpdateEffect(() => {
+    setUrlState({ example: activatedTab });
+  }, [activatedTab]);
+
   return (
-    <div className={tw('w-full h-[100vh] p-[10px] flex')}>
-      <textarea
-        className={tw('min-w-[50%] h-full p-[10px]')}
-        onChange={e => handleZenCodeChange(e.target.value)}
-        defaultValue={defaultZenCode}
-      ></textarea>
-      <TSPreview compiledCode={compiledCode} />
+    <div className={tw`h-[100vh] w-full flex(& col)`}>
+      <div
+        className={tw`w-full h-[50px] bg-[#3372c6] text([#fff] [30px]) flex-none px-[20px]`}
+      >
+        TypeZen Playground
+      </div>
+      <div className={tw('w-full p-[3px] flex(& 1)')}>
+        <ExampleMenu />
+        <TypeZenEditor />
+        <TSPreview />
+      </div>
     </div>
   );
-
-  function handleZenCodeChange(zenCode: string) {
-    try {
-      const ast = new Parser(zenCode).toAST();
-
-      if (ast.length !== 0) {
-        const compiledText = compiler.compile(ast).toText();
-
-        setCompiledCode(compiledText);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 }
-
-const TSPreview = memo((props: { compiledCode: string }) => {
-  const presetValue = `// @ts-ignore
-const returnSymbol: unique symbol = Symbol();
-
-type UnreturnedSymbol = typeof returnSymbol;
-
-// -----------------------output-----------------------
-
-`;
-
-  return (
-    <Editor
-      height="100vh"
-      defaultLanguage="typescript"
-      value={presetValue + props.compiledCode}
-      options={{
-        minimap: {
-          enabled: false
-        },
-        readOnly: true
-      }}
-    />
-  );
-});
 
 export default App;
