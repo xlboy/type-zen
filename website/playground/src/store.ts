@@ -20,7 +20,6 @@ export const useGlobalStore = create(
       immer<Store>(set => ({
         //#region  //*=========== state ===========
         activatedTab: null,
-        isFirstVisit: true,
         zenCode: '',
         //#endregion  //*======== state ===========
         //#region  //*=========== actions ===========
@@ -38,10 +37,7 @@ export const useGlobalStore = create(
       {
         name: 'global-store',
         partialize: state => {
-          return {
-            activatedTab: state.activatedTab,
-            zenCode: state.zenCode
-          };
+          return {};
         }
       }
     )
