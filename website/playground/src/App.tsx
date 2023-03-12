@@ -2,6 +2,7 @@ import useUrlState from '@ahooksjs/use-url-state';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { tw } from 'twind';
 
+import GithubIcon from './assets/github-icon';
 import ExampleMenu from './components/ExampleMenu';
 import TSPreview from './components/TSPreview';
 import TypeZenEditor from './components/TypeZenEditor';
@@ -32,9 +33,15 @@ function App() {
   return (
     <div className={tw`h-[100vh] w-full flex(& col)`}>
       <div
-        className={tw`w-full h-[50px] bg-[#3372c6] text([#fff] [30px]) flex-none px-[20px]`}
+        className={tw(
+          `w-full h-[50px] bg-[#3372c6] text([#fff] [30px]) px-[20px]`,
+          'flex justify-between items-center'
+        )}
       >
         TypeZen Playground
+        <a href="https://github.com/xlboy/type-zen" target="_blank">
+          <GithubIcon />
+        </a>
       </div>
       <div className={tw('w-full p-[3px] flex(& 1)')}>
         <ExampleMenu />
