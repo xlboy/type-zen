@@ -3,14 +3,11 @@ import type { Monaco } from '@monaco-editor/react';
 import Editor, { loader } from '@monaco-editor/react';
 import { useMount } from 'ahooks';
 import * as monaco from 'monaco-editor';
-import pako from 'pako';
 import { tw } from 'twind';
 
 import { useGlobalStore } from '../../store';
 import { codeCompression } from '../../utils';
 import { config, language, languageID } from './monaco-config';
-
-loader.config({});
 
 function initEditor(_: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) {
   monaco.languages.register({ id: languageID });
@@ -29,7 +26,7 @@ function initEditor(_: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) {
 }
 
 function TypeZenEditor(): JSX.Element {
-  const { setZenCode, zenCode } = useGlobalStore();
+  const { setZenCode, zenCode, setZenMonaco } = useGlobalStore();
   const [, setUrlState] = useUrlState({ code: '', example: '' });
 
   useMount(() => {
@@ -44,7 +41,10 @@ function TypeZenEditor(): JSX.Element {
         className={tw`min-w-[50%]`}
         language={languageID}
         onChange={code => handleCodeChange(code || '')}
-        onMount={initEditor}
+        onMount={(instance, monaco) => {
+          setZenMonaco(monaco);
+          initEditor(instance, monaco);
+        }}
         value={zenCode}
         options={{
           minimap: {
