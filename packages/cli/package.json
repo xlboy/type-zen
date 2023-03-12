@@ -1,0 +1,18 @@
+{
+  "name": "@type-zen/cli",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "tzc": "bin/index.js"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cac": "^6.7.14",
+    "esbuild": "^0.17.11"
+  }
+}
