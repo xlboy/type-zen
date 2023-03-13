@@ -115,8 +115,7 @@ class SugarBlockExpression extends ExpressionBase {
             .add(outputName, stmt.name.pos)
             .add(stmt.arguments!.compile())
             .add(' = ')
-            .add(stmt.value.compile())
-            .add('\n');
+            .add(stmt.value.compile());
 
           firstStatement.prependCompiledNode(nodeFlowToHoist.get());
         }

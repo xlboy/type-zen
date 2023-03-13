@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 
 import type { CompiledNode } from '../../compiler';
-import type { ASTNodePosition } from '..';
+import type { ASTNodePosition, SugarBlockExpression } from '..';
 import { SyntaxKind } from '../constants';
 import { ExpressionBase } from './base';
 import { IdentifierExpression } from './identifier';
@@ -65,13 +65,19 @@ class TypeReferenceExpression extends ExpressionBase {
   }
 
   private getRealName(): CompiledNode[] {
-    const nearestSugarBlockStmt = this.compileUtils.getNearestSugarBlockExpr();
+    const compileChain = this.compileUtils.getChain();
 
-    if (nearestSugarBlockStmt) {
-      const outputName = nearestSugarBlockStmt.toHoistIdentifierMap.get(this.name.value);
+    for (let i = compileChain.length - 1; i >= 0; i--) {
+      const currentNode = compileChain[i];
 
-      if (outputName) {
-        return [{ text: outputName, pos: {} }];
+      if (currentNode.kind === SyntaxKind.E.SugarBlock) {
+        const outputName = (currentNode as SugarBlockExpression).toHoistIdentifierMap.get(
+          this.name.value
+        );
+
+        if (outputName) {
+          return [{ text: outputName, pos: {} }];
+        }
       }
     }
 
