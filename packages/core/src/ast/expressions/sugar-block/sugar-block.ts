@@ -45,6 +45,8 @@ class SugarBlockExpression extends ExpressionBase {
     /* Output Name */ string
   >();
 
+  public processingLocalVars: TypeAliasStatement[] = [];
+
   constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
@@ -159,9 +161,11 @@ class SugarBlockExpression extends ExpressionBase {
           insideNodeFlow.add(', ').add(stmt.value.compile());
         }
 
+        this.processingLocalVars.push(stmt);
         localVarNames.push(stmt.name.compile());
       } else {
         if (localVarProcessing) {
+          this.processingLocalVars = [];
           insideNodeFlow.add(']').add(' extends ').add('[');
 
           for (let i = 0; i < localVarNames.length; i++) {
