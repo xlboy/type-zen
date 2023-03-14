@@ -74,7 +74,7 @@ type IsNumber<V> = V extends number ? true : false;
 
 > :warning: **它必须含有 `return 语句`**
 
-- 基本的 `^{}`
+- [基本的 `^{}`](https://type-zen-playground.vercel.app/?code=K6ksSFVwVLBViKvmUlAoAfGcgDxDGMcZyDHiAvKKUktKi%252FIUop10FJx1FJQyMpViuWoB)
 
   ```ini
   type A = ^{
@@ -91,17 +91,17 @@ type IsNumber<V> = V extends number ? true : false;
   type A = [1, 2] extends [infer B, infer C] ? [B, C, 'hi'] : never;
   ```
 
-- 搀杂 `if` 语句
+- [搀杂 `if` 语句](https://type-zen-playground.vercel.app/?code=K6ksSFVwVLBViKvmUlAoAfGcgDxDGMcZyDHiAvIy0xQ0gDK2CsUlRZl56ZoKIPUKCkWpJaVFeQrRSk4KmcVQOSUdBedYoGwtSB%252Bqgrz8EhRFtQA%253D)
 
   ```ini
   type A = ^{
-    type B = 1
-    type C = 2
+  type B = 1
+  type C = 2
 
-    if (B == string) {
-      return ["B is string", C]
-    }
-    return ["B is not string", C]
+  if (B == string) {
+    return ["B is string", C]
+  }
+  return ["B is not string", C]
   }
   ```
 
@@ -117,7 +117,7 @@ type IsNumber<V> = V extends number ? true : false;
     : never;
   ```
 
-一个更复杂的例子：
+[一个更复杂的例子](https://type-zen-playground.vercel.app/?code=jVLbasIwGL7vU3x4MdwrWFtxF4IURLDspnSj6t8RFhNJ00HZ%252Bu5LrLOJVlkvCkm%252B03%252FQzZGwFBXb01pJLbU5T9MYEd6%252BA8AekVCzYFyTmib2IUEUYaTlRismPkb4wWgnD0fGaYQZBH2RwgRJaOiKdK0ErBKQJWACn9TIEimKytPNZ5PO0X4n1%252B6J9q8Fr8nYrqRY1ZwXW24CZkkeh8EZzkqMr9AR5pv0pajoGX%252BilzQpVXol950KnlCIJj5jWhCvaFhwUYudZlIMKHZFh%252F8QMV5Z7iqUUmHMRGl6tjihlpoOtk8eNRP1YUvKY57r7knDRTsx50oVzfRSvq07dnBtcIfhi2Xvzhx7e2%252BAbkJ3bj3cqOTxg8hD83IG1WcecPRdrEnXYHvzwOeqiWaXPWez0xYR3iS4d2r7sK2%252FGjcLtC6UZgXv9jpwOfbfBu0v)：
 
 ```ini
 type InsidePrototype<T> = ^{
@@ -158,9 +158,13 @@ type InsidePrototype<T> = ^{
 ↓
 
 ```typescript
-type KeyFilter<K> = K extends 'toString' | 'compile' ? never : K;
+type $_InsidePrototype_SugarBlock__KeyFilter__r_84ow<K> = K extends 'toString' | 'compile'
+  ? never
+  : K;
 type InsidePrototype<T> = {
-  [K in keyof T as KeyFilter<K>]?: [NonNullable<T[K]>] extends [infer FilteredValue]
+  [K in keyof T as $_InsidePrototype_SugarBlock__KeyFilter__r_84ow<K>]?: [
+    NonNullable<T[K]>
+  ] extends [infer FilteredValue]
     ? FilteredValue extends ASTBase
       ? TestNode<T[K] & any>
       : FilteredValue extends Function
@@ -169,24 +173,24 @@ type InsidePrototype<T> = {
       ? FilteredValue[number] extends infer FValueItem
         ? (
             FValueItem extends ASTBase ? Array<TestNode<any>> : UnreturnedSymbol
-          ) extends infer r_xnpm
-          ? r_xnpm extends UnreturnedSymbol
+          ) extends infer r_1v5l
+          ? r_1v5l extends UnreturnedSymbol
             ? Array<{
                 [_K in keyof FValueItem]?: (
                   NonNullable<FValueItem[_K]> extends ASTBase
                     ? TestNode<any>
                     : UnreturnedSymbol
-                ) extends infer r_rxng
-                  ? r_rxng extends UnreturnedSymbol
+                ) extends infer r_14d2
+                  ? r_14d2 extends UnreturnedSymbol
                     ? FValueItem[_K] extends infer Item
                       ? Item extends ASTBase
                         ? TestNode<any>
                         : Item
                       : never
-                    : r_rxng
+                    : r_14d2
                   : never;
               }>
-            : r_xnpm
+            : r_1v5l
           : never
         : never
       : Partial<T[K]>
