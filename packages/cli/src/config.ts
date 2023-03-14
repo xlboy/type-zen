@@ -1,9 +1,24 @@
+import type { CompilerConfig } from '@type-zen/core';
 import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 
-export function defineConfig(config: any) {
+export interface TypeZenConfig {
+  compiler: {
+    output: CompilerConfig;
+  };
+  include: {
+    ts: string[];
+    tzen: string[];
+  };
+  exclude: {
+    ts: string[];
+    tzen: string[];
+  };
+}
+
+export function defineConfig(config: TypeZenConfig) {
   return config;
 }
 
@@ -14,23 +29,15 @@ export function defineConfig(config: any) {
  * @returns
  */
 export async function loadConfigFromFile(configName: string, configFile?: string) {
-  const { resolvedPath, isTS } = getConfigResolvePath(configName, configFile);
+  const resolvedPath = getConfigResolvePath(configName, configFile);
 
   try {
-    let userConfig: undefined;
-    const fileUrl = pathToFileURL(resolvedPath);
-
-    if (isTS) {
-      userConfig = await readBundleConfig(resolvedPath);
-    } else {
-      userConfig = (await require(`${fileUrl}`)).default;
-    }
+    const userConfig = await readBundleConfig(resolvedPath);
 
     return userConfig;
   } catch (e) {
-    console.log(e);
-
-    return null;
+    console.warn(e)
+    return null
   }
 }
 
@@ -43,7 +50,7 @@ async function readBundleConfig(resolvedPath: string) {
   const bundled = await bundleConfigFile(resolvedPath, false);
 
   fs.writeFileSync(resolvedPath + '.js', bundled.code);
-  const userConfig: undefined = (await require(`${resolvedPath}.js`)).default;
+  const userConfig: TypeZenConfig = (await require(`${resolvedPath}.js`)).default;
 
   fs.unlinkSync(resolvedPath + '.js');
 
@@ -63,11 +70,9 @@ function getConfigResolvePath(
   configRoot: string = process.cwd()
 ) {
   let resolvedPath: string | undefined;
-  let isTS = false;
 
   if (configFile) {
     resolvedPath = path.resolve(configFile);
-    isTS = configFile.endsWith('.ts');
   } else {
     if (!resolvedPath) {
       const jsconfigFile = path.resolve(configRoot, `${configName}.js`);
@@ -82,7 +87,6 @@ function getConfigResolvePath(
 
       if (fs.existsSync(tsconfigFile)) {
         resolvedPath = tsconfigFile;
-        isTS = true;
       }
     }
   }
@@ -91,7 +95,7 @@ function getConfigResolvePath(
     throw Error(`没有查询到 ${configName} 配置文件！`);
   }
 
-  return { isTS, resolvedPath };
+  return resolvedPath;
 }
 
 async function bundleConfigFile(
