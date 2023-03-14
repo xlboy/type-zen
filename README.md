@@ -81,14 +81,14 @@ type IsNumber<V> = V extends number ? true : false;
     type B = 1
     type C = 2
 
-    return { B, C }
+    return [B, C, "hi"]
   }
   ```
 
   ↓
 
   ```typescript
-  type A = [1, 2] extends [infer B, infer C] ? { B: B; C: C } : never;
+  type A = [1, 2] extends [infer B, infer C] ? [B, C, 'hi'] : never;
   ```
 
 - 搀杂 `if` 语句
@@ -120,8 +120,8 @@ type IsNumber<V> = V extends number ? true : false;
 一个更复杂的例子：
 
 ```ini
-type KeyFilter<K> = K == "toString" | "compile" ? never : K;
 type InsidePrototype<T> = ^{
+  type KeyFilter<K> = K == "toString" | "compile" ? never : K;
   return {
     [K in keyof T as KeyFilter<K>]?: ^{
       type FilteredValue = NonNullable<T[K]>;
@@ -131,7 +131,7 @@ type InsidePrototype<T> = ^{
       } else if (FilteredValue == Function) {
         return  never;
       } else if (FilteredValue == any[]) {
-        for (infer FValueItem of FilteredValue[number]) {
+        for (infer FValueItem in FilteredValue[number]) {
           if (FValueItem == ASTBase) {
             return Array<TestNode<any>>
           }
@@ -193,3 +193,99 @@ type InsidePrototype<T> = {
     : never;
 };
 ```
+
+# TODO
+
+- expression
+
+  - [x] literal :
+        number, string, ...(keyword: [any, boolean, null, never, ...])
+
+  - [x] condition :
+        `a == 1 ? 1 : 2`, `a extends 1 ? 1 : 2`
+
+  - [x] bracket surround : `(123)`
+
+  - [x] tuple
+
+  - [x] array : `number[]`
+
+  - [x] object
+
+  - [x] function
+
+  - [x] keyof
+
+  - [x] infer
+
+  - [x] union :
+        `1 | 2 | 3`, `| [1, 2, 3]`
+
+  - [x] intersection :
+        `1 & 2 & 3`, `& [1, 2, 3]`
+
+  - [x] generic args :
+        `<A extends string = "default">`, `<A: string = "default">`
+
+  - [x] type reference :
+        `A`, `Array<1>`, `IsNumber<"">`
+
+  - [x] get type of property :
+        `A["b"]`, `A[0][Key]`
+
+  - sugar block : `^{ ... }`
+
+    - [x] local variable statement:
+          `^{ type B = 1; ... }`
+
+    - if statement
+
+      - [x] only if :
+            `^{ if (a == 1) { do something... } }`
+
+      - [x] if else :
+            `^{ if (a == 1) { do something... } else { do something... } ... }`
+
+      - [x] if else if :
+            `^{ if (a == 1) { do something... } else if (a == 2) { do something... } ... }`
+
+      - [ ] multiple condition :
+            `^{ if (a == 1 && b == 2) { do something... } ... }`
+            `^{ if (a == 1 || b == 2) { do something... } ... }`
+
+    - [x] for statement :
+          `^{ for (infer a in UnionValue) { do something... } ... }`
+
+    - [x] return statement :
+          `^{ ... return 1; }`
+
+    - [ ] switch statement :
+          `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... }`
+
+  - [ ] template string:
+        `A is ${A}`
+        `A is ${|[333, 222]} and B is ${B}`
+  - [ ] namespace use :
+        `A.B`, `A.B.C`
+
+- statement
+
+  - [x] type alias :
+        `type A = 1`
+  - [ ] interface :
+        `interface A { b: 1 }`
+
+  - [x] enum:
+        `enum A { B = 1, C = "" }`
+        `const enum A { B = 1, C = "" }`
+
+  - [ ] namespace:
+        `namespace A { ... }`
+
+  - [x] declare function:
+        `declare function A(): 1`
+
+  - [x] declare variable:
+        `declare const A: 1`
+        `declare let A: 1`
+        `declare var A: 1`
