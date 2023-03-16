@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 
 import * as ast from '../../../ast';
-import { compiler } from '../../../compiler';
+import { Compiler } from '../../../compiler';
 import { Parser } from '../../../parser';
 import * as utils from '../../utils';
 import { sugarBlockExpressions } from '..';
@@ -37,7 +37,7 @@ it('nested references to local variables to be promoted', () => {
     }
   }`;
 
-  const compiledText = compiler.compile(new Parser(content).toAST()).toText();
+  const compiledText = new Compiler().compile(new Parser().parse(content)!).toText();
 
   const [hoistedStmt, typeAliasBStmt] = compiledText.split('\n');
 
@@ -61,7 +61,7 @@ it('reference brother - local variable', () => {
     return [true]
   }
   `;
-  const compiledText = compiler.compile(new Parser(content).toAST()).toText();
+  const compiledText = new Compiler().compile(new Parser().parse(content)!).toText();
 
   expect(compiledText).toBe(
     'type T = ["xlboy", ["xlboy", "Other"]] extends [infer MyName, infer TeamMembers] ? [true] : never;'

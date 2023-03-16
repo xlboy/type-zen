@@ -1,19 +1,40 @@
 import { merge } from 'lodash-es';
+import type { O } from 'ts-toolbelt';
 
 import type { StatementBase } from '../ast/statements/base';
 import type { CompiledNode, CompilerConfig } from './types';
 
-export { compiler };
+export { Compiler, getCurrentCompileConfig, type InnerCompilerConfig };
 
-class Compiler {
-  public config: CompilerConfig = {
+type InnerCompilerConfig = O.Required<CompilerConfig, string, 'deep'>;
+
+const { getCurrentCompileConfig, setCurrentCompileConfig, defaultConfig } = (() => {
+  const defaultConfig: InnerCompilerConfig = Object.freeze({
     indent: 2,
     memberSeparator: ';',
     useLineTerminator: true
+  });
+
+  let cachedConfig: InnerCompilerConfig = defaultConfig;
+  const getCurrentCompileConfig = () => cachedConfig;
+  const setCurrentCompileConfig = (config: InnerCompilerConfig) => {
+    cachedConfig = config;
   };
 
+  return { getCurrentCompileConfig, setCurrentCompileConfig, defaultConfig };
+})();
+
+class Compiler {
+  private readonly config: InnerCompilerConfig;
+
+  constructor(config?: CompilerConfig) {
+    this.config = config ? merge({}, defaultConfig, config) : defaultConfig;
+  }
+
   public compile(statements: StatementBase[]) {
-    const filteredCompiledNodes = this.filterCompiledNodes(statements);
+    if (this.config) setCurrentCompileConfig(this.config);
+
+    const filteredCompiledNodes = this.filterStatements(statements);
 
     return {
       toNodes() {
@@ -25,14 +46,11 @@ class Compiler {
     };
   }
 
-  public updateConfig(config: CompilerConfig) {
-    merge(this.config, config);
-  }
-
   /**
    * 过滤的范围： 1. 计算节点位置 2. 根据配置添加分号等
+   * @returns 过滤后的、编译后的节点（含位置信息、分号等）
    */
-  private filterCompiledNodes(statements: StatementBase[]): CompiledNode[] {
+  private filterStatements(statements: StatementBase[]): CompiledNode[] {
     let currentLine = 1;
     const filteredResult: CompiledNode[] = [];
 
@@ -101,5 +119,3 @@ class Compiler {
     return filteredResult;
   }
 }
-
-const compiler = new Compiler();

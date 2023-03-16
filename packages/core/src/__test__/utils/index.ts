@@ -27,7 +27,7 @@ function assertSource<T>(source: TestSource<T>) {
   let statements!: StatementBase[];
 
   try {
-    statements = new Parser(source.content).toAST();
+    statements = new Parser().parse(source.content) || [];
   } catch (error) {
     expect({ error, content: source.content }).toMatchSnapshot('parser-error');
     throw error;

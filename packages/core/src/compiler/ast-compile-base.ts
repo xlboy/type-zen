@@ -1,11 +1,11 @@
 import { customAlphabet } from 'nanoid';
-import type { O } from 'ts-toolbelt';
 import type { ReadonlyDeep } from 'type-fest';
 
 import type { ASTBase, ASTNodePosition, SugarBlockExpression } from '../ast';
 import { SyntaxKind } from '../ast/constants';
-import { compiler } from './compiler';
-import type { CompiledNode, CompilerConfig } from './types';
+import type { InnerCompilerConfig } from './compiler';
+import { getCurrentCompileConfig } from './compiler';
+import type { CompiledNode } from './types';
 
 export { ASTCompileBase };
 
@@ -37,8 +37,8 @@ abstract class ASTCompileBase {
 
   protected get compileUtils() {
     return {
-      getConfig: (): ReadonlyDeep<O.Required<CompilerConfig, string, 'deep'>> => {
-        return compiler.config as any;
+      getConfig: (): ReadonlyDeep<InnerCompilerConfig> => {
+        return getCurrentCompileConfig();
       },
       getChain: (): ReadonlyDeep<ASTBase>[] => {
         return compileStack as any;
