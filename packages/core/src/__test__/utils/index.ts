@@ -45,7 +45,10 @@ function assertSource<T>(source: TestSource<T>) {
     } catch (error) {
       expect({
         error,
-        compile: statements[index].compile(),
+        compileNodes: statements[index].compile(),
+        compiledText: (statements[index].compile().flat(Infinity) as CompiledNode[])
+          .map(cNode => cNode.text)
+          .join(''),
         info: sourceNodeInfo
       }).toMatchSnapshot('error');
       throw error;

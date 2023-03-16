@@ -1,7 +1,10 @@
+import type * as moo from 'moo';
+
 import type { ASTNodePosition } from '../ast';
 import * as ast from '../ast';
+import { NearleyError, Parser } from '../parser';
 
-export { toASTNode, filterAndToASTNode };
+export { toASTNode, filterAndToASTNode, filterTemplateStringContent };
 
 type NodeConstructor = new (pos: ASTNodePosition, args: any[]) => ast.ASTBase;
 
@@ -201,4 +204,119 @@ function filterAndToASTNode(
   }
 
   return toASTNode(nodeConstructor)(args[0]);
+}
+
+type TemplateStringTokenType =
+  | 'tplString'
+  | 'tplInterpStart'
+  | 'tplInterpContent'
+  | 'tplInterpEnd';
+function filterTemplateStringContent(
+  content: Array<moo.Token & { type: TemplateStringTokenType }>
+) {
+  const result: Array<string | ast.ExpressionBase> = [];
+  let currentStr = '';
+
+  for (let i = 0; i < content.length; i++) {
+    const token = content[i];
+
+    switch (token.type) {
+      case 'tplString': {
+        currentStr += token.value;
+
+        break;
+      }
+
+      case 'tplInterpStart': {
+        if (currentStr) {
+          result.push(currentStr);
+          currentStr = '';
+        }
+
+        const isValidInterpEndToken = content[i + 2]?.type === 'tplInterpEnd';
+
+        if (!isValidInterpEndToken) throwNoInterpEndError();
+
+        const interpContentToken = content[i + 1];
+
+        if (interpContentToken.type === 'tplInterpContent') {
+          const interpExprStr = interpContentToken.value.trimEnd();
+          let parsedExpr: ast.ExpressionBase | null = null;
+
+          try {
+            parsedExpr = new Parser({ source: 'expression' }).parse(interpExprStr);
+          } catch (error) {
+            throwInterpParseError(error as any);
+          }
+
+          if (!parsedExpr) throwInvalidInterpError();
+
+          result.push(parsedExpr!);
+          i = i + 2;
+        } else {
+          throw new Error("Internal exception, The interpolation content isn't valid");
+        }
+
+        break;
+
+        function throwInvalidInterpError() {
+          const errorMessage = `The interpolation is invalid, \`${interpContentToken.value}\` is not a valid expression`;
+          const errorOrigin = new Error(errorMessage) as NearleyError.ErrorOrigin;
+
+          errorOrigin.token = token;
+          errorOrigin.message = errorMessage;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+
+        function throwInterpParseError(error: NearleyError.UnexpectedInput) {
+          const errorMessage = 'The interpolation is invalid';
+          const errorOrigin = new Error(errorMessage) as NearleyError.ErrorOrigin;
+
+          error.line = token.line + error.line - 1;
+          if (error.line === 1) {
+            error.col = token.col + error.col - 1;
+          }
+
+          error.offset = token.offset + error.offset - 1;
+          errorOrigin.token = token;
+          errorOrigin.message = errorMessage;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+
+        function throwNoInterpEndError() {
+          const errorOrigin = new Error(
+            'The interpolation is invalid and lacks a corresponding `}`'
+          ) as NearleyError.ErrorOrigin;
+
+          errorOrigin.token = token;
+          errorOrigin.message = `The interpolation is invalid and lacks a corresponding \`}\``;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+      }
+    }
+
+    if (i === content.length - 1 && currentStr) {
+      result.push(currentStr);
+    }
+  }
+
+  return result;
 }

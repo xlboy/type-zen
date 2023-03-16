@@ -2,7 +2,7 @@ import * as moo from 'moo';
 
 const lexer = moo.states({
   main: {
-    tqlStart: { match: /`/, next: 'tql' },
+    tplStart: { match: /`/, push: 'tpl' },
     ws: { match: /\s/, lineBreaks: true },
     newLine: { match: /\n/, lineBreaks: true },
     comment: /\/\/.*?$/,
@@ -28,7 +28,7 @@ const lexer = moo.states({
     extend: ['extends', '=='],
     return: ['return'],
     arrowFnSymbol: '=>',
-    symbol: [':', ';', '.', ',', '?', '|', '<', '>', '=', '-', '&', '^', '`'],
+    symbol: [':', ';', '.', ',', '?', '|', '<', '>', '=', '-', '&', '^'],
     lbracket: ['{', '[', '('],
     rbracket: ['}', ']', ')'],
     identifier: {
@@ -58,15 +58,15 @@ const lexer = moo.states({
       })
     }
   },
-  tql: {
-    tqlEnd: { match: /`/, pop: 1 },
-    tqlInterpStart: { match: '${', next: 'tqlInterp' },
-    tqlString: { match: /(?!\$\{)(?:[^`\\]|\\[\s\S])/, lineBreaks: true }
+  tpl: {
+    tplEnd: { match: /`/, pop: 1 },
+    tplInterpStart: { match: /\$\{\s*/, next: 'tplInterp', lineBreaks: true },
+    tplString: { match: /(?!\$\{)(?:[^`\\]|\\[\s\S])/, lineBreaks: true }
   },
-  tqlInterp: {
-    tqlEnd: { match: /`/, pop: 1 },
-    tqlInterpEnd: { match: '}', next: 'tql' },
-    tqlInterpContent: { match: /(?:[^`\}\\]|\\[\s\S])+/, lineBreaks: true }
+  tplInterp: {
+    tplEnd: { match: /`/, pop: 1 },
+    tplInterpEnd: { match: '}', next: 'tpl' },
+    tplInterpContent: { match: /(?:[^`\}\\]|\\[\s\S])+/, lineBreaks: true }
   }
 });
 

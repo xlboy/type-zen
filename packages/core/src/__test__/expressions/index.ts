@@ -11,6 +11,7 @@ import { keyofExpressions } from './keyof';
 import { literalExpressions } from './literal';
 import { objectExpressions } from './object';
 import { sugarBlockExpressions } from './sugar-block';
+import { templateStringExpressions } from './template-string';
 import { tupleExpressions } from './tuple';
 import { typeReferenceExpressions } from './type-reference';
 import { unionExpressions } from './union';
@@ -33,6 +34,7 @@ export {
   objectExpressions,
   keyofExpressions,
   sugarBlockExpressions,
+  templateStringExpressions,
   mainExpressions
 };
 

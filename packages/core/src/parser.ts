@@ -9,7 +9,7 @@ import langGrammar from './grammar/__lang.auto-generated__';
 export { NearleyError, Parser };
 
 namespace NearleyError {
-  type ErrorOrigin = Error & { offset: number; token?: moo.Token };
+  export type ErrorOrigin = Error & { offset: number; token?: moo.Token };
 
   export class UnexpectedInput extends SyntaxError {
     public offset: number;
@@ -17,7 +17,7 @@ namespace NearleyError {
     public col: number;
     public message: string;
 
-    private errorOrigin: ErrorOrigin;
+    private errorOrigin?: ErrorOrigin;
 
     constructor(line: number, col: number, offset: number, errorOrigin: ErrorOrigin) {
       super(`Unexpected input at line ${line} col ${col}`);
@@ -115,11 +115,7 @@ class Parser<S extends ParserOptions['source'] = 'statement'> {
     }
 
     if (this.nearleyParser.results.length !== 0) {
-      if (this.options.source === 'expression') {
-        return this.nearleyParser.results[0][0];
-      } else {
-        return this.nearleyParser.results[0];
-      }
+      return this.nearleyParser.results[0];
     }
 
     return null;
