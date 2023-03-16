@@ -1,4 +1,4 @@
 // @ts-ignore
-const returnSymbol: unique symbol = Symbol();
+const unreturnSymbol: unique symbol = Symbol();
 
-type UnreturnedSymbol = typeof returnSymbol;
+type UnreturnedSymbol = typeof unreturnSymbol;
