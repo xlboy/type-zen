@@ -1,6 +1,6 @@
 import nearley from 'nearley';
 
-import { compiler } from '../compiler';
+import { Compiler } from '../compiler';
 import langGrammar from './__lang.auto-generated__';
 
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(langGrammar));
@@ -79,7 +79,7 @@ try {
   console.timeEnd('parser feed');
 
   if (parser.results.length !== 0) {
-    console.log(compiler.compile(parser.results[0]).toText());
+    console.log(new Compiler().compile(parser.results[0]).toText());
 
     // for (const result of parser.results[0]) {
     // console.log(`结果： ${JSON.stringify(result.compile())}`);
