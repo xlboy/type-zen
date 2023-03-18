@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": ".."
+    },
+    {
+      "name": "core",
+      "path": "../packages/core"
+    },
+    {
+      "name": "cli",
+      "path": "../packages/cli"
+    },
+    {
+      "name": "website/playground",
+      "path": "../website/playground"
+    }
+  ],
+  "settings": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": true,
+    "typescript.tsdk": "root/node_modules/typescript/lib",
+    "twind.attributes": ["tw", "apply"]
+  }
+}
