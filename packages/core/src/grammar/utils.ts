@@ -210,6 +210,7 @@ type TemplateStringTokenType =
   | 'tplString'
   | 'tplInterpStart'
   | 'tplInterpContent'
+  | 'tplInterpString'
   | 'tplInterpEnd';
 function filterTemplateStringContent(
   content: Array<moo.Token & { type: TemplateStringTokenType }>
@@ -233,34 +234,35 @@ function filterTemplateStringContent(
           currentStr = '';
         }
 
-        const isValidInterpEndToken = content[i + 2]?.type === 'tplInterpEnd';
+        const interpEndTokenIndex = content
+          .slice(i)
+          .findIndex(token => token.type === 'tplInterpEnd');
 
-        if (!isValidInterpEndToken) throwNoInterpEndError();
+        if (interpEndTokenIndex === -1) throwNoInterpEndError();
 
-        const interpContentToken = content[i + 1];
+        const interpContentArr = content.slice(i + 1, i + interpEndTokenIndex);
+        const interpExprStr = interpContentArr
+          .map(token => token.value)
+          .join('')
+          .trimEnd();
 
-        if (interpContentToken.type === 'tplInterpContent') {
-          const interpExprStr = interpContentToken.value.trimEnd();
-          let parsedExpr: ast.ExpressionBase | null = null;
+        let parsedExpr: ast.ExpressionBase | null = null;
 
-          try {
-            parsedExpr = new Parser({ source: 'expression' }).parse(interpExprStr);
-          } catch (error) {
-            throwInterpParseError(error as any);
-          }
-
-          if (!parsedExpr) throwInvalidInterpError();
-
-          result.push(parsedExpr!);
-          i = i + 2;
-        } else {
-          throw new Error("Internal exception, The interpolation content isn't valid");
+        try {
+          parsedExpr = new Parser({ source: 'expression' }).parse(interpExprStr);
+        } catch (error) {
+          throwInterpParseError(error as any);
         }
+
+        if (!parsedExpr) throwInvalidInterpError();
+
+        result.push(parsedExpr!);
+        i = i + interpEndTokenIndex;
 
         break;
 
         function throwInvalidInterpError() {
-          const errorMessage = `The interpolation is invalid, \`${interpContentToken.value}\` is not a valid expression`;
+          const errorMessage = `The interpolation is invalid, \`${interpExprStr}\` is not a valid expression`;
           const errorOrigin = new Error(errorMessage) as NearleyError.ErrorOrigin;
 
           errorOrigin.token = token;
@@ -320,3 +322,5 @@ function filterTemplateStringContent(
 
   return result;
 }
+
+function filterAtFinish() {}

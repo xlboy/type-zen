@@ -37,9 +37,10 @@ function generateRandomChar() {
         '\n',
         '  ',
         ' ',
-        ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!#$^&*()_+-=,./<>?;:[]{}|~'.split(
+        ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!#$^&*()_+-=,./<>?;:[]}|~'.split(
           ''
         ),
+        '\\$\\{',
         '\\`'
       ],
       _.random(1, 5)
@@ -50,7 +51,7 @@ function generateRandomChar() {
 }
 
 (function initLiteral() {
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 1000; i++) {
     const content = '`' + generateRandomChar() + '`';
 
     const node = utils.createNode({
@@ -68,7 +69,7 @@ function generateRandomChar() {
 })();
 
 (function initComplex() {
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 1000; i++) {
     let content = '`';
     let output = '`';
     const values: utils.TestNode<ast.TemplateStringExpression>['values'] = [];

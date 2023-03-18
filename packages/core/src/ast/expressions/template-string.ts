@@ -1,4 +1,3 @@
-import type * as moo from 'moo';
 import * as zod from 'zod';
 
 import type { ASTNodePosition } from '..';

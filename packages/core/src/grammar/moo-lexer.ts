@@ -60,13 +60,14 @@ const lexer = moo.states({
   },
   tpl: {
     tplEnd: { match: /`/, pop: 1 },
-    tplInterpStart: { match: /\$\{\s*/, next: 'tplInterp', lineBreaks: true },
+    tplInterpStart: { match: /\$\{\s*/, push: 'tplInterp', lineBreaks: true },
     tplString: { match: /(?!\$\{)(?:[^`\\]|\\[\s\S])/, lineBreaks: true }
   },
   tplInterp: {
-    tplEnd: { match: /`/, pop: 1 },
-    tplInterpEnd: { match: '}', next: 'tpl' },
-    tplInterpContent: { match: /(?:[^`\}\\]|\\[\s\S])+/, lineBreaks: true }
+    tplInterpEnd: { match: '}', pop: 1 },
+    tplInterpString: /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'/,
+    tplInterpContent: { match: /(?:[^`\}\\]|\\[\s\S])+/, lineBreaks: true },
+    tplInterpStart: { match: /\$\{\s*/, push: 'tplInterp', lineBreaks: true }
   }
 });
 

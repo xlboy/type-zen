@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// @ts-nocheck
+
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 // Bypasses TS6133. Allow declared but unused functions.
