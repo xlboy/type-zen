@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// @ts-nocheck
+
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 // Bypasses TS6133. Allow declared but unused functions.
@@ -16,7 +18,7 @@ declare var ws: any;
 
 import * as ast from '../ast';
 import lexer from './moo-lexer';
-import { filterAndToASTNode, toASTNode } from './utils';
+import { filterAndToASTNode, filterTemplateStringContent, toASTNode } from './utils';
 
 const n = () => null;
 
@@ -65,6 +67,7 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_intersection'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_keyof'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_sugarBlock'], postprocess: id },
+    { name: 'e_mainWithoutUnion', symbols: ['e_templateString'], postprocess: id },
     { name: 'e_function$macrocall$2', symbols: ['e_function_arrow'], postprocess: id },
     { name: 'e_function$macrocall$1$ebnf$1', symbols: ['nonEmptySpace'] },
     {
@@ -1183,6 +1186,29 @@ const grammar: Grammar = {
       name: 'e_number',
       symbols: [lexer.has('number') ? { type: 'number' } : number],
       postprocess: toASTNode(ast.NumberLiteralExpression)
+    },
+    {
+      name: 'e_templateString',
+      symbols: [{ literal: '`' }, { literal: '`' }],
+      postprocess: args =>
+        toASTNode(ast.TemplateStringExpression)([args[0], [], args.at(-1)])
+    },
+    { name: 'e_templateString$ebnf$1', symbols: [/[^`]/] },
+    {
+      name: 'e_templateString$ebnf$1',
+      symbols: ['e_templateString$ebnf$1', /[^`]/],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    {
+      name: 'e_templateString',
+      symbols: [{ literal: '`' }, 'e_templateString$ebnf$1', { literal: '`' }],
+      postprocess: args => {
+        return toASTNode(ast.TemplateStringExpression)([
+          args[0],
+          filterTemplateStringContent(args[1]),
+          args.at(-1)
+        ]);
+      }
     },
     {
       name: 'e_union_mode1$macrocall$2$subexpression$1',

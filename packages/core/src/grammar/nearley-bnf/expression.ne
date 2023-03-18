@@ -21,6 +21,7 @@ e_mainWithoutUnion ->
     | e_intersection {% id %}
     | e_keyof {% id %}
     | e_sugarBlock {% id %}
+    | e_templateString {% id %}
 
 
 #region  //*=========== function ===========
@@ -246,7 +247,6 @@ e_keyof -> "keyof" nonEmptySpace:+ e_main
         const _args = [args[0], args.at(-1)];
         return filterAndToASTNode([_args, d, reject], ast.KeyofExpression)
     } %}
-    # {% args => toASTNode(ast.KeyofExpression)([args[0], args.at(-1)]) %}
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | e_string {% id %}
@@ -254,6 +254,12 @@ e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %}
 
 e_string -> %string {% toASTNode(ast.StringLiteralExpression) %}
 e_number -> %number {% toASTNode(ast.NumberLiteralExpression) %}
+
+e_templateString -> "`" "`" {% args => toASTNode(ast.TemplateStringExpression)([args[0], [], args.at(-1)]) %}
+    | "`" [^`]:+ "`"
+      {% args => {
+        return toASTNode(ast.TemplateStringExpression)([args[0], filterTemplateStringContent(args[1]), args.at(-1)])
+      } %}
 
 #region  //*=========== union ===========
 

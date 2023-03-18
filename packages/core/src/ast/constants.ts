@@ -7,7 +7,10 @@ namespace SyntaxKind {
     Intersection = 'Intersection',
     Identifier = 'Identifier',
     LiteralKeyword = 'LiteralKeyword',
+
     StringLiteral = 'StringLiteral',
+    TemplateString = 'TemplateString',
+
     NumberLiteral = 'NumberLiteral',
     TypeReference = 'TypeReference',
     BracketSurround = 'BracketSurround',

@@ -5,16 +5,8 @@
   "vitest.commandLine": "pnpm exec vitest -u --api.host 127.0.0.1",
   "typescript.tsdk": "node_modules/typescript/lib",
   "twind.attributes": ["tw", "apply"],
-
-  "eslint.validate": ["javascript", "typescript"],
-  "eslint.options": {
-    "extensions": [".js", ".ts"]
-  },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "editor.formatOnSave": true,
-  "[typescript]": {
-    "editor.formatOnSave": false
-  }
+  "editor.formatOnSave": true
 }

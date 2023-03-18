@@ -1,12 +1,15 @@
+import { merge } from 'lodash-es';
 import nearley from 'nearley';
+import type { O } from 'ts-toolbelt';
 
+import type { ExpressionBase } from './ast';
 import type { StatementBase } from './ast/statements/base';
 import langGrammar from './grammar/__lang.auto-generated__';
 
 export { NearleyError, Parser };
 
 namespace NearleyError {
-  type ErrorOrigin = Error & { offset: number; token?: moo.Token };
+  export type ErrorOrigin = Error & { offset: number; token?: moo.Token };
 
   export class UnexpectedInput extends SyntaxError {
     public offset: number;
@@ -14,7 +17,7 @@ namespace NearleyError {
     public col: number;
     public message: string;
 
-    private errorOrigin: ErrorOrigin;
+    private errorOrigin?: ErrorOrigin;
 
     constructor(line: number, col: number, offset: number, errorOrigin: ErrorOrigin) {
       super(`Unexpected input at line ${line} col ${col}`);
@@ -62,14 +65,45 @@ namespace NearleyError {
   }
 }
 
-class Parser {
-  private readonly parser = new nearley.Parser(nearley.Grammar.fromCompiled(langGrammar));
+interface ParserOptions {
+  /**
+   * @default 'statement'
+   */
+  source?: 'expression' | 'statement';
+}
 
-  constructor(private readonly content: string) {}
+class Parser<S extends ParserOptions['source'] = 'statement'> {
+  private readonly options: O.Required<ParserOptions, 'string', 'deep'> = {
+    source: 'statement'
+  };
+  private nearleyParser: nearley.Parser;
 
-  public toAST(): StatementBase[] {
+  constructor(
+    options?: Omit<ParserOptions, 'mode'> & {
+      /**
+       * @default 'statement'
+       */ source?: S;
+    }
+  ) {
+    merge(this.options, options || {});
+    this.initNearleyParser();
+  }
+
+  private initNearleyParser() {
+    const rules = { ...langGrammar };
+
+    if (this.options.source === 'expression') {
+      rules.ParserStart = 'e_main';
+    }
+
+    this.nearleyParser = new nearley.Parser(nearley.Grammar.fromCompiled(rules));
+  }
+
+  public parse(
+    content: string
+  ): (S extends 'expression' ? ExpressionBase : StatementBase[]) | null {
     try {
-      this.parser.feed(this.content);
+      this.nearleyParser.feed(content);
     } catch (error) {
       const nearleyError = new NearleyError._Handler(error);
 
@@ -80,10 +114,10 @@ class Parser {
       throw error;
     }
 
-    if (this.parser.results.length !== 0) {
-      return this.parser.results[0];
+    if (this.nearleyParser.results.length !== 0) {
+      return this.nearleyParser.results[0];
     }
 
-    return [];
+    return null;
   }
 }

@@ -17,15 +17,7 @@ const templates = {
     '-11.1',
     '2342341.111111111'
   ],
-  string: [
-    '"123"',
-    "'1111'",
-    '`wwlklksdldfs.1111`',
-    '"钅耂阝赛三三三朩"',
-    '` 嗯？三地方似懂非懂赛  非非`',
-    '`123,..？？？。*！！@）&￥@&￥啊哦好`',
-    `' d d d '`
-  ],
+  string: ['"123"', "'1111'", '"钅耂阝赛三三三朩"'],
   keyword: [
     'string',
     'number',
@@ -50,14 +42,16 @@ const expressions = (() => {
         outputStr: num
       })
     })),
-    string: templates.string.map(str => ({
-      content: str,
-      node: utils.createNode({
-        instance: ast.StringLiteralExpression,
-        kind: SyntaxKind.E.StringLiteral,
-        outputStr: str
-      })
-    })),
+    string: [
+      ...templates.string.map(str => ({
+        content: str,
+        node: utils.createNode({
+          instance: ast.StringLiteralExpression,
+          kind: SyntaxKind.E.StringLiteral,
+          outputStr: str
+        })
+      }))
+    ],
     keyword: templates.keyword.map(keyword => ({
       content: keyword,
       node: utils.createNode({

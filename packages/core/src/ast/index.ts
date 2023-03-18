@@ -12,6 +12,7 @@ export { KeyofExpression } from './expressions/keyof';
 export { LiteralKeywordExpression } from './expressions/literals/keyword';
 export { NumberLiteralExpression } from './expressions/literals/number';
 export { StringLiteralExpression } from './expressions/literals/string';
+export { TemplateStringExpression } from './expressions/template-string';
 export { Object } from './expressions/object';
 export { TupleExpression } from './expressions/tuple';
 export { TypeReferenceExpression } from './expressions/type-reference';

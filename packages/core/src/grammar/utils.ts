@@ -1,9 +1,14 @@
+import type * as moo from 'moo';
+
 import type { ASTNodePosition } from '../ast';
 import * as ast from '../ast';
+import { NearleyError, Parser } from '../parser';
+
+export { toASTNode, filterAndToASTNode, filterTemplateStringContent };
 
 type NodeConstructor = new (pos: ASTNodePosition, args: any[]) => ast.ASTBase;
 
-export function toASTNode(nodeConstructor: NodeConstructor) {
+function toASTNode(nodeConstructor: NodeConstructor) {
   // `args` 是 `nearley` 扫描到的 token 集合
   // token 之所以可能为 null，是因为它“本来的内容”是“无意义字符”（↓
   //    如：空格、换行、结尾的分号等——`type_name=1;`，例子中的 `_` 就是空格，而此时这个空格会被过滤成 null；以及结尾处的 `;` 分号符也会被过滤成 null
@@ -76,7 +81,7 @@ export function toASTNode(nodeConstructor: NodeConstructor) {
   }
 }
 
-export function filterAndToASTNode(
+function filterAndToASTNode(
   args: [data: any[], location: number, reject: Object],
   nodeConstructor: NodeConstructor
 ) {
@@ -200,3 +205,122 @@ export function filterAndToASTNode(
 
   return toASTNode(nodeConstructor)(args[0]);
 }
+
+type TemplateStringTokenType =
+  | 'tplString'
+  | 'tplInterpStart'
+  | 'tplInterpContent'
+  | 'tplInterpString'
+  | 'tplInterpEnd';
+function filterTemplateStringContent(
+  content: Array<moo.Token & { type: TemplateStringTokenType }>
+) {
+  const result: Array<string | ast.ExpressionBase> = [];
+  let currentStr = '';
+
+  for (let i = 0; i < content.length; i++) {
+    const token = content[i];
+
+    switch (token.type) {
+      case 'tplString': {
+        currentStr += token.value;
+
+        break;
+      }
+
+      case 'tplInterpStart': {
+        if (currentStr) {
+          result.push(currentStr);
+          currentStr = '';
+        }
+
+        const interpEndTokenIndex = content
+          .slice(i)
+          .findIndex(token => token.type === 'tplInterpEnd');
+
+        if (interpEndTokenIndex === -1) throwNoInterpEndError();
+
+        const interpContentArr = content.slice(i + 1, i + interpEndTokenIndex);
+        const interpExprStr = interpContentArr
+          .map(token => token.value)
+          .join('')
+          .trimEnd();
+
+        let parsedExpr: ast.ExpressionBase | null = null;
+
+        try {
+          parsedExpr = new Parser({ source: 'expression' }).parse(interpExprStr);
+        } catch (error) {
+          throwInterpParseError(error as any);
+        }
+
+        if (!parsedExpr) throwInvalidInterpError();
+
+        result.push(parsedExpr!);
+        i = i + interpEndTokenIndex;
+
+        break;
+
+        function throwInvalidInterpError() {
+          const errorMessage = `The interpolation is invalid, \`${interpExprStr}\` is not a valid expression`;
+          const errorOrigin = new Error(errorMessage) as NearleyError.ErrorOrigin;
+
+          errorOrigin.token = token;
+          errorOrigin.message = errorMessage;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+
+        function throwInterpParseError(error: NearleyError.UnexpectedInput) {
+          const errorMessage = 'The interpolation is invalid';
+          const errorOrigin = new Error(errorMessage) as NearleyError.ErrorOrigin;
+
+          error.line = token.line + error.line - 1;
+          if (error.line === 1) {
+            error.col = token.col + error.col - 1;
+          }
+
+          error.offset = token.offset + error.offset - 1;
+          errorOrigin.token = token;
+          errorOrigin.message = errorMessage;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+
+        function throwNoInterpEndError() {
+          const errorOrigin = new Error(
+            'The interpolation is invalid and lacks a corresponding `}`'
+          ) as NearleyError.ErrorOrigin;
+
+          errorOrigin.token = token;
+          errorOrigin.message = `The interpolation is invalid and lacks a corresponding \`}\``;
+
+          throw new NearleyError.UnexpectedInput(
+            token.line,
+            token.col,
+            token.offset,
+            errorOrigin
+          );
+        }
+      }
+    }
+
+    if (i === content.length - 1 && currentStr) {
+      result.push(currentStr);
+    }
+  }
+
+  return result;
+}
+
+function filterAtFinish() {}
