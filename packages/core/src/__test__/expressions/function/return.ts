@@ -7,7 +7,7 @@ import type { Expression } from '../';
 import { arrayExpressions } from '../array';
 import { bracketSurroundExpressions } from '../bracket-surround';
 import { conditionExpressions, inferExpressions } from '../condition';
-import { getKeyValueExpressions } from '../get-key-value';
+import { elementAccessExpressions } from '../element-access';
 import { identifierTemplates } from '../identifier';
 import { intersectionExpressions } from '../intersection';
 import { literalExpressions } from '../literal';
@@ -21,7 +21,7 @@ const otherExpressions = [
   ...literalExpressions.all,
   ...typeReferenceExpressions,
   ...tupleExpressions.slice(0, 3000),
-  ...getKeyValueExpressions.slice(0, 3000),
+  ...elementAccessExpressions.slice(0, 3000),
   ...bracketSurroundExpressions.slice(0, 3000),
   ...arrayExpressions.slice(0, 3000),
   ...conditionExpressions.all.slice(0, 200),

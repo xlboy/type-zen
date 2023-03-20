@@ -7,8 +7,8 @@ import type { Expression } from './';
 import { arrayExpressions } from './array';
 import { bracketSurroundExpressions } from './bracket-surround';
 import { conditionExpressions } from './condition';
+import { elementAccessExpressions } from './element-access';
 import { functionExpressions } from './function';
-import { getKeyValueExpressions } from './get-key-value';
 import { identifierTemplates } from './identifier';
 import { intersectionExpressions } from './intersection';
 import { literalExpressions } from './literal';
@@ -590,7 +590,7 @@ function generateObjectOutput(contents: string[]) {
               outputStr: 'K'
             }),
             inSource: utils.createNode({
-              instance: ast.GetKeyValueExpression,
+              instance: ast.ElementAccessExpression,
               outputStr: 'Union[number]',
               source: utils.createNode({
                 instance: ast.TypeReferenceExpression,
@@ -697,7 +697,7 @@ function generateObjectOutput(contents: string[]) {
     ..._.sampleSize(arrayExpressions, 100),
     ..._.sampleSize(bracketSurroundExpressions, 100),
     ..._.sampleSize(conditionExpressions.all, 100),
-    ..._.sampleSize(getKeyValueExpressions, 100),
+    ..._.sampleSize(elementAccessExpressions, 100),
     ..._.sampleSize(literalExpressions.all, 100),
     ..._.sampleSize(tupleExpressions, 100),
     ..._.sampleSize(unionExpressions.all, 100),

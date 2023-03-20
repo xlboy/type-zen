@@ -5,7 +5,7 @@ import { SyntaxKind } from '../../ast/constants';
 import * as utils from '../utils';
 import type { Expression } from './';
 import { bracketSurroundExpressions } from './bracket-surround';
-import { getKeyValueExpressions } from './get-key-value';
+import { elementAccessExpressions } from './element-access';
 import { identifierTemplates } from './identifier';
 import { literalExpressions } from './literal';
 import { tupleExpressions } from './tuple';
@@ -19,7 +19,7 @@ const otherExpressions = [
   ...typeReferenceExpressions,
   ..._.sampleSize(unionExpressions.all, 3000),
   ..._.sampleSize(tupleExpressions, 3000),
-  ..._.sampleSize(getKeyValueExpressions, 3000),
+  ..._.sampleSize(elementAccessExpressions, 3000),
   ...bracketSurroundExpressions
 ];
 

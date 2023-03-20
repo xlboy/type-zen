@@ -15,7 +15,7 @@ e_mainWithoutUnion ->
     | e_typeReference {% id %}
     | e_condition {% id %}
     | e_array {% id %}
-    | e_getKeyValue {% id %}
+    | e_elementAccess {% id %}
     | e_conditionInfer {% id %}
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
@@ -198,7 +198,7 @@ e_genericArgs_group ->
 
 #endregion  //*======== genericArgs ===========
 
-e_getKeyValue -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression) %}
+e_elementAccess -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.ElementAccessExpression) %}
 
 #region  //*=========== tuple ===========
 e_tuple -> 
@@ -274,8 +274,6 @@ e_union_mode1 -> "|" _ "[" _
     {% args => toASTNode(ast.UnionExpression)([args[0], args[2], args[4].map(item => item[0]), args.at(-1)]) %}
 
 # `| 1 | 2`、`1 | 2 | 3` 的 union 姿态
-# TODO：为什么 `("|":? _)` 会出现「解析了2次」的情况？
-# TODO：而 `("|" _):?` 则不会？
 e_union_mode2 -> ("|" _):? e_mainWithoutUnion (_ "|" _ e_mainWithoutUnion):+ 
     {% (args, d, reject) => {
         const _args = [[args[1], ...args[2].map(item => item[3])]];

@@ -2,10 +2,10 @@ import { it } from 'vitest';
 
 import * as ast from '../../../ast';
 import * as utils from '../../utils';
-import { getKeyValueExpressions } from '..';
+import { elementAccessExpressions } from '..';
 
 it('normal', () => {
-  getKeyValueExpressions.forEach(expr => {
+  elementAccessExpressions.forEach(expr => {
     utils.assertSource({
       content: `type A = ${expr.content}`,
       nodes: [

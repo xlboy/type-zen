@@ -4,7 +4,7 @@ import * as ast from '../../ast';
 import { SyntaxKind } from '../../ast/constants';
 import * as utils from '../utils';
 import type { Expression } from './';
-import { getKeyValueExpressions } from './get-key-value';
+import { elementAccessExpressions } from './element-access';
 import { literalExpressions } from './literal';
 import { tupleExpressions } from './tuple';
 import { typeReferenceExpressions } from './type-reference';
@@ -17,7 +17,7 @@ const otherExpressions = [
   ...typeReferenceExpressions,
   ..._.sampleSize(unionExpressions.all, 2000),
   ..._.sampleSize(tupleExpressions, 2000),
-  ..._.sampleSize(getKeyValueExpressions, 2000)
+  ..._.sampleSize(elementAccessExpressions, 2000)
 ];
 
 const expressions: Expression[] = otherExpressions.map(expr => ({

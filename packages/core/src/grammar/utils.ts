@@ -166,7 +166,7 @@ function filterAndToASTNode(
       break;
     }
 
-    case ast.GetKeyValueExpression: {
+    case ast.ElementAccessExpression: {
       const [sourceNode] = args[0] as (ast.ASTBase | null)[];
 
       if (
@@ -178,7 +178,7 @@ function filterAndToASTNode(
         sourceNode instanceof ast.KeyofExpression
       ) {
         console.log(
-          `[filterAndToASTNode]: GetKeyValueExpression -> ${sourceNode.kind} : reject`
+          `[filterAndToASTNode]: ElementAccessExpression -> ${sourceNode.kind} : reject`
         );
 
         return reject;

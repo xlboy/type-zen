@@ -5,7 +5,7 @@ export { BracketSurroundExpression } from './expressions/bracket-surround';
 export { ConditionExpression, InferExpression } from './expressions/condition';
 export { Function } from './expressions/function';
 export { GenericArgsExpression } from './expressions/generic-args';
-export { GetKeyValueExpression } from './expressions/get-key-value';
+export { ElementAccessExpression } from './expressions/element-access';
 export { IdentifierExpression } from './expressions/identifier';
 export { IntersectionExpression } from './expressions/intersection';
 export { KeyofExpression } from './expressions/keyof';

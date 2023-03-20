@@ -2,9 +2,9 @@ import type { TestNode } from '../utils';
 import { arrayExpressions } from './array';
 import { bracketSurroundExpressions } from './bracket-surround';
 import { conditionExpressions, inferExpressions } from './condition';
+import { elementAccessExpressions } from './element-access';
 import { functionExpressions } from './function';
 import { genericArgsExpressions } from './generic-args';
-import { getKeyValueExpressions } from './get-key-value';
 import { identifierTemplates } from './identifier';
 import { intersectionExpressions } from './intersection';
 import { keyofExpressions } from './keyof';
@@ -24,7 +24,7 @@ export {
   unionExpressions,
   intersectionExpressions,
   tupleExpressions,
-  getKeyValueExpressions,
+  elementAccessExpressions,
   genericArgsExpressions,
   bracketSurroundExpressions,
   conditionExpressions,
@@ -47,7 +47,7 @@ const mainExpressions = [
   ...literalExpressions.all,
   ...typeReferenceExpressions,
   ...tupleExpressions,
-  ...getKeyValueExpressions,
+  ...elementAccessExpressions,
   ...bracketSurroundExpressions,
   ...conditionExpressions.all,
   ...inferExpressions.all,

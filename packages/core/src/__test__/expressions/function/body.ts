@@ -7,7 +7,7 @@ import type { Expression } from '../';
 import { arrayExpressions } from '../array';
 import { bracketSurroundExpressions } from '../bracket-surround';
 import { conditionExpressions, inferExpressions } from '../condition';
-import { getKeyValueExpressions } from '../get-key-value';
+import { elementAccessExpressions } from '../element-access';
 import { identifierTemplates } from '../identifier';
 import { literalExpressions } from '../literal';
 import { tupleExpressions } from '../tuple';
@@ -20,7 +20,7 @@ const otherExpressions = [
   ...literalExpressions.all,
   ...typeReferenceExpressions,
   ..._.sampleSize(tupleExpressions, 3000),
-  ..._.sampleSize(getKeyValueExpressions, 3000),
+  ..._.sampleSize(elementAccessExpressions, 3000),
   ..._.sampleSize(bracketSurroundExpressions, 3000),
   ..._.sampleSize(arrayExpressions, 3000),
   // TODO：比较耗性能…

@@ -59,7 +59,7 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_typeReference'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_condition'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_array'], postprocess: id },
-    { name: 'e_mainWithoutUnion', symbols: ['e_getKeyValue'], postprocess: id },
+    { name: 'e_mainWithoutUnion', symbols: ['e_elementAccess'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_conditionInfer'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_bracketSurround'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_intersection'], postprocess: id },
@@ -784,9 +784,9 @@ const grammar: Grammar = {
       }
     },
     {
-      name: 'e_getKeyValue',
+      name: 'e_elementAccess',
       symbols: ['e_main', '_', { literal: '[' }, '_', 'e_main', '_', { literal: ']' }],
-      postprocess: (...args) => filterAndToASTNode(args, ast.GetKeyValueExpression)
+      postprocess: (...args) => filterAndToASTNode(args, ast.ElementAccessExpression)
     },
     {
       name: 'e_tuple',

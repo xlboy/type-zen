@@ -19,7 +19,7 @@ namespace SyntaxKind {
     Keyof = 'Keyof',
     Typeof = 'Typeof',
     GenericArgs = 'GenericArgs',
-    GetKeyValue = 'GetKeyValue',
+    ElementAccess = 'ElementAccess',
     Tuple = 'Tuple',
     Array = 'Array',
 
