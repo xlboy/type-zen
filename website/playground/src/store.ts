@@ -1,4 +1,4 @@
-import { compiler, Parser } from '@type-zen/core';
+import { Compiler, Parser } from '@type-zen/core';
 import { message } from 'antd';
 import type * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { create } from 'zustand';
@@ -89,10 +89,10 @@ useGlobalStore.subscribe(
       if (!zenCode) return;
 
       try {
-        const ast = new Parser(zenCode).toAST();
+        const ast = new Parser().parse(zenCode);
 
-        if (ast.length !== 0) {
-          const compiledResult = compiler.compile(ast);
+        if (ast && ast.length !== 0) {
+          const compiledResult = new Compiler().compile(ast);
           const compiledNodes = compiledResult.toNodes();
           const compiledText = compiledResult.toText();
 
