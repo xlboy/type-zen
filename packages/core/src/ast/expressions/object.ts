@@ -250,14 +250,17 @@ namespace _Object {
     static readonly schema = zod.tuple([
       zod.any() /* { */,
       zod.array(
-        zod
-          .instanceof(Content.CallExpression)
-          .or(zod.instanceof(Content.ConstructorExpression))
-          .or(zod.instanceof(Content.MethodExpression))
-          .or(zod.instanceof(Content.NormalExpression))
-          .or(zod.instanceof(Content.LiteralIndexExpression))
-          .or(zod.instanceof(Content.IndexSignatureExpression))
-          .or(zod.instanceof(Content.MappedExpression))
+        zod.object({
+          readonly: zod.boolean(),
+          value: zod
+            .instanceof(Content.CallExpression)
+            .or(zod.instanceof(Content.ConstructorExpression))
+            .or(zod.instanceof(Content.MethodExpression))
+            .or(zod.instanceof(Content.NormalExpression))
+            .or(zod.instanceof(Content.LiteralIndexExpression))
+            .or(zod.instanceof(Content.IndexSignatureExpression))
+            .or(zod.instanceof(Content.MappedExpression))
+        })
       ),
       zod.any() /* } */
     ]);
@@ -282,7 +285,13 @@ namespace _Object {
       const { memberSeparator } = this.compileUtils.getConfig();
 
       for (const content of this.contents) {
-        nodeFlow.add('  ').add(content.compile());
+        nodeFlow.add('  ');
+
+        if (content.readonly) {
+          nodeFlow.add('readonly ');
+        }
+
+        nodeFlow.add(content.value.compile());
 
         if (memberSeparator) {
           nodeFlow.add(memberSeparator);

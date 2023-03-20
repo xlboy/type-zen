@@ -428,13 +428,57 @@ const grammar: Grammar = {
       postprocess: args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)])
     },
     {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [{ literal: 'readonly' }],
+      postprocess: id
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [],
+      postprocess: () => null
+    },
+    { name: 'e_object$ebnf$1$subexpression$1$ebnf$2', symbols: ['__'], postprocess: id },
+    {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$2',
+      symbols: [],
+      postprocess: () => null
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$1',
-      symbols: ['e_object_content', '_', 'e_object_content_eof']
+      symbols: [
+        'e_object$ebnf$1$subexpression$1$ebnf$1',
+        'e_object$ebnf$1$subexpression$1$ebnf$2',
+        'e_object_content',
+        '_',
+        'e_object_content_eof'
+      ]
     },
     { name: 'e_object$ebnf$1', symbols: ['e_object$ebnf$1$subexpression$1'] },
     {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1',
+      symbols: [{ literal: 'readonly' }],
+      postprocess: id
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1',
+      symbols: [],
+      postprocess: () => null
+    },
+    { name: 'e_object$ebnf$1$subexpression$2$ebnf$2', symbols: ['__'], postprocess: id },
+    {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$2',
+      symbols: [],
+      postprocess: () => null
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$2',
-      symbols: ['e_object_content', '_', 'e_object_content_eof']
+      symbols: [
+        'e_object$ebnf$1$subexpression$2$ebnf$1',
+        'e_object$ebnf$1$subexpression$2$ebnf$2',
+        'e_object_content',
+        '_',
+        'e_object_content_eof'
+      ]
     },
     {
       name: 'e_object$ebnf$1',
@@ -445,7 +489,11 @@ const grammar: Grammar = {
       name: 'e_object',
       symbols: [{ literal: '{' }, '_', 'e_object$ebnf$1', { literal: '}' }],
       postprocess: args =>
-        toASTNode(ast.Object.Expression)([args[0], args[2].map(id), args.at(-1)])
+        toASTNode(ast.Object.Expression)([
+          args[0],
+          args[2].map(item => ({ readonly: !!item[0], value: item[2] })),
+          args.at(-1)
+        ])
     },
     {
       name: 'e_object_content_eof$subexpression$1$subexpression$1',

@@ -118,8 +118,12 @@ e_sugarBlock_return -> "return" __ e_main
 #region  //*=========== object ===========
 e_object -> 
     "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}
-    | "{" _ (e_object_content _ e_object_content_eof):+ "}"
-        {% args => toASTNode(ast.Object.Expression)([args[0], args[2].map(id), args.at(-1)]) %}
+    | "{" _ ("readonly":? __:? e_object_content _ e_object_content_eof):+ "}"
+        {% args => toASTNode(ast.Object.Expression)([
+          args[0], 
+          args[2].map(item => ({ readonly: !!item[0], value: item[2] })),
+          args.at(-1)])
+        %}
     
 e_object_content_eof -> (("," | ";") _) | null
 
