@@ -67,7 +67,6 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_intersection'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_keyof'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_sugarBlock'], postprocess: id },
-    { name: 'e_mainWithoutUnion', symbols: ['e_templateString'], postprocess: id },
     { name: 'e_function$macrocall$2', symbols: ['e_function_arrow'], postprocess: id },
     { name: 'e_function$macrocall$1$ebnf$1', symbols: ['nonEmptySpace'] },
     {

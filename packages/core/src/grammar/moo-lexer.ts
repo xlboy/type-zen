@@ -2,7 +2,7 @@ import * as moo from 'moo';
 
 const lexer = moo.states({
   main: {
-    tplStart: { match: /`/, push: 'tpl' },
+    // tplStart: { match: /`/, push: 'tpl' },
     ws: { match: /\s/, lineBreaks: true },
     newLine: { match: /\n/, lineBreaks: true },
     comment: /\/\/.*?$/,
@@ -10,7 +10,7 @@ const lexer = moo.states({
     // number: /-?0x[0-9a-fA-F]+|0o[0-7]+|0b[01]+|\d*\.\d+|\d+\.?([eE][+-]?\d+)?/,
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
     // 字符串字面量，包围符号为“双引号、单引号”
-    string: /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'/,
+    string: /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'|`(?:\\[`\\]|[^\n`\\])*`/,
     literalKeyword: [
       'string',
       'number',

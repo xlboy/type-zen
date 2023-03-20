@@ -21,7 +21,7 @@ e_mainWithoutUnion ->
     | e_intersection {% id %}
     | e_keyof {% id %}
     | e_sugarBlock {% id %}
-    | e_templateString {% id %}
+    # | e_templateString {% id %}
 
 
 #region  //*=========== function ===========
