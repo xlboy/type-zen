@@ -234,12 +234,15 @@ type InsidePrototype<T> = {
   - [x] type reference :
         `A`, `Array<1>`, `IsNumber<"">`
 
-  - [x] get type of property :
+  - [x] element access :
         `A["b"]`, `A[0][Key]`
+
+  - [x] property access :
+        `A.B`, `A.B.C`
 
   - sugar block : `^{ ... }`
 
-    - [x] local variable statement:
+    - [x] local variable statement :
           `^{ type B = 1; ... }`
 
     - if statement
@@ -273,9 +276,6 @@ type InsidePrototype<T> = {
         `A is ${|[333, 222]} and B is ${B}`
 
         PS: The expressions inside `${}` only support native TS expression (extended expression are not currently supported).
-
-  - [x] namespace use :
-        `A.B`, `A.B.C`
 
 - statement
 
