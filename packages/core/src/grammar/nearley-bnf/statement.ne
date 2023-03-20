@@ -9,35 +9,39 @@ s_main ->  s_typeAlias {% id %}
     | s_declareVariable {% id %}
     | s_declareFunction {% id %}
     | s_enum {% id %}
+    | s_interface {% id %}
 
-s_typeAlias -> "type" _ id _ (e_genericArgs _):? "=" _ e_main 
+s_typeAlias -> "type" __ id _ (e_genericArgs _):? "=" _ e_main 
     {% args => toASTNode(ast.TypeAliasStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)]) %}
-    
+  
+s_interface -> "interface" __ id _ (e_genericArgs _):? e_object
+    {% args => toASTNode(ast.InterfaceStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)]) %}
+
 #region  //*=========== declare variable ===========
-s_declareVariable -> "declare" nonEmptySpace:+ s_declareVariable_type nonEmptySpace:+ id 
+s_declareVariable -> "declare" __ s_declareVariable_type __ id 
     {% args => toASTNode(ast.DeclareVariableStatement)([args[0], args[2], args.at(-1)]) %}
-    | "declare" nonEmptySpace:+ s_declareVariable_type nonEmptySpace:+ id _ ":" _ e_main
+    | "declare" __ s_declareVariable_type __ id _ ":" _ e_main
         {% args => toASTNode(ast.DeclareVariableStatement)([args[0], args[2], args[4], args.at(-1)]) %}
 
 s_declareVariable_type -> ("const" | "let" | "var") {% args => args[0][0].value%}
 #endregion  //*======== declare variable ===========
 
-s_declareFunction -> "declare" nonEmptySpace:+ "function" nonEmptySpace:+ id
+s_declareFunction -> "declare" __ "function" __ id
     {% args => toASTNode(ast.DeclareFunctionStatement)([args[0], args.at(-1)])%}
-    | "declare" nonEmptySpace:+ "function" nonEmptySpace:+ id _ e_function_normal
+    | "declare" __ "function" __ id _ e_function_normal
         {% args => toASTNode(ast.DeclareFunctionStatement)([args[0], args[4], args.at(-1)])%}
 
 #region  //*=========== enum ===========
-s_enum -> "enum" nonEmptySpace:+ id _ "{" _ "}" 
+s_enum -> "enum" __ id _ "{" _ "}" 
     {% args => toASTNode(ast.EnumStatement)([args[0], args[2], [], args.at(-1)]) %}
 
-    | "const" nonEmptySpace:+ "enum" nonEmptySpace:+ id _ "{" _ "}" 
+    | "const" __ "enum" __ id _ "{" _ "}" 
         {% args => toASTNode(ast.EnumStatement)([args[0], args[4], [], args.at(-1)]) %}
 
-    | "enum" nonEmptySpace:+ id _ "{" _ (s_enum_member _ s_enum_member_eof):+ "}" 
+    | "enum" __ id _ "{" _ (s_enum_member _ s_enum_member_eof):+ "}" 
         {% args => toASTNode(ast.EnumStatement)([args[0], args[2], args[6].map(id), args.at(-1)]) %}
 
-    | "const" nonEmptySpace:+ "enum" nonEmptySpace:+ id _ "{" _ (s_enum_member _ s_enum_member_eof):+ "}" 
+    | "const" __ "enum" __ id _ "{" _ (s_enum_member _ s_enum_member_eof):+ "}" 
         {% args => toASTNode(ast.EnumStatement)([args[0], args[4], args[8].map(id), args.at(-1)]) %}
     
 s_enum_member -> id _ "=" _ (e_number | e_string) 

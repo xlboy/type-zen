@@ -295,8 +295,9 @@ namespace _Object {
 
       return nodeFlow.get();
     }
+
     public toString(): string {
-      throw new Error('Method not implemented.');
+      return this.kind;
     }
   }
 }

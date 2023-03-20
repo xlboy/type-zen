@@ -25,7 +25,7 @@ e_mainWithoutUnion ->
 
 
 #region  //*=========== function ===========
-e_function_constructor[fn] -> "new" nonEmptySpace:+ $fn
+e_function_constructor[fn] -> "new" __ $fn
     {% args => toASTNode(ast.Function.Mode.ConstructorExpression)([args[0], args.at(-1)]) %}
 
 e_function -> e_function_constructor[e_function_arrow {% id %}] {% id %}
@@ -67,10 +67,10 @@ e_function_return ->
 e_function_return_assertsSource -> "this" {% id %} | id {% id %}
 
 e_function_return_assertsAndIs -> 
-    "asserts" nonEmptySpace:+ e_function_return_assertsSource nonEmptySpace:+ "is" nonEmptySpace:+ e_main
+    "asserts" __ e_function_return_assertsSource __ "is" __ e_main
     {% args => toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)]) %}
 
-e_function_return_isOnly -> e_function_return_assertsSource nonEmptySpace:+ "is" nonEmptySpace:+ e_main
+e_function_return_isOnly -> e_function_return_assertsSource __ "is" __ e_main
     {% args => toASTNode(ast.Function.Return.Expression)([args[0], args.at(-1)]) %}
 
 e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) %}
@@ -96,7 +96,7 @@ e_sugarBlock_if -> "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_conte
     {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args.at(-1)]) %}
     | "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content _ "else" _ e_sugarBlock_content
     {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args[6], args.at(-1)]) %}
-    | "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content _ "else" nonEmptySpace:+ e_sugarBlock_if
+    | "if" _ "(" e_sugarBlock_if_condition ")" _ e_sugarBlock_content _ "else" __ e_sugarBlock_if
     {% args => toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args[6], args.at(-1)]) %}
 
 
@@ -106,11 +106,11 @@ e_sugarBlock_if_condition -> e_main e_condition_extend e_main {% args => ({ left
 #region  //*=========== for ===========
 e_sugarBlock_for -> "for" _ "(" e_sugarBlock_for_mapping _ ")" _ e_sugarBlock_content
     {% args => toASTNode(ast.SugarBlockForExpression)([args[0], args[3], args.at(-1)]) %}
-e_sugarBlock_for_mapping -> "infer" nonEmptySpace:+ id nonEmptySpace:+ "in" nonEmptySpace:+ e_main
+e_sugarBlock_for_mapping -> "infer" __ id __ "in" __ e_main
     {% args => ({ name: args[2], source: args.at(-1) }) %}
 #endregion  //*======== for ===========
 
-e_sugarBlock_return -> "return" nonEmptySpace:+ e_main 
+e_sugarBlock_return -> "return" __ e_main 
     {% args => toASTNode(ast.SugarBlockReturnExpression)([args[0], args.at(-1)]) %}
 #endregion  //*======== sugar block ===========
     
@@ -160,8 +160,8 @@ e_object_content_indexSignature -> "[" _ id _ ":" _ e_main _ "]" _ ":" _ e_main
 e_object_content_mapped -> 
     "[" _ 
         (
-            id nonEmptySpace:+ "in" nonEmptySpace:+ e_main 
-            (nonEmptySpace:+ "as" nonEmptySpace:+ e_main):?
+            id __ "in" __ e_main 
+            (__ "as" __ e_main):?
         )
     _ "]"
     _ (("-" _ "?") | "?"):? _ ":" _
@@ -189,7 +189,7 @@ e_genericArgs -> "<" _ id e_genericArgs_group
     } %}
 
 e_genericArgs_group -> 
-    ((_ ":" _ e_main) | (nonEmptySpace "extends" nonEmptySpace e_main)):? (_ "=" _ e_main):?
+    ((_ ":" _ e_main) | (__ "extends" __ e_main)):? (_ "=" _ e_main):?
     {% args => {
         const type = args[0]?.[0]?.at(-1);
         const _default = args[1]?.at(-1);
@@ -231,7 +231,7 @@ e_condition ->
     e_main e_condition_extend e_main _ "?" _ e_main _ ":" _ e_main 
     {% (...args) => filterAndToASTNode(args, ast.ConditionExpression) %}
 
-e_conditionInfer -> "infer" nonEmptySpace id (e_condition_extend e_main):* 
+e_conditionInfer -> "infer" __ id (e_condition_extend e_main):* 
     {% args => {
         if (args[3].length === 0) {
             return toASTNode(ast.InferExpression)([args[0], args[2]]);
@@ -239,10 +239,10 @@ e_conditionInfer -> "infer" nonEmptySpace id (e_condition_extend e_main):*
         return toASTNode(ast.InferExpression)([args[0], args[2], args[3].map(item => item.at(-1))])
     } %}
 
-e_condition_extend -> (nonEmptySpace:+ "extends" nonEmptySpace:+) | (_ "==" _)
+e_condition_extend -> (__ "extends" __) | (_ "==" _)
 #endregion  //*======== condition ===========
 
-e_keyof -> "keyof" nonEmptySpace:+ e_main
+e_keyof -> "keyof" __ e_main
     {% (args, d, reject) => {
         const _args = [args[0], args.at(-1)];
         return filterAndToASTNode([_args, d, reject], ast.KeyofExpression)

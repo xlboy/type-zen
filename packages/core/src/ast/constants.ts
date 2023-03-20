@@ -49,6 +49,7 @@ namespace SyntaxKind {
     TypeAlias = 'TypeAlias',
     DeclareVariable = 'DeclareVariable',
     DeclareFunction = 'DeclareFunction',
-    Enum = 'Enum'
+    Enum = 'Enum',
+    Interface = 'Interface'
   }
 }

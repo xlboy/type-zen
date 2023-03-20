@@ -1,7 +1,5 @@
 // @ts-nocheck
 
-// @ts-nocheck
-
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 // Bypasses TS6133. Allow declared but unused functions.
@@ -68,19 +66,9 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_keyof'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_sugarBlock'], postprocess: id },
     { name: 'e_function$macrocall$2', symbols: ['e_function_arrow'], postprocess: id },
-    { name: 'e_function$macrocall$1$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function$macrocall$1$ebnf$1',
-      symbols: ['e_function$macrocall$1$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_function$macrocall$1',
-      symbols: [
-        { literal: 'new' },
-        'e_function$macrocall$1$ebnf$1',
-        'e_function$macrocall$2'
-      ],
+      symbols: [{ literal: 'new' }, '__', 'e_function$macrocall$2'],
       postprocess: args =>
         toASTNode(ast.Function.Mode.ConstructorExpression)([args[0], args.at(-1)])
     },
@@ -270,57 +258,27 @@ const grammar: Grammar = {
       postprocess: id
     },
     { name: 'e_function_return_assertsSource', symbols: ['id'], postprocess: id },
-    { name: 'e_function_return_assertsAndIs$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function_return_assertsAndIs$ebnf$1',
-      symbols: ['e_function_return_assertsAndIs$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_function_return_assertsAndIs$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function_return_assertsAndIs$ebnf$2',
-      symbols: ['e_function_return_assertsAndIs$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_function_return_assertsAndIs$ebnf$3', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function_return_assertsAndIs$ebnf$3',
-      symbols: ['e_function_return_assertsAndIs$ebnf$3', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_function_return_assertsAndIs',
       symbols: [
         { literal: 'asserts' },
-        'e_function_return_assertsAndIs$ebnf$1',
+        '__',
         'e_function_return_assertsSource',
-        'e_function_return_assertsAndIs$ebnf$2',
+        '__',
         { literal: 'is' },
-        'e_function_return_assertsAndIs$ebnf$3',
+        '__',
         'e_main'
       ],
       postprocess: args =>
         toASTNode(ast.Function.Return.Expression)([args[0], args[2], args.at(-1)])
     },
-    { name: 'e_function_return_isOnly$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function_return_isOnly$ebnf$1',
-      symbols: ['e_function_return_isOnly$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_function_return_isOnly$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_function_return_isOnly$ebnf$2',
-      symbols: ['e_function_return_isOnly$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_function_return_isOnly',
       symbols: [
         'e_function_return_assertsSource',
-        'e_function_return_isOnly$ebnf$1',
+        '__',
         { literal: 'is' },
-        'e_function_return_isOnly$ebnf$2',
+        '__',
         'e_main'
       ],
       postprocess: args =>
@@ -406,12 +364,6 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.SugarBlockIfExpression)([args[0], args[3], args[6], args.at(-1)])
     },
-    { name: 'e_sugarBlock_if$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_sugarBlock_if$ebnf$1',
-      symbols: ['e_sugarBlock_if$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_sugarBlock_if',
       symbols: [
@@ -424,7 +376,7 @@ const grammar: Grammar = {
         'e_sugarBlock_content',
         '_',
         { literal: 'else' },
-        'e_sugarBlock_if$ebnf$1',
+        '__',
         'e_sugarBlock_if'
       ],
       postprocess: args =>
@@ -450,46 +402,22 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.SugarBlockForExpression)([args[0], args[3], args.at(-1)])
     },
-    { name: 'e_sugarBlock_for_mapping$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_sugarBlock_for_mapping$ebnf$1',
-      symbols: ['e_sugarBlock_for_mapping$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_sugarBlock_for_mapping$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_sugarBlock_for_mapping$ebnf$2',
-      symbols: ['e_sugarBlock_for_mapping$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_sugarBlock_for_mapping$ebnf$3', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_sugarBlock_for_mapping$ebnf$3',
-      symbols: ['e_sugarBlock_for_mapping$ebnf$3', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_sugarBlock_for_mapping',
       symbols: [
         { literal: 'infer' },
-        'e_sugarBlock_for_mapping$ebnf$1',
+        '__',
         'id',
-        'e_sugarBlock_for_mapping$ebnf$2',
+        '__',
         { literal: 'in' },
-        'e_sugarBlock_for_mapping$ebnf$3',
+        '__',
         'e_main'
       ],
       postprocess: args => ({ name: args[2], source: args.at(-1) })
     },
-    { name: 'e_sugarBlock_return$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_sugarBlock_return$ebnf$1',
-      symbols: ['e_sugarBlock_return$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_sugarBlock_return',
-      symbols: [{ literal: 'return' }, 'e_sugarBlock_return$ebnf$1', 'e_main'],
+      symbols: [{ literal: 'return' }, '__', 'e_main'],
       postprocess: args =>
         toASTNode(ast.SugarBlockReturnExpression)([args[0], args.at(-1)])
     },
@@ -558,21 +486,8 @@ const grammar: Grammar = {
       postprocess: id
     },
     {
-      name: 'e_object_content_constructor$macrocall$1$ebnf$1',
-      symbols: ['nonEmptySpace']
-    },
-    {
-      name: 'e_object_content_constructor$macrocall$1$ebnf$1',
-      symbols: ['e_object_content_constructor$macrocall$1$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
       name: 'e_object_content_constructor$macrocall$1',
-      symbols: [
-        { literal: 'new' },
-        'e_object_content_constructor$macrocall$1$ebnf$1',
-        'e_object_content_constructor$macrocall$2'
-      ],
+      symbols: [{ literal: 'new' }, '__', 'e_object_content_constructor$macrocall$2'],
       postprocess: args =>
         toASTNode(ast.Function.Mode.ConstructorExpression)([args[0], args.at(-1)])
     },
@@ -707,63 +622,16 @@ const grammar: Grammar = {
         ])
     },
     {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$1',
-      symbols: ['nonEmptySpace']
+      name: 'e_object_content_mapped$subexpression$1$ebnf$1$subexpression$1',
+      symbols: ['__', { literal: 'as' }, '__', 'e_main']
     },
     {
       name: 'e_object_content_mapped$subexpression$1$ebnf$1',
-      symbols: ['e_object_content_mapped$subexpression$1$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$2',
-      symbols: ['nonEmptySpace']
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$2',
-      symbols: ['e_object_content_mapped$subexpression$1$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$1',
-      symbols: ['nonEmptySpace']
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$1',
-      symbols: [
-        'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$1',
-        'nonEmptySpace'
-      ],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$2',
-      symbols: ['nonEmptySpace']
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$2',
-      symbols: [
-        'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$2',
-        'nonEmptySpace'
-      ],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1',
-      symbols: [
-        'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$1',
-        { literal: 'as' },
-        'e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1$ebnf$2',
-        'e_main'
-      ]
-    },
-    {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3',
-      symbols: ['e_object_content_mapped$subexpression$1$ebnf$3$subexpression$1'],
+      symbols: ['e_object_content_mapped$subexpression$1$ebnf$1$subexpression$1'],
       postprocess: id
     },
     {
-      name: 'e_object_content_mapped$subexpression$1$ebnf$3',
+      name: 'e_object_content_mapped$subexpression$1$ebnf$1',
       symbols: [],
       postprocess: () => null
     },
@@ -771,11 +639,11 @@ const grammar: Grammar = {
       name: 'e_object_content_mapped$subexpression$1',
       symbols: [
         'id',
-        'e_object_content_mapped$subexpression$1$ebnf$1',
+        '__',
         { literal: 'in' },
-        'e_object_content_mapped$subexpression$1$ebnf$2',
+        '__',
         'e_main',
-        'e_object_content_mapped$subexpression$1$ebnf$3'
+        'e_object_content_mapped$subexpression$1$ebnf$1'
       ]
     },
     {
@@ -883,7 +751,7 @@ const grammar: Grammar = {
     },
     {
       name: 'e_genericArgs_group$ebnf$1$subexpression$1$subexpression$2',
-      symbols: ['nonEmptySpace', { literal: 'extends' }, 'nonEmptySpace', 'e_main']
+      symbols: ['__', { literal: 'extends' }, '__', 'e_main']
     },
     {
       name: 'e_genericArgs_group$ebnf$1$subexpression$1',
@@ -1113,7 +981,7 @@ const grammar: Grammar = {
     },
     {
       name: 'e_conditionInfer',
-      symbols: [{ literal: 'infer' }, 'nonEmptySpace', 'id', 'e_conditionInfer$ebnf$1'],
+      symbols: [{ literal: 'infer' }, '__', 'id', 'e_conditionInfer$ebnf$1'],
       postprocess: args => {
         if (args[3].length === 0) {
           return toASTNode(ast.InferExpression)([args[0], args[2]]);
@@ -1126,25 +994,9 @@ const grammar: Grammar = {
         ]);
       }
     },
-    { name: 'e_condition_extend$subexpression$1$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_condition_extend$subexpression$1$ebnf$1',
-      symbols: ['e_condition_extend$subexpression$1$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 'e_condition_extend$subexpression$1$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_condition_extend$subexpression$1$ebnf$2',
-      symbols: ['e_condition_extend$subexpression$1$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_condition_extend$subexpression$1',
-      symbols: [
-        'e_condition_extend$subexpression$1$ebnf$1',
-        { literal: 'extends' },
-        'e_condition_extend$subexpression$1$ebnf$2'
-      ]
+      symbols: ['__', { literal: 'extends' }, '__']
     },
     { name: 'e_condition_extend', symbols: ['e_condition_extend$subexpression$1'] },
     {
@@ -1152,15 +1004,9 @@ const grammar: Grammar = {
       symbols: ['_', { literal: '==' }, '_']
     },
     { name: 'e_condition_extend', symbols: ['e_condition_extend$subexpression$2'] },
-    { name: 'e_keyof$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 'e_keyof$ebnf$1',
-      symbols: ['e_keyof$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 'e_keyof',
-      symbols: [{ literal: 'keyof' }, 'e_keyof$ebnf$1', 'e_main'],
+      symbols: [{ literal: 'keyof' }, '__', 'e_main'],
       postprocess: (args, d, reject) => {
         const _args = [args[0], args.at(-1)];
 
@@ -1393,18 +1239,24 @@ const grammar: Grammar = {
       symbols: [lexer.has('identifier') ? { type: 'identifier' } : identifier],
       postprocess: toASTNode(ast.IdentifierExpression)
     },
-    { name: '_$ebnf$1', symbols: [] },
     {
-      name: '_$ebnf$1',
-      symbols: ['_$ebnf$1', lexer.has('ws') ? { type: 'ws' } : ws],
+      name: '__$ebnf$1$subexpression$1',
+      symbols: [lexer.has('ws') ? { type: 'ws' } : ws]
+    },
+    { name: '__$ebnf$1', symbols: ['__$ebnf$1$subexpression$1'] },
+    {
+      name: '__$ebnf$1$subexpression$2',
+      symbols: [lexer.has('ws') ? { type: 'ws' } : ws]
+    },
+    {
+      name: '__$ebnf$1',
+      symbols: ['__$ebnf$1', '__$ebnf$1$subexpression$2'],
       postprocess: d => d[0].concat([d[1]])
     },
+    { name: '__', symbols: ['__$ebnf$1'], postprocess: n },
+    { name: '_$ebnf$1', symbols: ['__'], postprocess: id },
+    { name: '_$ebnf$1', symbols: [], postprocess: () => null },
     { name: '_', symbols: ['_$ebnf$1'], postprocess: n },
-    {
-      name: 'nonEmptySpace',
-      symbols: [lexer.has('ws') ? { type: 'ws' } : ws],
-      postprocess: n
-    },
     { name: 's_block$ebnf$1$subexpression$1', symbols: ['s_main', 'blockSeparator'] },
     { name: 's_block$ebnf$1', symbols: ['s_block$ebnf$1$subexpression$1'] },
     { name: 's_block$ebnf$1$subexpression$2', symbols: ['s_main', 'blockSeparator'] },
@@ -1422,6 +1274,7 @@ const grammar: Grammar = {
     { name: 's_main', symbols: ['s_declareVariable'], postprocess: id },
     { name: 's_main', symbols: ['s_declareFunction'], postprocess: id },
     { name: 's_main', symbols: ['s_enum'], postprocess: id },
+    { name: 's_main', symbols: ['s_interface'], postprocess: id },
     { name: 's_typeAlias$ebnf$1$subexpression$1', symbols: ['e_genericArgs', '_'] },
     {
       name: 's_typeAlias$ebnf$1',
@@ -1433,7 +1286,7 @@ const grammar: Grammar = {
       name: 's_typeAlias',
       symbols: [
         { literal: 'type' },
-        '_',
+        '__',
         'id',
         '_',
         's_typeAlias$ebnf$1',
@@ -1449,49 +1302,44 @@ const grammar: Grammar = {
           args.at(-1)
         ])
     },
-    { name: 's_declareVariable$ebnf$1', symbols: ['nonEmptySpace'] },
+    { name: 's_interface$ebnf$1$subexpression$1', symbols: ['e_genericArgs', '_'] },
     {
-      name: 's_declareVariable$ebnf$1',
-      symbols: ['s_declareVariable$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
+      name: 's_interface$ebnf$1',
+      symbols: ['s_interface$ebnf$1$subexpression$1'],
+      postprocess: id
     },
-    { name: 's_declareVariable$ebnf$2', symbols: ['nonEmptySpace'] },
+    { name: 's_interface$ebnf$1', symbols: [], postprocess: () => null },
     {
-      name: 's_declareVariable$ebnf$2',
-      symbols: ['s_declareVariable$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
+      name: 's_interface',
+      symbols: [
+        { literal: 'interface' },
+        '__',
+        'id',
+        '_',
+        's_interface$ebnf$1',
+        'e_object'
+      ],
+      postprocess: args =>
+        toASTNode(ast.InterfaceStatement)([
+          args[0],
+          args[2],
+          args[4]?.[0] || void 0,
+          args.at(-1)
+        ])
     },
     {
       name: 's_declareVariable',
-      symbols: [
-        { literal: 'declare' },
-        's_declareVariable$ebnf$1',
-        's_declareVariable_type',
-        's_declareVariable$ebnf$2',
-        'id'
-      ],
+      symbols: [{ literal: 'declare' }, '__', 's_declareVariable_type', '__', 'id'],
       postprocess: args =>
         toASTNode(ast.DeclareVariableStatement)([args[0], args[2], args.at(-1)])
     },
-    { name: 's_declareVariable$ebnf$3', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareVariable$ebnf$3',
-      symbols: ['s_declareVariable$ebnf$3', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 's_declareVariable$ebnf$4', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareVariable$ebnf$4',
-      symbols: ['s_declareVariable$ebnf$4', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 's_declareVariable',
       symbols: [
         { literal: 'declare' },
-        's_declareVariable$ebnf$3',
+        '__',
         's_declareVariable_type',
-        's_declareVariable$ebnf$4',
+        '__',
         'id',
         '_',
         { literal: ':' },
@@ -1509,48 +1357,18 @@ const grammar: Grammar = {
       symbols: ['s_declareVariable_type$subexpression$1'],
       postprocess: args => args[0][0].value
     },
-    { name: 's_declareFunction$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareFunction$ebnf$1',
-      symbols: ['s_declareFunction$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 's_declareFunction$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareFunction$ebnf$2',
-      symbols: ['s_declareFunction$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 's_declareFunction',
-      symbols: [
-        { literal: 'declare' },
-        's_declareFunction$ebnf$1',
-        { literal: 'function' },
-        's_declareFunction$ebnf$2',
-        'id'
-      ],
+      symbols: [{ literal: 'declare' }, '__', { literal: 'function' }, '__', 'id'],
       postprocess: args => toASTNode(ast.DeclareFunctionStatement)([args[0], args.at(-1)])
     },
-    { name: 's_declareFunction$ebnf$3', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareFunction$ebnf$3',
-      symbols: ['s_declareFunction$ebnf$3', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 's_declareFunction$ebnf$4', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_declareFunction$ebnf$4',
-      symbols: ['s_declareFunction$ebnf$4', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 's_declareFunction',
       symbols: [
         { literal: 'declare' },
-        's_declareFunction$ebnf$3',
+        '__',
         { literal: 'function' },
-        's_declareFunction$ebnf$4',
+        '__',
         'id',
         '_',
         'e_function_normal'
@@ -1558,17 +1376,11 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.DeclareFunctionStatement)([args[0], args[4], args.at(-1)])
     },
-    { name: 's_enum$ebnf$1', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_enum$ebnf$1',
-      symbols: ['s_enum$ebnf$1', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 's_enum',
       symbols: [
         { literal: 'enum' },
-        's_enum$ebnf$1',
+        '__',
         'id',
         '_',
         { literal: '{' },
@@ -1578,25 +1390,13 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.EnumStatement)([args[0], args[2], [], args.at(-1)])
     },
-    { name: 's_enum$ebnf$2', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_enum$ebnf$2',
-      symbols: ['s_enum$ebnf$2', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 's_enum$ebnf$3', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_enum$ebnf$3',
-      symbols: ['s_enum$ebnf$3', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
     {
       name: 's_enum',
       symbols: [
         { literal: 'const' },
-        's_enum$ebnf$2',
+        '__',
         { literal: 'enum' },
-        's_enum$ebnf$3',
+        '__',
         'id',
         '_',
         { literal: '{' },
@@ -1606,79 +1406,61 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.EnumStatement)([args[0], args[4], [], args.at(-1)])
     },
-    { name: 's_enum$ebnf$4', symbols: ['nonEmptySpace'] },
     {
-      name: 's_enum$ebnf$4',
-      symbols: ['s_enum$ebnf$4', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 's_enum$ebnf$5$subexpression$1',
+      name: 's_enum$ebnf$1$subexpression$1',
       symbols: ['s_enum_member', '_', 's_enum_member_eof']
     },
-    { name: 's_enum$ebnf$5', symbols: ['s_enum$ebnf$5$subexpression$1'] },
+    { name: 's_enum$ebnf$1', symbols: ['s_enum$ebnf$1$subexpression$1'] },
     {
-      name: 's_enum$ebnf$5$subexpression$2',
+      name: 's_enum$ebnf$1$subexpression$2',
       symbols: ['s_enum_member', '_', 's_enum_member_eof']
     },
     {
-      name: 's_enum$ebnf$5',
-      symbols: ['s_enum$ebnf$5', 's_enum$ebnf$5$subexpression$2'],
+      name: 's_enum$ebnf$1',
+      symbols: ['s_enum$ebnf$1', 's_enum$ebnf$1$subexpression$2'],
       postprocess: d => d[0].concat([d[1]])
     },
     {
       name: 's_enum',
       symbols: [
         { literal: 'enum' },
-        's_enum$ebnf$4',
+        '__',
         'id',
         '_',
         { literal: '{' },
         '_',
-        's_enum$ebnf$5',
+        's_enum$ebnf$1',
         { literal: '}' }
       ],
       postprocess: args =>
         toASTNode(ast.EnumStatement)([args[0], args[2], args[6].map(id), args.at(-1)])
     },
-    { name: 's_enum$ebnf$6', symbols: ['nonEmptySpace'] },
     {
-      name: 's_enum$ebnf$6',
-      symbols: ['s_enum$ebnf$6', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    { name: 's_enum$ebnf$7', symbols: ['nonEmptySpace'] },
-    {
-      name: 's_enum$ebnf$7',
-      symbols: ['s_enum$ebnf$7', 'nonEmptySpace'],
-      postprocess: d => d[0].concat([d[1]])
-    },
-    {
-      name: 's_enum$ebnf$8$subexpression$1',
+      name: 's_enum$ebnf$2$subexpression$1',
       symbols: ['s_enum_member', '_', 's_enum_member_eof']
     },
-    { name: 's_enum$ebnf$8', symbols: ['s_enum$ebnf$8$subexpression$1'] },
+    { name: 's_enum$ebnf$2', symbols: ['s_enum$ebnf$2$subexpression$1'] },
     {
-      name: 's_enum$ebnf$8$subexpression$2',
+      name: 's_enum$ebnf$2$subexpression$2',
       symbols: ['s_enum_member', '_', 's_enum_member_eof']
     },
     {
-      name: 's_enum$ebnf$8',
-      symbols: ['s_enum$ebnf$8', 's_enum$ebnf$8$subexpression$2'],
+      name: 's_enum$ebnf$2',
+      symbols: ['s_enum$ebnf$2', 's_enum$ebnf$2$subexpression$2'],
       postprocess: d => d[0].concat([d[1]])
     },
     {
       name: 's_enum',
       symbols: [
         { literal: 'const' },
-        's_enum$ebnf$6',
+        '__',
         { literal: 'enum' },
-        's_enum$ebnf$7',
+        '__',
         'id',
         '_',
         { literal: '{' },
         '_',
-        's_enum$ebnf$8',
+        's_enum$ebnf$2',
         { literal: '}' }
       ],
       postprocess: args =>

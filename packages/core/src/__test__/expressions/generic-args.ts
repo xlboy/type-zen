@@ -11,9 +11,10 @@ import { unionExpressions } from './union';
 
 export { expressions as genericArgsExpressions };
 
-const expressions: Record<'native' | 'extended', Expression[]> = {
+const expressions: Record<'native' | 'extended' | 'all', Expression[]> = {
   native: [],
-  extended: []
+  extended: [],
+  all: []
 };
 
 const permutedIdGroup = utils.permuteObjects(identifierTemplates, 1, 3);
@@ -91,3 +92,5 @@ permutedIdGroup.forEach(ids => {
     })
   });
 });
+
+expressions.all = [...expressions.native, ...expressions.extended];

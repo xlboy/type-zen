@@ -5,6 +5,6 @@ blockSeparator -> _ ";":+ _  {% n %}
 
 id -> %identifier {% toASTNode(ast.IdentifierExpression) %}
 
-_ -> %ws:* {% n %}
+__ -> (%ws):+ {% n %}
 
-nonEmptySpace -> %ws {% n %}
+_ -> __:? {% n %}

@@ -2,38 +2,38 @@ import * as zod from 'zod';
 
 import type { ASTNodePosition } from '..';
 import { SyntaxKind } from '../constants';
-import { ExpressionBase } from '../expressions/base';
 import { GenericArgsExpression } from '../expressions/generic-args';
 import { IdentifierExpression } from '../expressions/identifier';
+import { Object as ObjectExpr } from '../expressions/object';
 import { StatementBase } from './base';
 
-export { TypeAliasStatement };
+export { InterfaceStatement };
 
 const schema = zod.tuple([
-  zod.any() /* type */,
+  zod.any() /* interface */,
   zod.instanceof(IdentifierExpression),
   zod.instanceof(GenericArgsExpression).or(zod.undefined()),
-  zod.instanceof(ExpressionBase) /* value */
+  zod.instanceof(ObjectExpr.Expression) /* body */
 ]);
 
 type Schema = zod.infer<typeof schema>;
 
-class TypeAliasStatement extends StatementBase {
-  public kind = SyntaxKind.S.TypeAlias;
+class InterfaceStatement extends StatementBase {
+  public kind = SyntaxKind.S.Interface;
 
   public name: IdentifierExpression;
-  public value: ExpressionBase;
+  public body: ObjectExpr.Expression;
   public arguments?: GenericArgsExpression;
 
   constructor(pos: ASTNodePosition, args: Schema) {
     super(pos);
     this.checkArgs(args, schema);
-    [, this.name, this.arguments, this.value] = args;
+    [, this.name, this.arguments, this.body] = args;
   }
 
   public compile() {
     const nodeFlow = this.compileUtils
-      .createNodeFlow('type')
+      .createNodeFlow('interface')
       .add(' ')
       .add(this.name.compile());
 
@@ -41,7 +41,7 @@ class TypeAliasStatement extends StatementBase {
       nodeFlow.add(this.arguments.compile());
     }
 
-    nodeFlow.add(' = ').add(this.value.compile());
+    nodeFlow.add(this.body.compile());
 
     return [...this.compiledNodeToPrepend, nodeFlow.get()];
   }
