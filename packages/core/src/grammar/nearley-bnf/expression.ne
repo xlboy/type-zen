@@ -16,6 +16,7 @@ e_mainWithoutUnion ->
     | e_condition {% id %}
     | e_array {% id %}
     | e_elementAccess {% id %}
+    | e_propertyAccess {% id %}
     | e_conditionInfer {% id %}
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
@@ -198,7 +199,11 @@ e_genericArgs_group ->
 
 #endregion  //*======== genericArgs ===========
 
-e_elementAccess -> e_main _ "[" _ e_main _ "]" {% (...args) => filterAndToASTNode(args, ast.ElementAccessExpression) %}
+e_elementAccess -> e_main _ "[" _ e_main _ "]" 
+    {% (...args) => filterAndToASTNode(args, ast.ElementAccessExpression) %}
+
+e_propertyAccess -> id _ ("." _ id):+ 
+    {% args => toASTNode(ast.PropertyAccessExpression)([args[0], ...args[2].map(item => item.at(-1))]) %}
 
 #region  //*=========== tuple ===========
 e_tuple -> 

@@ -20,8 +20,10 @@ namespace SyntaxKind {
     Typeof = 'Typeof',
     GenericArgs = 'GenericArgs',
     ElementAccess = 'ElementAccess',
+    PropertyAccess = 'PropertyAccess',
     Tuple = 'Tuple',
     Array = 'Array',
+    EnumMember = 'EnumMember',
 
     FunctionBody = 'FunctionBody',
     FunctionReturn = 'FunctionReturn',
@@ -36,7 +38,6 @@ namespace SyntaxKind {
     ObjectNameOnly = 'ObjectNameOnly',
     ObjectIndexSignature = 'ObjectIndexSignature',
     ObjectLiteralIndex = 'ObjectLiteralIndex',
-    EnumMember = 'EnumMember',
 
     SugarBlock = 'SugarBlock',
     SugarBlockIf = 'SugarBlockIf',

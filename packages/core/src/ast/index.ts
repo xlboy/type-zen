@@ -6,6 +6,7 @@ export { ConditionExpression, InferExpression } from './expressions/condition';
 export { Function } from './expressions/function';
 export { GenericArgsExpression } from './expressions/generic-args';
 export { ElementAccessExpression } from './expressions/element-access';
+export { PropertyAccessExpression } from './expressions/property-access';
 export { IdentifierExpression } from './expressions/identifier';
 export { IntersectionExpression } from './expressions/intersection';
 export { KeyofExpression } from './expressions/keyof';

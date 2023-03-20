@@ -60,6 +60,7 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_condition'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_array'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_elementAccess'], postprocess: id },
+    { name: 'e_mainWithoutUnion', symbols: ['e_propertyAccess'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_conditionInfer'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_bracketSurround'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_intersection'], postprocess: id },
@@ -787,6 +788,32 @@ const grammar: Grammar = {
       name: 'e_elementAccess',
       symbols: ['e_main', '_', { literal: '[' }, '_', 'e_main', '_', { literal: ']' }],
       postprocess: (...args) => filterAndToASTNode(args, ast.ElementAccessExpression)
+    },
+    {
+      name: 'e_propertyAccess$ebnf$1$subexpression$1',
+      symbols: [{ literal: '.' }, '_', 'id']
+    },
+    {
+      name: 'e_propertyAccess$ebnf$1',
+      symbols: ['e_propertyAccess$ebnf$1$subexpression$1']
+    },
+    {
+      name: 'e_propertyAccess$ebnf$1$subexpression$2',
+      symbols: [{ literal: '.' }, '_', 'id']
+    },
+    {
+      name: 'e_propertyAccess$ebnf$1',
+      symbols: ['e_propertyAccess$ebnf$1', 'e_propertyAccess$ebnf$1$subexpression$2'],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    {
+      name: 'e_propertyAccess',
+      symbols: ['id', '_', 'e_propertyAccess$ebnf$1'],
+      postprocess: args =>
+        toASTNode(ast.PropertyAccessExpression)([
+          args[0],
+          ...args[2].map(item => item.at(-1))
+        ])
     },
     {
       name: 'e_tuple',

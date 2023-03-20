@@ -10,6 +10,7 @@ import { intersectionExpressions } from './intersection';
 import { keyofExpressions } from './keyof';
 import { literalExpressions } from './literal';
 import { objectExpressions } from './object';
+import { propertyAccessExpressions } from './property-access';
 import { sugarBlockExpressions } from './sugar-block';
 import { templateStringExpressions } from './template-string';
 import { tupleExpressions } from './tuple';
@@ -25,6 +26,7 @@ export {
   intersectionExpressions,
   tupleExpressions,
   elementAccessExpressions,
+  propertyAccessExpressions,
   genericArgsExpressions,
   bracketSurroundExpressions,
   conditionExpressions,
