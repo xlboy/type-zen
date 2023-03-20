@@ -266,25 +266,29 @@ type InsidePrototype<T> = {
     - [ ] switch statement :
           `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... }`
 
-  - [ ] template string:
+  - [x] template string:
+
         `A is ${A}`
+
         `A is ${|[333, 222]} and B is ${B}`
-  - [ ] namespace use :
+
+        PS: The expressions inside `${}` only support native TS expression (extended expression are not currently supported).
+
+  - [x] namespace use :
         `A.B`, `A.B.C`
 
 - statement
 
   - [x] type alias :
         `type A = 1`
-  - [ ] interface :
+  - [x] interface :
         `interface A { b: 1 }`
 
   - [x] enum:
         `enum A { B = 1, C = "" }`
         `const enum A { B = 1, C = "" }`
 
-  - [ ] namespace:
-        `namespace A { ... }`
+  - [ ] namespace: `namespace A { ... }`
 
   - [x] declare function:
         `declare function A(): 1`
