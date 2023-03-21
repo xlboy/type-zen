@@ -29,7 +29,9 @@ function TSPreview(): JSX.Element {
       '// -----------------------output-----------------------',
       '\n',
       output
-    ].join('');
+    ]
+      .join('')
+      .trimStart();
   }
 }
 

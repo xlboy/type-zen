@@ -42,7 +42,7 @@ export const useGlobalStore = create(
             const example = findExampleByKey(tab);
 
             if (example) {
-              state.zenCode = example.zenCode;
+              state.zenCode = example.zenCode.trimStart();
               state.presetTSCode = example.presetTSCode || '';
             } else {
               message.warning('Corresponding sample code not found.');
