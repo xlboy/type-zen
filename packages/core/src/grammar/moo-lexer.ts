@@ -47,6 +47,7 @@ const lexer = moo.states({
           'interface',
           'namespace',
           'keyof',
+          'typeof',
           'type',
           'as',
           'is',

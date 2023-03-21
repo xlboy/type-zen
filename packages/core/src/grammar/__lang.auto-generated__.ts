@@ -64,8 +64,20 @@ const grammar: Grammar = {
     { name: 'e_mainWithoutUnion', symbols: ['e_conditionInfer'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_bracketSurround'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_intersection'], postprocess: id },
-    { name: 'e_mainWithoutUnion', symbols: ['e_keyof'], postprocess: id },
+    { name: 'e_mainWithoutUnion', symbols: ['e_typeOperator'], postprocess: id },
     { name: 'e_mainWithoutUnion', symbols: ['e_sugarBlock'], postprocess: id },
+    { name: 'e_typeOperator$subexpression$1', symbols: [{ literal: 'readonly' }] },
+    { name: 'e_typeOperator$subexpression$1', symbols: [{ literal: 'keyof' }] },
+    { name: 'e_typeOperator$subexpression$1', symbols: [{ literal: 'typeof' }] },
+    {
+      name: 'e_typeOperator',
+      symbols: ['e_typeOperator$subexpression$1', '__', 'e_main'],
+      postprocess: (args, d, reject) => {
+        const _args = [args[0][0], args.at(-1)];
+
+        return filterAndToASTNode([_args, d, reject], ast.TypeOperatorExpression);
+      }
+    },
     { name: 'e_function$macrocall$2', symbols: ['e_function_arrow'], postprocess: id },
     {
       name: 'e_function$macrocall$1',
@@ -1079,15 +1091,6 @@ const grammar: Grammar = {
       symbols: ['_', { literal: '==' }, '_']
     },
     { name: 'e_condition_extend', symbols: ['e_condition_extend$subexpression$2'] },
-    {
-      name: 'e_keyof',
-      symbols: [{ literal: 'keyof' }, '__', 'e_main'],
-      postprocess: (args, d, reject) => {
-        const _args = [args[0], args.at(-1)];
-
-        return filterAndToASTNode([_args, d, reject], ast.KeyofExpression);
-      }
-    },
     {
       name: 'e_value',
       symbols: [

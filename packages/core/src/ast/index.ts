@@ -9,7 +9,7 @@ export { ElementAccessExpression } from './expressions/element-access';
 export { PropertyAccessExpression } from './expressions/property-access';
 export { IdentifierExpression } from './expressions/identifier';
 export { IntersectionExpression } from './expressions/intersection';
-export { KeyofExpression } from './expressions/keyof';
+export { TypeOperatorExpression } from './expressions/type-operator';
 export { LiteralKeywordExpression } from './expressions/literals/keyword';
 export { NumberLiteralExpression } from './expressions/literals/number';
 export { StringLiteralExpression } from './expressions/literals/string';

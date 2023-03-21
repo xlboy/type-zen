@@ -7,13 +7,13 @@ import { functionExpressions } from './function';
 import { genericArgsExpressions } from './generic-args';
 import { identifierTemplates } from './identifier';
 import { intersectionExpressions } from './intersection';
-import { keyofExpressions } from './keyof';
 import { literalExpressions } from './literal';
 import { objectExpressions } from './object';
 import { propertyAccessExpressions } from './property-access';
 import { sugarBlockExpressions } from './sugar-block';
 import { templateStringExpressions } from './template-string';
 import { tupleExpressions } from './tuple';
+import { typeOperatorExpressions } from './type-operator';
 import { typeReferenceExpressions } from './type-reference';
 import { unionExpressions } from './union';
 
@@ -34,7 +34,7 @@ export {
   arrayExpressions,
   functionExpressions,
   objectExpressions,
-  keyofExpressions,
+  typeOperatorExpressions,
   sugarBlockExpressions,
   templateStringExpressions,
   mainExpressions
@@ -58,6 +58,6 @@ const mainExpressions = [
   ...arrayExpressions,
   ...functionExpressions.arrow,
   ...objectExpressions.all,
-  ...keyofExpressions,
+  ...typeOperatorExpressions,
   ...sugarBlockExpressions.simple
 ];

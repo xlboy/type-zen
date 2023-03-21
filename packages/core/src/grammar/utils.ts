@@ -116,7 +116,7 @@ function filterAndToASTNode(
       break;
     }
 
-    case ast.KeyofExpression: {
+    case ast.TypeOperatorExpression: {
       const [, sourceNode] = args[0] as [any, ast.ASTBase];
 
       if (
@@ -125,7 +125,7 @@ function filterAndToASTNode(
       ) {
         if (!sourceNode.isExtended) {
           console.log(
-            `[filterAndToASTNode]: KeyofExpression -> ${sourceNode.kind} : reject`
+            `[filterAndToASTNode]: TypeOperatorExpression -> ${sourceNode.kind} : reject`
           );
 
           return reject;
@@ -175,7 +175,7 @@ function filterAndToASTNode(
         sourceNode instanceof ast.ConditionExpression ||
         sourceNode instanceof ast.UnionExpression ||
         sourceNode instanceof ast.InferExpression ||
-        sourceNode instanceof ast.KeyofExpression
+        sourceNode instanceof ast.TypeOperatorExpression
       ) {
         console.log(
           `[filterAndToASTNode]: ElementAccessExpression -> ${sourceNode.kind} : reject`

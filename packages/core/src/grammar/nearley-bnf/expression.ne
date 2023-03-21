@@ -1,6 +1,5 @@
 @lexer lexer
 
-
 @include "./tools.ne"
 
 e_main -> e_mainWithoutUnion {% id %}
@@ -20,10 +19,15 @@ e_mainWithoutUnion ->
     | e_conditionInfer {% id %}
     | e_bracketSurround {% id %}
     | e_intersection {% id %}
-    | e_keyof {% id %}
+    | e_typeOperator {% id %}
     | e_sugarBlock {% id %}
     # | e_templateString {% id %}
 
+e_typeOperator -> ("readonly" | "keyof" | "typeof") __ e_main
+    {% (args, d, reject) => {
+        const _args = [args[0][0], args.at(-1)];
+        return filterAndToASTNode([_args, d, reject], ast.TypeOperatorExpression)
+    } %}
 
 #region  //*=========== function ===========
 e_function_constructor[fn] -> "new" __ $fn
@@ -250,12 +254,6 @@ e_conditionInfer -> "infer" __ id (e_condition_extend e_main):*
 
 e_condition_extend -> (__ "extends" __) | (_ "==" _)
 #endregion  //*======== condition ===========
-
-e_keyof -> "keyof" __ e_main
-    {% (args, d, reject) => {
-        const _args = [args[0], args.at(-1)];
-        return filterAndToASTNode([_args, d, reject], ast.KeyofExpression)
-    } %}
 
 e_value -> %literalKeyword {% toASTNode(ast.LiteralKeywordExpression) %} 
     | e_string {% id %}

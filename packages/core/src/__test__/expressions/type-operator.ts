@@ -11,7 +11,7 @@ import { objectExpressions } from './object';
 import { tupleExpressions } from './tuple';
 import { typeReferenceExpressions } from './type-reference';
 
-export { expressions as keyofExpressions };
+export { expressions as typeOperatorExpressions };
 
 const otherExpressions = [
   ...literalExpressions.all,
@@ -22,12 +22,19 @@ const otherExpressions = [
   ..._.sampleSize(bracketSurroundExpressions, 1000)
 ];
 
-const expressions: Expression[] = otherExpressions.map(expr => ({
-  content: `keyof       ${expr.content}`,
-  node: utils.createNode({
-    instance: ast.KeyofExpression,
-    kind: SyntaxKind.E.Keyof,
-    outputStr: `keyof ${expr.node.outputStr}`,
-    source: expr.node
-  })
-}));
+const operators = ['keyof', 'readonly', 'typeof'];
+
+const expressions: Expression[] = otherExpressions.map(expr => {
+  const operator = _.sample(operators)!;
+
+  return {
+    content: `${operator}       ${expr.content}`,
+    node: utils.createNode({
+      instance: ast.TypeOperatorExpression,
+      kind: SyntaxKind.E.TypeOperator,
+      outputStr: `${operator} ${expr.node.outputStr}`,
+      source: expr.node,
+      operator
+    })
+  };
+});
