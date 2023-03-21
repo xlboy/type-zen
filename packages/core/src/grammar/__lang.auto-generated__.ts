@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// @ts-nocheck
+
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 // Bypasses TS6133. Allow declared but unused functions.
@@ -559,11 +561,25 @@ const grammar: Grammar = {
     },
     { name: 'e_object_content_key', symbols: ['id'], postprocess: id },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'if' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'for' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'of' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'else' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'in' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'void' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'this' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'function' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'interface' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'namespace' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'keyof' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'typeof' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'type' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'as' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'is' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'out' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'infer' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'asserts' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'declare' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'readonly' }] },
     {
       name: 'e_object_content_key',
       symbols: ['e_object_content_key$subexpression$1'],
