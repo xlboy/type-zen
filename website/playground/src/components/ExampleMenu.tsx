@@ -33,7 +33,7 @@ function ExampleMenu(): JSX.Element {
   const [, setUrlState] = useUrlState({ example: '', code: '' });
 
   return (
-    <div className={tw`h-full min-w-[200px]`}>
+    <div className={tw`h-full min-w-[300px] overflow-auto`}>
       <Menu
         style={{ width: '100%' }}
         selectedKeys={activatedTab ? [activatedTab] : []}

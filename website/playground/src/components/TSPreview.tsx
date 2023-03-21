@@ -9,7 +9,7 @@ function TSPreview(): JSX.Element {
 
   return (
     <Editor
-      height="100vh"
+      height="100%"
       defaultLanguage="typescript"
       value={createOutput(compiledCode)}
       options={{

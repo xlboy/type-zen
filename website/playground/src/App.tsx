@@ -34,7 +34,7 @@ function App() {
     <div className={tw`h-[100vh] w-full flex(& col)`}>
       <div
         className={tw(
-          `w-full h-[50px] bg-[#3372c6] text([#fff] [30px]) px-[20px]`,
+          `w-full min-h-[50px] bg-[#3372c6] text([#fff] [30px]) px-[20px]`,
           'flex justify-between items-center'
         )}
       >
@@ -43,10 +43,12 @@ function App() {
           <GithubIcon />
         </a>
       </div>
-      <div className={tw('w-full p-[3px] flex(& 1)')}>
+      <div className={tw('w-full p-[3px] flex(& 1) min-h-[calc(100vh-50px)]')}>
         <ExampleMenu />
-        <TypeZenEditor />
-        <TSPreview />
+        <div className={tw`flex(& 1) h-full`}>
+          <TypeZenEditor />
+          <TSPreview />
+        </div>
       </div>
     </div>
   );

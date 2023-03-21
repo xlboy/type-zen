@@ -37,7 +37,7 @@ function TypeZenEditor(): JSX.Element {
   return (
     <>
       <Editor
-        height="100vh"
+        height="100%"
         className={tw`min-w-[50%]`}
         language={languageID}
         onChange={code => handleCodeChange(code || '')}
