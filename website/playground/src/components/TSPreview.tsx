@@ -1,11 +1,11 @@
 import Editor from '@monaco-editor/react';
 import { memo } from 'react';
 
-import { presetTSCode } from '../data/base';
+import { defaultPresetTSCode } from '../data/example';
 import { useGlobalStore } from '../store';
 
 function TSPreview(): JSX.Element {
-  const { compiledCode } = useGlobalStore();
+  const { compiledCode, presetTSCode } = useGlobalStore();
 
   return (
     <Editor
@@ -22,7 +22,14 @@ function TSPreview(): JSX.Element {
   );
 
   function createOutput(output: string) {
-    return `${presetTSCode}\n// -----------------------output-----------------------\n${output}`;
+    return [
+      defaultPresetTSCode,
+      !!presetTSCode ? `\n${presetTSCode}` : '',
+      '\n',
+      '// -----------------------output-----------------------',
+      '\n',
+      output
+    ].join('');
   }
 }
 

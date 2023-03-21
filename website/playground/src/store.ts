@@ -12,13 +12,14 @@ type Monaco = typeof monaco;
 interface Store {
   activatedTab: ExampleKey | null;
   zenCode: string;
-  compiledCode: string;
   zenMonaco: Monaco | null;
+  compiledCode: string;
+  presetTSCode: string;
 
-  setActivatedTab: (tab: string) => void;
+  setActivatedTab: (tab: ExampleKey) => void;
   setZenCode: (code: string) => void;
-  setCompiledCode: (code: string) => void;
   setZenMonaco: (instance: Monaco) => void;
+  setCompiledCode: (code: string) => void;
 }
 
 export const useGlobalStore = create(
@@ -30,23 +31,36 @@ export const useGlobalStore = create(
         zenCode: '',
         compiledCode: '',
         zenMonaco: null,
+        presetTSCode: '',
         //#endregion  //*======== state ===========
         //#region  //*=========== actions ===========
-        setActivatedTab: (tab: string) =>
+        setActivatedTab: tab =>
           set(state => {
             state.activatedTab = tab;
+            if (!tab) return;
+
+            const example = findExampleByKey(tab);
+
+            if (example) {
+              state.zenCode = example.zenCode;
+              state.presetTSCode = example.presetTSCode || '';
+            } else {
+              message.warning('Corresponding sample code not found.');
+            }
           }),
-        setZenCode: (code: string) =>
+        setZenCode: code =>
           set(state => {
             state.zenCode = code;
           }),
-        setCompiledCode: (code: string) =>
-          set(state => {
-            state.compiledCode = code;
-          }),
-        setZenMonaco: (instance: Monaco) =>
+
+        setZenMonaco: instance =>
           set(state => {
             state.zenMonaco = instance;
+          }),
+
+        setCompiledCode: code =>
+          set(state => {
+            state.compiledCode = code;
           })
 
         //#endregion  //*======== actions ===========
@@ -59,22 +73,6 @@ export const useGlobalStore = create(
       }
     )
   )
-);
-
-useGlobalStore.subscribe(
-  state => state.activatedTab,
-  activatedTab => {
-    if (!activatedTab) return;
-
-    const example = findExampleByKey(activatedTab);
-
-    if (example) {
-      useGlobalStore.getState().setZenCode(example.zenCode);
-    } else {
-      message.warning('Corresponding sample code not found.');
-    }
-  },
-  { fireImmediately: true }
 );
 
 (function listeningZenCode() {
