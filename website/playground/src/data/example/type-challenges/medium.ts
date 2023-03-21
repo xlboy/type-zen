@@ -62,6 +62,112 @@ type DeepReadonly<T> = {
   }
 }
 `
+    },
+    {
+      key: 'type-challenges-medium-5_tuple-to-union',
+      name: '5 - Tuple to Union',
+      zenCode: `
+type TupleToUnion<T: any[]> = T == Array<infer U> ? U : never
+`
+    },
+    {
+      key: 'type-challenges-medium-6_chainable-options',
+      name: '6 - Chainable Options',
+      zenCode: `
+type Chainable<T = {}> = {
+  option<K: string, V>(
+    key: K == keyof T ? never : K,
+    value: V
+  ): Chainable<Omit<T, K> & { [P in K]: V }>;
+  get(): T;
+};
+      `
+    },
+    {
+      key: 'type-challenges-medium-7_last-of-array',
+      name: '7 - Last of Array',
+      zenCode: `
+type Last<T: any[]> = T == [...infer _, infer R] ? R : never
+`
+    },
+    {
+      key: 'type-challenges-medium-8_pop',
+      name: '8 - Pop',
+      zenCode: `
+type Pop<T: any[]> = ^{
+  if (T == [...infer R, any]) {
+    return R
+  } else if (T == []) {
+    return []
+  }
+}
+
+`
+    },
+    {
+      key: 'type-challenges-medium-9_promise-all',
+      name: '9 - Promise.all',
+      zenCode: `
+declare function PromiseAll<T: any[]>(
+  values: readonly [...T]
+): Promise<{
+  [P in keyof T]: Awaited<T[P]>;
+}>;
+`
+    },
+    {
+      key: 'type-challenges-medium-10_type-lookup',
+      name: '10 - Type Lookup',
+      zenCode: `
+type LookUp<U, T> = ^{
+  for (infer Item in U) {
+    if (Item == { type: T }) {
+      return Item
+    }
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-11_trim-left',
+      name: '11 - Trim Left',
+      zenCode: `
+type IgnoreString = ' ' | '\\n' | '\\t'
+type TrimLeft<S: string> = ^{
+  if (S == \`\${infer L extends IgnoreString}\${infer R}\`) {
+    return TrimLeft<R>
+  }
+
+  return S
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-12_trim',
+      name: '12 - Trim',
+      zenCode: `
+type IgnoreString = ' ' | '\\n' | '\\t'
+type Trim<S: string> = ^{
+  if (S == \`\${IgnoreString}\${infer W}\` | \`\${infer W}\${IgnoreString}\`) {
+    return Trim<W>
+  }
+
+  return S
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-13_capitalize',
+      name: '13 - Capitalize',
+      zenCode: `
+type MyCapitalize<S: string> = ^{
+  if (S == \`\${infer U}\${infer R}\`) {
+    return \`\${Uppercase<U>}\${R}\`
+  } else {
+    return S
+  }
+}
+`
     }
   ]
 } as const satisfies Example.Index;
