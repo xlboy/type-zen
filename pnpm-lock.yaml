@@ -100,7 +100,7 @@ importers:
     dependencies:
       '@ahooksjs/use-url-state': 3.5.1_react@18.2.0
       '@monaco-editor/react': 4.4.6_waewrrayshn643ztij6zbniufy
-      '@type-zen/core': 0.0.1-alpha.10
+      '@type-zen/core': 0.0.1-alpha.11
       ahooks: 3.7.5_react@18.2.0
       antd: 5.3.2_biqbaboplfbrettd7655fr4n2y
       immer: 9.0.19
@@ -1064,8 +1064,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /@type-zen/core/0.0.1-alpha.10:
-    resolution: {integrity: sha512-mnmqMTkUKK7IPHWdPa5IkQ1wBObSUEV0+hhb+Db/M8tr2FRPZzH8OGiZyE1yYOP0ifNrsJJuqXHYlfrUlrDPuA==}
+  /@type-zen/core/0.0.1-alpha.11:
+    resolution: {integrity: sha512-1lqvZ3LxuWzVV5Fw+RyTW5hpRWdfpf/fUis5KKov32BjTigVGO255myj6+YgjCMJeQGFNuloIw22UIBLVzspSA==}
     dev: false
 
   /@types/chai-subset/1.3.3:
