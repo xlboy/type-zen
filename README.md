@@ -277,6 +277,9 @@ type InsidePrototype<T> = {
 
         PS: The expressions inside `${}` only support native TS expression (extended expression are not currently supported).
 
+  - [ ] comment :
+        `//`, `/* */`
+
 - statement
 
   - [x] type alias :
