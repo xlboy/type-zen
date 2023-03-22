@@ -15,6 +15,8 @@ declare var string: any;
 declare var number: any;
 declare var identifier: any;
 declare var ws: any;
+declare var lineComment: any;
+declare var multilineCommentString: any;
 
 import * as ast from '../ast';
 import lexer from './moo-lexer';
@@ -1337,11 +1339,15 @@ const grammar: Grammar = {
       name: '__$ebnf$1$subexpression$1',
       symbols: [lexer.has('ws') ? { type: 'ws' } : ws]
     },
+    { name: '__$ebnf$1$subexpression$1', symbols: ['comment_line'] },
+    { name: '__$ebnf$1$subexpression$1', symbols: ['comment_multiline'] },
     { name: '__$ebnf$1', symbols: ['__$ebnf$1$subexpression$1'] },
     {
       name: '__$ebnf$1$subexpression$2',
       symbols: [lexer.has('ws') ? { type: 'ws' } : ws]
     },
+    { name: '__$ebnf$1$subexpression$2', symbols: ['comment_line'] },
+    { name: '__$ebnf$1$subexpression$2', symbols: ['comment_multiline'] },
     {
       name: '__$ebnf$1',
       symbols: ['__$ebnf$1', '__$ebnf$1$subexpression$2'],
@@ -1351,6 +1357,36 @@ const grammar: Grammar = {
     { name: '_$ebnf$1', symbols: ['__'], postprocess: id },
     { name: '_$ebnf$1', symbols: [], postprocess: () => null },
     { name: '_', symbols: ['_$ebnf$1'], postprocess: n },
+    {
+      name: 'comment_line',
+      symbols: [lexer.has('lineComment') ? { type: 'lineComment' } : lineComment],
+      postprocess: n
+    },
+    { name: 'comment_multiline$ebnf$1', symbols: [] },
+    {
+      name: 'comment_multiline$ebnf$1',
+      symbols: ['comment_multiline$ebnf$1', 'comment_multiline_body'],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    {
+      name: 'comment_multiline',
+      symbols: [{ literal: '/*' }, 'comment_multiline$ebnf$1', { literal: '*/' }],
+      postprocess: n
+    },
+    {
+      name: 'comment_multiline_body',
+      symbols: [
+        lexer.has('multilineCommentString')
+          ? { type: 'multilineCommentString' }
+          : multilineCommentString
+      ],
+      postprocess: n
+    },
+    {
+      name: 'comment_multiline_body',
+      symbols: ['comment_multiline'],
+      postprocess: () => null
+    },
     { name: 's_block$ebnf$1$subexpression$1', symbols: ['s_main', 'blockSeparator'] },
     { name: 's_block$ebnf$1', symbols: ['s_block$ebnf$1$subexpression$1'] },
     { name: 's_block$ebnf$1$subexpression$2', symbols: ['s_main', 'blockSeparator'] },

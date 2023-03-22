@@ -5,7 +5,8 @@ const lexer = moo.states({
     // tplStart: { match: /`/, push: 'tpl' },
     ws: { match: /\s/, lineBreaks: true },
     newLine: { match: /\n/, lineBreaks: true },
-    comment: /\/\/.*?$/,
+    lineComment: /\/\/.*?$/,
+    multilineCommentStart: { match: '/*', push: 'multilineComment' },
     // js 的 number，包含了 16 进制，8 进制，浮点数，负正整数
     // number: /-?0x[0-9a-fA-F]+|0o[0-7]+|0b[01]+|\d*\.\d+|\d+\.?([eE][+-]?\d+)?/,
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
@@ -70,6 +71,11 @@ const lexer = moo.states({
     tplInterpString: /"(?:\\["\\]|[^\n"\\])*"|'(?:\\['\\]|[^\n'\\])*'/,
     tplInterpContent: { match: /(?:[^`\}\\]|\\[\s\S])+/, lineBreaks: true },
     tplInterpStart: { match: /\$\{\s*/, push: 'tplInterp', lineBreaks: true }
+  },
+  multilineComment: {
+    multilineCommentStart: { match: '/*', push: 'multilineComment' },
+    multilineCommentEnd: { match: '*/', pop: 1 },
+    multilineCommentString: { match: /[^]+?/, lineBreaks: true }
   }
 });
 
