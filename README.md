@@ -277,8 +277,16 @@ type InsidePrototype<T> = {
 
         PS: The expressions inside `${}` only support native TS expression (extended expression are not currently supported).
 
-  - [ ] comment :
-        `//`, `/* */`
+  - [x] comment :
+
+        `// xxxxxxxxx`
+
+        `/* x
+        xxxx
+         xxxxxxxx
+         */`
+
+        PS: `jsdoc` is not supported
 
 - statement
 
