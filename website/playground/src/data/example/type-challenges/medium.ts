@@ -307,9 +307,9 @@ type StringToUnion<T: string> = ^{
       zenCode: `
 type Merge<F: object, S: object> = {
   [key in keyof F | keyof S]: ^{
-    if (key extends keyof S) {
+    if (key == keyof S) {
       return S[key]
-    } else if (key extends keyof F) {
+    } else if (key == keyof F) {
       return F[key]
     }
   }
