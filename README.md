@@ -282,11 +282,9 @@ type InsidePrototype<T> = {
         `// xxxxxxxxx`
 
         `/* x
-        xxxx
-         xxxxxxxx
+          xxxx
+          xxxxxxxx
          */`
-
-        PS: `jsdoc` is not supported
 
 - statement
 
