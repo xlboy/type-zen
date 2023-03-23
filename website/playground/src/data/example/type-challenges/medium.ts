@@ -1123,6 +1123,318 @@ type MapTypes<
   }
 }
 `
+    },
+
+    {
+      key: 'type-challenges-medium-65_construct-tuple',
+      name: '65 - ConstructTuple',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24400
+
+type ConstructTuple<L: number, Arr: unknown[] = []> = ^{
+  if (Arr['length'] == L) {
+    return Arr
+  } else {
+    return ConstructTuple<L, [...Arr, unknown]>
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-66_number-range',
+      name: '66 - NumberRange',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24401
+
+type NumberRange<L, H, Res = never, Arr: any[] = []> = ^{
+  if (Arr['length'] == H) {
+    return Res | H
+  } else if (Arr['length'] == L) {
+    return NumberRange<L, H, L, [...Arr, any]>
+  } else if ([Res] == [never]) {
+    return NumberRange<L, H, Res, [...Arr, any]>
+  }
+  
+  return NumberRange<L, H, Res | Arr['length'], [...Arr, any]>
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-67_combination',
+      name: '67 - Combination',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24430
+
+type Combination<T: string[], U = T[number], K = U> = ^{
+  if (K == string) {
+    type _ = Combination<[], Exclude<U, K>>
+    return K | \`\${K} \${_}\`
+  }
+
+  return ''
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-68_subsequence',
+      name: '68 - Subsequence',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24607
+
+type Subsequence<T: any[]> = ^{
+  if (T == [infer Left, ...infer Rest]) {
+    return [Left] | [Left, ...Subsequence<Rest>] | Subsequence<Rest>
+  }
+
+  return T
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-69_check-repeated-chars',
+      name: '69 - CheckRepeatedChars',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24929
+
+type CheckRepeatedChars<T: string> = ^{
+  if (T == \`\${infer First}\${infer Rest}\`) {
+    if (Rest == \`\${string}\${First}\${string}\`) {
+      return true
+    } else {
+      return CheckRepeatedChars<Rest>
+    }
+  }
+
+  return false
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-70_first-unique-char-index',
+      name: '70 - FirstUniqueCharIndex',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25254
+
+type StrToUnion<S: string> = ^{
+  if (S == \`\${infer F}\${infer Rest}\`) {
+    return F | StrToUnion<Rest>
+  }
+}
+
+type FirstUniqueCharIndex<T: string, P: string = '', C: any[] = []> = ^{
+  if (T == \`\${infer F}\${infer Rest}\`) {
+    if (F == StrToUnion<\`\${P}\${Rest}\`>) {
+      return FirstUniqueCharIndex<Rest, F, [...C, 1]>
+    } else {
+      return C['length']
+    }
+  }
+
+  return -1
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-71_get-middle-element',
+      name: '71 - GetMiddleElement',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24688
+
+type GetMiddleElement<T: any[]> = ^{
+  if (T['length'] == 0 | 1 | 2) {
+    return T
+  } else if (T == [infer _, ...infer R, infer __]) {
+    return GetMiddleElement<R>
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-72_appear-only-once',
+      name: '72 - AppearOnlyOnce',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24892
+
+type FindEles<T: any[], R: any[] = [], P = never> = ^{
+  if (T == [infer F, ...infer Rest]) {
+    if (F == P) {
+      return FindEles<Rest, R, P>
+    } else if (F == Rest[number]) {
+      return FindEles<Rest, R, P | F>
+    }
+
+    return FindEles<Rest, [...R, F], P | F>
+  }
+
+  return R
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-73_integer',
+      name: '73 - Integer',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24691
+
+type Integer<T: number> = ^{
+  if (number == T) {
+    return never
+  }
+  
+  if (\`\${T}\` == \`\${number}.\${'' | number}\`) {
+    return never
+  }
+
+  return T
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-74_to-primitive',
+      name: '74 - ToPrimitive',
+
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24743
+
+type ToPrimitive<T> = ^{
+  if (T == Function) {
+    return Function
+  }
+  
+  if (T == object) {
+    return {
+      [K in keyof T]: ToPrimitive<T[K]>
+    }
+  }
+
+  if (T == boolean) {
+    return boolean
+  }
+  if (T == string) {
+    return string
+  }
+  if (T == number) {
+    return number
+  }
+
+  return never
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-75_deep-mutable',
+      name: '75 - DeepMutable',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24944
+
+type DeepMutable<T: object> = {
+  -readonly [K in keyof T]: ^{
+    if (T[K] == Function) {
+      return T[K]
+    }
+    
+    if (T[K] == object) {
+      return DeepMutable<T[K]>
+    }
+
+    return T[K]
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-76_all',
+      name: '76 - All',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24745
+
+type All<T: unknown[], K, Flag: boolean = false> = ^{
+  if (T == [infer Left, ...infer Rest]) {
+    if (Equal<Left, K> == true) {
+      return All<Rest, K, true>
+    } else {
+      return false
+    }
+  }
+
+  return Flag
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-77_filter',
+      name: '77 - Filter',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24945
+
+type Filter<T: any[], P, Res: unknown[] = []> = ^{
+  if (T == [infer Left, ...infer Rest]) {
+    if (Left == P) {
+      return Filter<Rest, P, [...Res, Left]>
+    } else {
+      return Filter<Rest, P, Res>
+    }
+  }
+
+  return Res
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-78_combination-key-type',
+      name: '78 - CombinationKeyType',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24564
+type ModifierKeys = ['cmd', 'ctrl', 'opt', 'fn']
+
+type Combs<T: string[] = ModifierKeys> = ^{
+  if (T == [infer F == string, ...infer R == string[]]) {
+    return \`\${F} \${R[number]}\` | Combs<R>
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-79_replace-first',
+      name: '79 - ReplaceFirst',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25366
+
+type ReplaceFirst<T: readonly unknown[], S, R> = ^{
+  if (T == readonly [infer F, ...infer Rest]){
+    if (F == S) {
+      return [R, ...Rest]
+    } else {
+      return [F, ...ReplaceFirst<Rest, S, R>]
+    }
+  }
+
+  return []
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-80_transpose',
+      name: '80 - Transpose',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25376
+
+type Col<T: number[][], I: number> = ^{
+  if (T == [infer F == number[], ...infer R == number[][]]) {
+    return [F[I], ...Col<R, I>]
+  } else {
+    return []
+  }
+}
+
+type Transpose<M: number[][], _Result: number[][] = []> = ^{
+  if (_Result['length'] == M[0]['length']) {
+    return _Result
+  } else {
+    return Transpose<M, [..._Result, Col<M, _Result['length']>]>
+  }
+}
+`
     }
   ]
 } as const satisfies Example.Index;
