@@ -506,26 +506,6 @@ type PickByType<T, U> = {
 }
 `
     },
-    /*
-     AnyOf
-     IsNever
-     IsUnion
-     ReplaceKeys
-     Remove Index Signature
-     Percentage Parser
-     Drop Char
-     MinusOne
-     PickByType
-     StartsWith
-     EndsWith
-     PartialByKeys
-     RequiredByKeys
-     Mutable
-     OmitByType
-     ObiectEntries
-     Shift
-     Tuple to Nested obiect
-    */
     {
       key: 'type-challenges-medium-35_starts-with',
       name: '35 - StartsWith',
@@ -582,6 +562,319 @@ type RequiredByKeys<T, K: keyof T = keyof T> = ^{
       zenCode: `
 type Mutable<T> = {
   -readonly [key in keyof T]: T[key];
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-40_omit-by-type',
+      name: '40 - OmitByType',
+      zenCode: `
+type OmitByType<T, U> = {
+  [P in keyof T as T[P] extends U ? never : P]:T[P]
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-41_object-entries',
+      name: '41 - ObjectEntries',
+      zenCode: `
+type ObjectEntries<T, _T = keyof T> = ^{
+  for (infer K in _T) {
+    return [
+      K, 
+      T[K] == (undefined | infer Type) ? Type : never
+    ]
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-42_shift',
+      name: '42 - Shift',
+      zenCode: `
+type Shift<T: any[]> = T == [infer _, ...infer R] ? [...R] : [];
+`
+    },
+    {
+      key: 'type-challenges-medium-43_tuple-to-nested-object',
+      name: '43 - TupleToNestedObject',
+      zenCode: `
+type TupleToNestedObject<T: any[], U> = ^{
+  if (T == [infer First, ...infer Rest]) {
+    if (First == string) {
+      if (Rest['length'] == 0) {
+        return Record<First, U>
+      } else {
+        return Record<First, TupleToNestedObject<Rest, U>>
+      }
+    } 
+    
+    return {}
+  } 
+  
+  return U
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-44_reverse',
+      name: '44 - Reverse',
+      zenCode: `
+type Reverse<T: any[], C: any[] = []> = ^{
+  if (T == [infer F, ...infer R]) {
+    return Reverse<R, [F, ...C]>
+  } else {
+    return C
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-45_flip-arguments',
+      name: '45 - FlipArguments',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/21378
+
+type ReverseTuple<T> = ^{
+  if (T == [...infer Heads, infer Tail]) {
+    return [Tail, ...ReverseTuple<Heads>]
+  } else {
+    return []
+  }
+}
+
+type FlipArguments<T: Function> = ^{
+  if (T == (...args: infer TArguments) => infer TReturn) {
+    return (...args: ReverseTuple<TArguments>) => TReturn
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-46_flatten-depth',
+      name: '46 - FlattenDepth',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25160
+
+type Flatten<A: unknown[]> = ^{
+  if (A == [infer X, ...infer Y]) {
+    if (X == unknown[]) {
+      return [...X, ...Flatten<Y>]
+    } else {
+      return [X, ...Flatten<Y>]
+    }
+  } else {
+    return []
+  }
+}
+
+type FlattenDepth<
+  Target: unknown[],
+  Depth: number = 1,
+  Arr: unknown[] = []
+> = ^{
+  if (Arr['length'] == Depth) {
+    return Target
+  } else if (Flatten<Target> == Target) {
+    return Target
+  } 
+
+  return FlattenDepth<
+    Flatten<Target>,
+    Depth,
+    [unknown, ...Arr]
+  >
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-47_bem-style-string',
+      name: '47 - BEM Style String',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25161
+
+type ConcatM<B: string, M: string[]> = ^{
+  if (M['length'] == 0) {
+    return B
+  } else if (M[number] == M[number]) {
+    return \`\${B}--\${M[number]}\`
+  } 
+
+  return B
+}
+
+type BEM<B: string, E: string[], M: string[]> = ^{
+  if (E == [infer X == string]) {
+    return ConcatM<\`\${B}__\${X}\`, M>
+  } else {
+    return ConcatM<B, M>
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-48_inorder-traversal',
+      name: '48 - InorderTraversal',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25163
+
+interface TreeNode {
+  val: number
+  left: TreeNode | null
+  right: TreeNode | null
+}
+
+type InorderTraversal<T: TreeNode | null> = ^{
+  if (T == TreeNode) {
+    type L = T['left'] == TreeNode ? InorderTraversal<T['left']> : []
+    type R = T['right'] == TreeNode ? InorderTraversal<T['right']> : []
+
+    return [...L, T['val'], ...R]
+  }
+
+  return []
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-49_flip',
+      name: '49 - Flip',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25218
+
+type Flip<T: Record<PropertyKey, string | number | boolean>> = {
+  [k in keyof T as \`\${T[k]}\`]: k
+}
+`
+    },
+    /**
+     *
+     *  Reverse
+     *  Flip Arguments
+     *  FlattenDepth
+     *  BEM style string
+     *  InorderTraversal
+     *  Flip
+     *  Fibonacci Sequence
+     *  AllCombinations
+     *  Greater Than
+     *  Zip
+     *  IsTuple
+     *  Chunk
+     *  Trim Right
+     *  Without
+     *  Trunc
+     *  IndexOf
+     *  Join
+     *  LastIndexOf
+     *  Unique
+     *  MapTypes
+     */
+    {
+      key: 'type-challenges-medium-50_fibonacci-sequence',
+      name: '50 - Fibonacci Sequence',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25219
+
+type Fibonacci<
+  T: number, // Target depth
+  Cur: unknown[] = [], // Current array
+  Prev: unknown[] = [unknown], // Previous array
+  Count: unknown[] = [] // Count our current depth
+> = ^{
+  if (Count['length'] == T) {
+    return Cur['length']
+  } else {
+    return Fibonacci<
+      T,
+      [...Cur, ...Prev],
+      Cur,
+      [unknown, ...Count]
+    >
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-51_all-combinations',
+      name: '51 - AllCombinations',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25225
+
+type StringToUnion<S: string> = ^{
+  if (S == \`\${infer A}\${infer Rest}\`) {
+    return A | StringToUnion<Rest>
+  } else {
+    return ''
+  }
+}
+
+type Combinations<T: string, U: string = T> = ^{
+  for (infer I in U) {
+    return I | \`\${I}\${Combinations<Exclude<T, I>>}\`
+  }
+}
+
+type AllCombinations<S: string> = Combinations<StringToUnion<S>>
+`
+    },
+    {
+      key: 'type-challenges-medium-52_greater-than',
+      name: '52 - GreaterThan',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/21721#issuecomment-1399309754
+
+type GreaterThanSameDigitCount<T: number | string, U: number | string> = ^{
+  if (\`\${T}\` == \`\${infer TF}\${infer TR}\`) {
+    if (\`\${U}\` == \`\${infer UF}\${infer UR}\`) {
+      if (TF == UF) {
+        return GreaterThanSameDigitCount<TR, UR>
+      } else {
+        type LC = '0123456789';
+        type RC = \`\${string}\${TF}\${string}\${UF}\${string}\`
+        
+        return LC extends RC ? false : true
+      }
+    } else {
+      return true
+    }
+  } 
+
+  return false
+}
+
+type DigitsToArr<S: string> = ^{
+  if (S == \`\${string}\${infer R}\`) {
+    return [0, ...DigitsToArr<R>]
+  } else {
+    return []
+  }
+}
+
+type ArrLenCompare<T: any[], U: any[]> = ^{
+  type LC = '0123456789';
+  type RC1 = \`\${string}\${T['length']}\${string}\${U['length']}\${string}\`
+  type RC2 = \`\${string}\${U['length']}\${string}\${T['length']}\${string}\`
+
+  if (LC == RC1) {
+    return -1
+  } else if (LC == RC2) {
+    return 1
+  } 
+
+  return 0
+}
+
+type GreaterThan<T: number, U: number> = ^{
+  type LC = ArrLenCompare<DigitsToArr<\`\${T}\`>, DigitsToArr<\`\${U}\`>>
+
+  if (LC == 0) {
+    return GreaterThanSameDigitCount<T, U>
+  } else if (LC == 1) {
+    return true
+  }
+
+  return false
 }
 `
     }
