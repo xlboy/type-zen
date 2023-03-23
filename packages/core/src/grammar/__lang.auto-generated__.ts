@@ -481,8 +481,32 @@ const grammar: Grammar = {
       postprocess: args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)])
     },
     {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: [{ literal: '-' }, '_']
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: [{ literal: '+' }, '_']
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [
+        'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1$subexpression$1'
+      ],
+      postprocess: id
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [],
+      postprocess: () => null
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
-      symbols: [{ literal: 'readonly' }, '__']
+      symbols: [
+        'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1$ebnf$1',
+        { literal: 'readonly' },
+        '__'
+      ]
     },
     {
       name: 'e_object$ebnf$1$subexpression$1$ebnf$1',
@@ -505,8 +529,32 @@ const grammar: Grammar = {
     },
     { name: 'e_object$ebnf$1', symbols: ['e_object$ebnf$1$subexpression$1'] },
     {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: [{ literal: '-' }, '_']
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: [{ literal: '+' }, '_']
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [
+        'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1$subexpression$1'
+      ],
+      postprocess: id
+    },
+    {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1',
+      symbols: [],
+      postprocess: () => null
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1',
-      symbols: [{ literal: 'readonly' }, '__']
+      symbols: [
+        'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1$ebnf$1',
+        { literal: 'readonly' },
+        '__'
+      ]
     },
     {
       name: 'e_object$ebnf$1$subexpression$2$ebnf$1',
@@ -538,7 +586,11 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.Object.Expression)([
           args[0],
-          args[2].map(item => ({ readonly: !!item[0], value: item[1] })),
+          args[2].map(item => ({
+            operator: item[0]?.[0] ? item[0][0][0].value : void 0,
+            readonly: !!item[0],
+            value: item[1]
+          })),
           args.at(-1)
         ])
     },

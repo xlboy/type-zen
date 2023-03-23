@@ -251,6 +251,7 @@ namespace _Object {
       zod.any() /* { */,
       zod.array(
         zod.object({
+          operator: zod.string().or(zod.undefined()),
           readonly: zod.boolean(),
           value: zod
             .instanceof(Content.CallExpression)
@@ -286,6 +287,10 @@ namespace _Object {
 
       for (const content of this.contents) {
         nodeFlow.add('  ');
+
+        if (content.operator) {
+          nodeFlow.add(content.operator);
+        }
 
         if (content.readonly) {
           nodeFlow.add('readonly ');

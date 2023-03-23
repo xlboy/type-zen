@@ -29,7 +29,7 @@ const lexer = moo.states({
     extend: ['extends', '=='],
     return: ['return'],
     arrowFnSymbol: '=>',
-    symbol: [':', ';', '.', ',', '?', '|', '<', '>', '=', '-', '&', '^'],
+    symbol: [':', ';', '.', ',', '?', '|', '<', '>', '=', '-', '+', '&', '^'],
     lbracket: ['{', '[', '('],
     rbracket: ['}', ']', ')'],
     identifier: {

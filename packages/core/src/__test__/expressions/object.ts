@@ -50,13 +50,15 @@ const expressions: ObjectExpressions = {
   all: []
 };
 
-function generateObjectOutput(contents: Array<{ text: string; readonly: boolean }>) {
+function generateObjectOutput(
+  contents: Array<{ text: string; readonly: boolean; operator?: string }>
+) {
   return utils.mergeString(
     '{\n',
     contents
       .map(
         item =>
-          `  ${item.readonly ? 'readonly ' : ''}${
+          `  ${item.readonly ? (item.operator || '') + 'readonly ' : ''}${
             item.text
           };` /* ';' 结尾（取决于 compiler.config.memberSeparator，默认为 ';'） */
       )
@@ -755,10 +757,11 @@ function generateObjectOutput(contents: Array<{ text: string; readonly: boolean 
   expressions.complex.method = functionExpressions.normal.map(item => {
     const optional = _.random(0, 1) === 1;
     const readonly = _.random(0, 1) === 1;
+    const operator = _.sample(['+', '-', ''])!;
     const id = _.sample(identifierTemplates)!;
     const content =
       '{ ' +
-      (readonly ? 'readonly ' : '') +
+      (readonly ? operator + 'readonly ' : '') +
       id +
       (optional ? '?' : '') +
       item.content +
@@ -770,9 +773,10 @@ function generateObjectOutput(contents: Array<{ text: string; readonly: boolean 
       node: utils.createNode({
         instance: ast.Object.Expression,
         kind: SyntaxKind.E.Object,
-        outputStr: generateObjectOutput([{ text: output, readonly }]),
+        outputStr: generateObjectOutput([{ text: output, readonly, operator }]),
         contents: [
           {
+            operator: readonly ? operator || void 0 : void 0,
             readonly,
             value: utils.createNode({
               instance: ast.Object.Content.MethodExpression,
@@ -807,9 +811,10 @@ function generateObjectOutput(contents: Array<{ text: string; readonly: boolean 
     const id = _.sample(identifierTemplates)!;
     const optional = _.random(0, 1) === 1;
     const readonly = _.random(0, 1) === 1;
+    const operator = _.sample(['+', '-', ''])!;
     const content =
       '{ ' +
-      (readonly ? 'readonly ' : '') +
+      (readonly ? operator + 'readonly ' : '') +
       id +
       (optional ? '?' : '') +
       ': ' +
@@ -822,9 +827,10 @@ function generateObjectOutput(contents: Array<{ text: string; readonly: boolean 
       node: utils.createNode({
         instance: ast.Object.Expression,
         kind: SyntaxKind.E.Object,
-        outputStr: generateObjectOutput([{ text: output, readonly }]),
+        outputStr: generateObjectOutput([{ text: output, readonly, operator }]),
         contents: [
           {
+            operator: readonly ? operator || void 0 : void 0,
             readonly,
             value: utils.createNode({
               instance: ast.Object.Content.NormalExpression,

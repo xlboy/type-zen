@@ -128,10 +128,14 @@ e_sugarBlock_return -> "return" __ e_main
 #region  //*=========== object ===========
 e_object -> 
     "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}
-    | "{" _ (("readonly" __):? e_object_content _ e_object_content_eof):+ "}"
+    | "{" _ ((("-" _ | "+" _):? "readonly" __):? e_object_content _ e_object_content_eof):+ "}"
         {% args => toASTNode(ast.Object.Expression)([
           args[0], 
-          args[2].map(item => ({ readonly: !!item[0], value: item[1] })),
+          args[2].map(item => ({ 
+              operator: item[0]?.[0] ? item[0][0][0].value : void 0,
+              readonly: !!item[0], 
+              value: item[1] 
+          })),
           args.at(-1)])
         %}
     
