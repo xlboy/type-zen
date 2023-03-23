@@ -3,33 +3,6 @@ import type { Example } from '../types';
 export const tcMediumExample = {
   key: 'type-challenges-medium',
   name: 'Medium',
-  /**
-   * 1. Get Return Type
-   * 2. Omit
-   * 3. Readonly-2
-   * 4. Deep Readonly
-   * 5. Tuple to Union
-   * 6. Chainable Options
-   * 7. Last of Array
-   * 8. Pop
-   * 9. Promise.all
-   * 10. Type Lookup
-   * 11. Trim Left
-   * 12. Trim
-   * 13. Capitalize
-   * 14. Replace
-   * 15. ReplaceAll
-   * 16. Append Argument
-   * 17. Permutation
-   * 18. Length of String
-   * 19. Flatten
-   * 20. Append to object
-   * 21. Absolute
-   * 22. String to Union
-   * 23. Merge
-   * 24. KebabCase
-   * 25. Diff
-   */
   children: [
     {
       key: 'type-challenges-medium-1_get-return-type',
@@ -113,7 +86,6 @@ type Pop<T: any[]> = ^{
     return []
   }
 }
-
 `
     },
     {
@@ -338,6 +310,210 @@ type KebabCase<S: string> = ^{
       name: '25 - Diff',
       zenCode: `
 type Diff<O, O1> = Omit<O & O1, keyof (O | O1)>
+`
+    },
+    /*
+     AnyOf
+     IsNever
+     IsUnion
+     ReplaceKeys
+     Remove Index Signature
+     Percentage Parser
+     Drop Char
+     MinusOne
+     PickByType
+     StartsWith
+     EndsWith
+     PartialByKeys
+     RequiredByKeys
+     Mutable
+     OmitByType
+     ObiectEntries
+     Shift
+     Tuple to Nested obiect
+    */
+    {
+      key: 'type-challenges-medium-26_any-of',
+      name: '26 - AnyOf',
+      zenCode: `
+type AnyOf<T: readonly any[]> = ^{
+  type FalseValue = '' | 0 | false | [] | undefined | null | Record<keyof any, never>
+
+  return T[number] extends FalseValue ? false : true
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-27_is-never',
+      name: '27 - IsNever',
+      zenCode: `
+type IsNever<T> = T[] extends never[] ? true : false
+`
+    },
+    {
+      key: 'type-challenges-medium-28_is-union',
+      name: '28 - IsUnion',
+      zenCode: `
+type IsUnion<U, U1 = U> = ^{
+  if ([U] == [never]) {
+    return false
+  }
+  
+  for (infer I in U1) {
+    return [U] == [I] ? false : true
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-29_replace-keys',
+      name: '29 - ReplaceKeys',
+      zenCode: `
+type ReplaceKeys<U, T, Y> = ^{
+  if (U == any) {
+    return {
+      [key in keyof U]: ^{
+        if (key == T) {
+          if (key == keyof Y) {
+            return Y[key]
+          } 
+
+          return never
+        }
+
+        return U[key]
+      }
+    }
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-30_remove-index-signature',
+      name: '30 - Remove Index Signature',
+      zenCode: `
+type RemoveIndexSignature<T> = ^{
+  type FilterKey<K> = ^{
+    if (string == K) {
+      return never
+    } else if (number == K) {
+      return never
+    } else if (symbol == K) {
+      return never
+    } else {
+      return K
+    }
+  }
+
+  return { [key in keyof T as FilterKey<key>]: T[key] }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-31_percentage-parser',
+      name: '31 - Percentage Parser',
+      zenCode: `
+type PercentageParser<A: string> = ^{
+  type _PercentCheck<T> = T == \`\${infer L}%\` ? [L, '%'] : [T, ''];
+  
+  if (A == \`\${infer L}\${infer R}\`) {
+    if (L == '+' | '-') {
+      return [L, ..._PercentCheck<R>]
+    } else {
+      return ['', ..._PercentCheck<A>]
+    }
+  }
+
+  return ['', ..._PercentCheck<A>]
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-32_drop-char',
+      name: '32 - Drop Char',
+      zenCode: `
+type DropChar<S: string, C: string> = ^{
+  if (S == \`\${infer F}\${infer R}\`) {
+    if (F == C) {
+      return DropChar<R, C>
+    } else {
+      return \`\${F}\${DropChar<R, C> & string}\`
+    }
+  }
+
+  return S
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-33_minus-one',
+      name: '33 - MinusOne',
+      zenCode: `
+// source code link: https://github.com/type-challenges/type-challenges/issues/24996
+
+type NumberLiteral = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+type MinusOneMap = {
+  "0": "9";
+  "1": "0";
+  "2": "1";
+  "3": "2";
+  "4": "3";
+  "5": "4";
+  "6": "5";
+  "7": "6";
+  "8": "7";
+  "9": "8";
+};
+
+type ReverseString<S: string> = ^{
+  if (S == \`\${infer First}\${infer Rest}\`) {
+    return \`\${ReverseString<Rest>}\${First}\`
+  } else {
+    return ""
+  }
+}
+
+type RemoveLeadingZeros<S: string> = ^{
+  if (S == '0') {
+    return S
+  } else if (S == \`\${'0'}\${infer R}\`) {
+    return RemoveLeadingZeros<R>
+  } else { 
+    return S
+  }
+}
+
+type Initial<T: string> = ^{
+  if (ReverseString<T> == \`\${infer First}\${infer Rest}\`) {
+    return ReverseString<Rest>
+  } else {
+    return T
+  }
+}
+
+type ParseInt<T: string> = ^{
+  if (RemoveLeadingZeros<T> == \`\${infer Digit extends number}\`) {
+    return Digit
+  }
+}
+
+type MinusOneForString<S: string> = ^{
+  if (S == \`\${Initial<S>}\${infer Last extends NumberLiteral}\`) {
+    if (Last == '0') {
+      return \`\${MinusOneForString<Initial<S>>}\${MinusOneMap[Last]}\`
+    } else {
+      return \`\${Initial<S>}\${MinusOneMap[Last]}\`
+    }
+  }
+}
+
+type MinusOne<T: number> = ^{
+  if (T == 0) {
+    return -1
+  } else {
+    return ParseInt<MinusOneForString<\`\${T}\`>>
+  }
+}
 `
     }
   ]
