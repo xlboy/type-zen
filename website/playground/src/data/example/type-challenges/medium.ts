@@ -320,7 +320,7 @@ type Diff<O, O1> = Omit<O & O1, keyof (O | O1)>
 type AnyOf<T: readonly any[]> = ^{
   type FalseValue = '' | 0 | false | [] | undefined | null | Record<keyof any, never>
 
-  return T[number] extends FalseValue ? false : true
+  return T[number] == FalseValue ? false : true
 }
 `
     },
@@ -328,7 +328,7 @@ type AnyOf<T: readonly any[]> = ^{
       key: 'type-challenges-medium-27_is-never',
       name: '27 - IsNever',
       zenCode: `
-type IsNever<T> = T[] extends never[] ? true : false
+type IsNever<T> = T[] == never[] ? true : false
 `
     },
     {
@@ -570,7 +570,7 @@ type Mutable<T> = {
       name: '40 - OmitByType',
       zenCode: `
 type OmitByType<T, U> = {
-  [P in keyof T as T[P] extends U ? never : P]:T[P]
+  [P in keyof T as T[P] == U ? never : P]:T[P]
 }
 `
     },
@@ -747,29 +747,7 @@ type Flip<T: Record<PropertyKey, string | number | boolean>> = {
 }
 `
     },
-    /**
-     *
-     *  Reverse
-     *  Flip Arguments
-     *  FlattenDepth
-     *  BEM style string
-     *  InorderTraversal
-     *  Flip
-     *  Fibonacci Sequence
-     *  AllCombinations
-     *  Greater Than
-     *  Zip
-     *  IsTuple
-     *  Chunk
-     *  Trim Right
-     *  Without
-     *  Trunc
-     *  IndexOf
-     *  Join
-     *  LastIndexOf
-     *  Unique
-     *  MapTypes
-     */
+
     {
       key: 'type-challenges-medium-50_fibonacci-sequence',
       name: '50 - Fibonacci Sequence',
@@ -833,7 +811,7 @@ type GreaterThanSameDigitCount<T: number | string, U: number | string> = ^{
         type LC = '0123456789';
         type RC = \`\${string}\${TF}\${string}\${UF}\${string}\`
         
-        return LC extends RC ? false : true
+        return LC == RC ? false : true
       }
     } else {
       return true
@@ -875,6 +853,274 @@ type GreaterThan<T: number, U: number> = ^{
   }
 
   return false
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-53_zip',
+      name: '53 - Zip',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25228
+
+type Zip<T: unknown[], U: unknown[]> = ^{
+  if (T == [infer X, ...infer Y]) {
+    if (U == [infer A, ...infer B]) {
+      return [[X, A], ...Zip<Y, B>]
+    }
+  }
+
+  return []
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-54_is-tuple',
+      name: '54 - IsTuple',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24268
+
+type IsTuple<T> = ^{
+  if ([T] == [never]) {
+    return false
+  }
+
+  if (T == readonly unknown[]) {
+    return number == T['length'] ? false : true
+  }
+
+  return false
+}
+`
+    },
+
+    {
+      key: 'type-challenges-medium-55_chunk',
+      name: '55 - Chunk',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25299
+
+type FixLengthTuple<N: number, A: any[] = []> = ^{
+  if (A['length'] == N) {
+    return A
+  } else {
+    return FixLengthTuple<N, [...A, any]>
+  }
+}
+
+type Chunk<T: any[], U: number> = ^{
+  if (T == [...FixLengthTuple<U>, ...infer Rest]) {
+    if (T == [...infer R, ...Rest]) {
+      return [R, ...Chunk<Rest, U>]
+    } else {
+      return []
+    }
+  }
+
+  if (T == []) {
+    return []
+  }
+
+  return [T]
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-56_fill',
+      name: '56 - Fill',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24339
+
+type Fill<
+  T: unknown[],
+  N,
+  Start: number = 0,
+  End: number = T['length'],
+  I: number[] = [],
+  S: boolean = false
+> = ^{
+  if (T == [infer F, ...infer R]) {
+    if (I['length'] == End) {
+      return T
+    }
+    
+
+    if (I['length'] == Start) {
+      type C = Fill<R,N,Start,End,[...I,I['length']],true>
+      return [N, ...C]
+    } else {
+      type C = Fill<R,N,Start,End,[...I,I['length']],S>
+      return [S == true ? N : F, ...C]
+    }
+  }
+
+  return T
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-57_trim-right',
+      name: '57 - TrimRight',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24769
+
+type TrimRight<S: string> = ^{
+  type WhiteSpace = ' ' | '\t' | '\\n';
+
+  if (S == \`\${infer W}\${WhiteSpace}\`) {
+    return TrimRight<W>
+  } else {
+    return S
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-58_without',
+      name: '58 - Without',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24270
+
+type Without<T: unknown[], U: number | number[]> = ^{
+  if (T == [infer First, ...infer Rest]) {
+    type RC = U == number[] ? U[number] : U;
+
+    if (First == RC) {
+      return Without<Rest, U>
+    } else {
+      return [First, ...Without<Rest, U>]
+    }
+  }
+
+  return T
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-59_trunc',
+      name: '59 - Trunc',
+      zenCode: `
+type Trunc<T: number | string> = ^{
+  type StrT = \`\${T}\`
+
+  if (StrT == \`.\${infer Right}\`) {
+    return '0'
+  }
+
+  if (StrT == \`\${infer Left}.\${infer Right}\`) {
+    return Left
+  }
+
+  return StrT
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-60_index-of',
+      name: '60 - IndexOf',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24273
+
+type IndexOf<T: unknown[], U, Acc: unknown[] = []> = ^{
+  if (T == [infer First, ...infer Rest]) {
+    if (Equal<First, U> == true){
+      return Acc['length']
+    } else {
+      return IndexOf<Rest, U, [...Acc, 1]>
+    }
+  }
+
+  return -1
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-61_join',
+      name: '61 - Join',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25317
+
+type Join<T: string[], U: string | number> = ^{
+  if (T == [infer Head == string, ...infer Tail == string[]]) {
+    type C = Tail['length'] == 0 ? '' : U
+
+    return \`\${Head}\${C}\${Join<Tail, U>}\`
+  }
+
+  return ''
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-62_last-index-of',
+      name: '62 - LastIndexOf',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/25232
+
+type LastIndexOf<T: unknown[], U> = ^{
+  if (T == [...infer Head, infer Tail]) {
+    if (Equal<Tail, U> == true) {
+      return Head['length']
+    } else {
+      return LastIndexOf<Head, U>
+    }
+  }
+
+  return -1
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-63_unique',
+      name: '63 - Unique',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/22282
+
+type Includes<T: readonly any[], U> = ^{
+  if (T == [infer F, ...infer L]) {
+    if (Equal<U, F> == true) {
+      return true
+    } else {
+      return Includes<L, U>
+    }
+  }
+
+  return false
+}
+
+type Unique<T: any[], U: any[] = []> = ^{
+  if (T == [infer F, ...infer L]) {
+    if (Includes<U, F> == true) {
+      return [...Unique<L, [...U]>]
+    } else {
+      return [F, ...Unique<L, [...U, F]>]
+    }
+  }
+
+  return T
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-64_map-types',
+      name: '64 - MapTypes',
+      zenCode: `
+// answer source: https://github.com/type-challenges/type-challenges/issues/24847
+
+type MapTypes<
+  T: Record<string, unknown>,
+  R: { mapFrom: unknown; mapTo: unknown }
+> = {
+  [P in keyof T]: ^{
+    if (T[P] == R['mapFrom']) {
+      if (R == { mapFrom: T[P] }) {
+        return R['mapTo']
+      } else {
+        return never
+      }
+    }
+
+    return T[P]
+  }
 }
 `
     }
