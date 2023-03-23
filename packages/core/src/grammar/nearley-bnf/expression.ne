@@ -122,10 +122,10 @@ e_sugarBlock_return -> "return" __ e_main
 #region  //*=========== object ===========
 e_object -> 
     "{" _ "}" {% args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)]) %}
-    | "{" _ ("readonly":? __:? e_object_content _ e_object_content_eof):+ "}"
+    | "{" _ (("readonly" __):? e_object_content _ e_object_content_eof):+ "}"
         {% args => toASTNode(ast.Object.Expression)([
           args[0], 
-          args[2].map(item => ({ readonly: !!item[0], value: item[2] })),
+          args[2].map(item => ({ readonly: !!item[0], value: item[1] })),
           args.at(-1)])
         %}
     
@@ -145,7 +145,8 @@ e_object_content_constructor -> e_function_constructor[e_function_normal {% id %
 
 e_object_content_key -> id {% id %}
     | ("if" | "for" | "of" | "else" | "in" | "void" | "this" | "function" | "interface" | "namespace" | "keyof" | "typeof" | "type" | "as" | "is" | "out" | "infer" | "asserts" | "declare" | "readonly") 
-    {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
+      {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
+    | (%string | %number) {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
 
 e_object_content_method -> e_object_content_method_key _ "?":? _ e_function_normal 
     {% args => toASTNode(ast.Object.Content.MethodExpression)([

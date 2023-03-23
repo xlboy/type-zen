@@ -1,7 +1,5 @@
 // @ts-nocheck
 
-// @ts-nocheck
-
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 // Bypasses TS6133. Allow declared but unused functions.
@@ -10,9 +8,9 @@ function id(d: any[]): any {
   return d[0];
 }
 
-declare var literalKeyword: any;
 declare var string: any;
 declare var number: any;
+declare var literalKeyword: any;
 declare var identifier: any;
 declare var ws: any;
 declare var lineComment: any;
@@ -444,18 +442,16 @@ const grammar: Grammar = {
       postprocess: args => toASTNode(ast.Object.Expression)([args[0], [], args.at(-1)])
     },
     {
+      name: 'e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: [{ literal: 'readonly' }, '__']
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$1$ebnf$1',
-      symbols: [{ literal: 'readonly' }],
+      symbols: ['e_object$ebnf$1$subexpression$1$ebnf$1$subexpression$1'],
       postprocess: id
     },
     {
       name: 'e_object$ebnf$1$subexpression$1$ebnf$1',
-      symbols: [],
-      postprocess: () => null
-    },
-    { name: 'e_object$ebnf$1$subexpression$1$ebnf$2', symbols: ['__'], postprocess: id },
-    {
-      name: 'e_object$ebnf$1$subexpression$1$ebnf$2',
       symbols: [],
       postprocess: () => null
     },
@@ -463,7 +459,6 @@ const grammar: Grammar = {
       name: 'e_object$ebnf$1$subexpression$1',
       symbols: [
         'e_object$ebnf$1$subexpression$1$ebnf$1',
-        'e_object$ebnf$1$subexpression$1$ebnf$2',
         'e_object_content',
         '_',
         'e_object_content_eof'
@@ -471,8 +466,12 @@ const grammar: Grammar = {
     },
     { name: 'e_object$ebnf$1', symbols: ['e_object$ebnf$1$subexpression$1'] },
     {
+      name: 'e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1',
+      symbols: [{ literal: 'readonly' }, '__']
+    },
+    {
       name: 'e_object$ebnf$1$subexpression$2$ebnf$1',
-      symbols: [{ literal: 'readonly' }],
+      symbols: ['e_object$ebnf$1$subexpression$2$ebnf$1$subexpression$1'],
       postprocess: id
     },
     {
@@ -480,17 +479,10 @@ const grammar: Grammar = {
       symbols: [],
       postprocess: () => null
     },
-    { name: 'e_object$ebnf$1$subexpression$2$ebnf$2', symbols: ['__'], postprocess: id },
-    {
-      name: 'e_object$ebnf$1$subexpression$2$ebnf$2',
-      symbols: [],
-      postprocess: () => null
-    },
     {
       name: 'e_object$ebnf$1$subexpression$2',
       symbols: [
         'e_object$ebnf$1$subexpression$2$ebnf$1',
-        'e_object$ebnf$1$subexpression$2$ebnf$2',
         'e_object_content',
         '_',
         'e_object_content_eof'
@@ -507,7 +499,7 @@ const grammar: Grammar = {
       postprocess: args =>
         toASTNode(ast.Object.Expression)([
           args[0],
-          args[2].map(item => ({ readonly: !!item[0], value: item[2] })),
+          args[2].map(item => ({ readonly: !!item[0], value: item[1] })),
           args.at(-1)
         ])
     },
@@ -585,6 +577,19 @@ const grammar: Grammar = {
     {
       name: 'e_object_content_key',
       symbols: ['e_object_content_key$subexpression$1'],
+      postprocess: args => toASTNode(ast.IdentifierExpression)([args[0][0]])
+    },
+    {
+      name: 'e_object_content_key$subexpression$2',
+      symbols: [lexer.has('string') ? { type: 'string' } : string]
+    },
+    {
+      name: 'e_object_content_key$subexpression$2',
+      symbols: [lexer.has('number') ? { type: 'number' } : number]
+    },
+    {
+      name: 'e_object_content_key',
+      symbols: ['e_object_content_key$subexpression$2'],
       postprocess: args => toASTNode(ast.IdentifierExpression)([args[0][0]])
     },
     {
