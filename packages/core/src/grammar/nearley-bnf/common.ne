@@ -1,7 +1,11 @@
 @lexer lexer
 
-blockSeparator -> _ ";":+ _  {% n %}
-    | _ {% n %}
+blockSeparator -> ";":+ {% n %}
+    | ";":+ __ {% n %}
+    | __ {% n %}
+    | __ ";":+ {% n %}
+    | __ ";":+ __ {% n %}
+    
 
 id -> %identifier {% toASTNode(ast.IdentifierExpression) %}
 

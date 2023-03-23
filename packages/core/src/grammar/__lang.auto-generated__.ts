@@ -310,40 +310,79 @@ const grammar: Grammar = {
       postprocess: args => args.at(-1)
     },
     {
-      name: 'e_sugarBlock_content$ebnf$1$subexpression$1',
-      symbols: ['e_sugarBlock_content_block', 'blockSeparator']
+      name: 'e_sugarBlock_content',
+      symbols: [{ literal: '{' }, '_', 'e_sugarBlock_content_block', { literal: '}' }],
+      postprocess: args =>
+        toASTNode(ast.SugarBlockExpression)([args[0], args[2], args.at(-1)])
+    },
+    { name: 'e_sugarBlock_content_block', symbols: ['e_sugarBlock_content_block_item'] },
+    {
+      name: 'e_sugarBlock_content_block$ebnf$1$subexpression$1',
+      symbols: ['e_sugarBlock_content_block_item', 'blockSeparator']
     },
     {
-      name: 'e_sugarBlock_content$ebnf$1',
-      symbols: ['e_sugarBlock_content$ebnf$1$subexpression$1']
+      name: 'e_sugarBlock_content_block$ebnf$1',
+      symbols: ['e_sugarBlock_content_block$ebnf$1$subexpression$1']
     },
     {
-      name: 'e_sugarBlock_content$ebnf$1$subexpression$2',
-      symbols: ['e_sugarBlock_content_block', 'blockSeparator']
+      name: 'e_sugarBlock_content_block$ebnf$1$subexpression$2',
+      symbols: ['e_sugarBlock_content_block_item', 'blockSeparator']
     },
     {
-      name: 'e_sugarBlock_content$ebnf$1',
+      name: 'e_sugarBlock_content_block$ebnf$1',
       symbols: [
-        'e_sugarBlock_content$ebnf$1',
-        'e_sugarBlock_content$ebnf$1$subexpression$2'
+        'e_sugarBlock_content_block$ebnf$1',
+        'e_sugarBlock_content_block$ebnf$1$subexpression$2'
       ],
       postprocess: d => d[0].concat([d[1]])
     },
     {
-      name: 'e_sugarBlock_content',
-      symbols: [{ literal: '{' }, '_', 'e_sugarBlock_content$ebnf$1', { literal: '}' }],
-      postprocess: args =>
-        toASTNode(ast.SugarBlockExpression)([args[0], args[2].map(id), args.at(-1)])
+      name: 'e_sugarBlock_content_block',
+      symbols: ['e_sugarBlock_content_block$ebnf$1'],
+      postprocess: args => args[0].map(id)
     },
-    { name: 'e_sugarBlock_content_block', symbols: ['s_typeAlias'], postprocess: id },
-    { name: 'e_sugarBlock_content_block', symbols: ['e_sugarBlock_if'], postprocess: id },
+    {
+      name: 'e_sugarBlock_content_block$ebnf$2$subexpression$1',
+      symbols: ['e_sugarBlock_content_block_item', 'blockSeparator']
+    },
+    {
+      name: 'e_sugarBlock_content_block$ebnf$2',
+      symbols: ['e_sugarBlock_content_block$ebnf$2$subexpression$1']
+    },
+    {
+      name: 'e_sugarBlock_content_block$ebnf$2$subexpression$2',
+      symbols: ['e_sugarBlock_content_block_item', 'blockSeparator']
+    },
+    {
+      name: 'e_sugarBlock_content_block$ebnf$2',
+      symbols: [
+        'e_sugarBlock_content_block$ebnf$2',
+        'e_sugarBlock_content_block$ebnf$2$subexpression$2'
+      ],
+      postprocess: d => d[0].concat([d[1]])
+    },
     {
       name: 'e_sugarBlock_content_block',
+      symbols: ['e_sugarBlock_content_block$ebnf$2', 'e_sugarBlock_content_block_item'],
+      postprocess: args => [...args[0].map(id), args.at(-1)]
+    },
+    {
+      name: 'e_sugarBlock_content_block_item',
+      symbols: ['s_typeAlias'],
+      postprocess: id
+    },
+    {
+      name: 'e_sugarBlock_content_block_item',
+      symbols: ['e_sugarBlock_if'],
+      postprocess: id
+    },
+    {
+      name: 'e_sugarBlock_content_block_item',
       symbols: ['e_sugarBlock_return'],
       postprocess: id
     },
     {
-      name: 'e_sugarBlock_content_block',
+      name: 'e_sugarBlock_content_block_item',
       symbols: ['e_sugarBlock_for'],
       postprocess: id
     },
@@ -1329,12 +1368,33 @@ const grammar: Grammar = {
       symbols: ['blockSeparator$ebnf$1', { literal: ';' }],
       postprocess: d => d[0].concat([d[1]])
     },
+    { name: 'blockSeparator', symbols: ['blockSeparator$ebnf$1'], postprocess: n },
+    { name: 'blockSeparator$ebnf$2', symbols: [{ literal: ';' }] },
+    {
+      name: 'blockSeparator$ebnf$2',
+      symbols: ['blockSeparator$ebnf$2', { literal: ';' }],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    { name: 'blockSeparator', symbols: ['blockSeparator$ebnf$2', '__'], postprocess: n },
+    { name: 'blockSeparator', symbols: ['__'], postprocess: n },
+    { name: 'blockSeparator$ebnf$3', symbols: [{ literal: ';' }] },
+    {
+      name: 'blockSeparator$ebnf$3',
+      symbols: ['blockSeparator$ebnf$3', { literal: ';' }],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    { name: 'blockSeparator', symbols: ['__', 'blockSeparator$ebnf$3'], postprocess: n },
+    { name: 'blockSeparator$ebnf$4', symbols: [{ literal: ';' }] },
+    {
+      name: 'blockSeparator$ebnf$4',
+      symbols: ['blockSeparator$ebnf$4', { literal: ';' }],
+      postprocess: d => d[0].concat([d[1]])
+    },
     {
       name: 'blockSeparator',
-      symbols: ['_', 'blockSeparator$ebnf$1', '_'],
+      symbols: ['__', 'blockSeparator$ebnf$4', '__'],
       postprocess: n
     },
-    { name: 'blockSeparator', symbols: ['_'], postprocess: n },
     {
       name: 'id',
       symbols: [lexer.has('identifier') ? { type: 'identifier' } : identifier],
@@ -1392,6 +1452,7 @@ const grammar: Grammar = {
       symbols: ['comment_multiline'],
       postprocess: () => null
     },
+    { name: 's_block', symbols: ['s_main'] },
     { name: 's_block$ebnf$1$subexpression$1', symbols: ['s_main', 'blockSeparator'] },
     { name: 's_block$ebnf$1', symbols: ['s_block$ebnf$1$subexpression$1'] },
     { name: 's_block$ebnf$1$subexpression$2', symbols: ['s_main', 'blockSeparator'] },
@@ -1404,6 +1465,19 @@ const grammar: Grammar = {
       name: 's_block',
       symbols: ['s_block$ebnf$1'],
       postprocess: args => args[0].map(id)
+    },
+    { name: 's_block$ebnf$2$subexpression$1', symbols: ['s_main', 'blockSeparator'] },
+    { name: 's_block$ebnf$2', symbols: ['s_block$ebnf$2$subexpression$1'] },
+    { name: 's_block$ebnf$2$subexpression$2', symbols: ['s_main', 'blockSeparator'] },
+    {
+      name: 's_block$ebnf$2',
+      symbols: ['s_block$ebnf$2', 's_block$ebnf$2$subexpression$2'],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    {
+      name: 's_block',
+      symbols: ['s_block$ebnf$2', 's_main'],
+      postprocess: args => [...args[0].map(id), args.at(-1)]
     },
     { name: 's_main', symbols: ['s_typeAlias'], postprocess: id },
     { name: 's_main', symbols: ['s_declareVariable'], postprocess: id },

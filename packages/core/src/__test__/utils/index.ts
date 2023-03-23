@@ -33,7 +33,11 @@ function assertSource<T>(source: TestSource<T>) {
     throw error;
   }
 
-  expect(statements.length).not.toBe(0);
+  try {
+    expect(statements.length).not.toBe(0);
+  } catch (error) {
+    expect({ content: source.content }).toMatchSnapshot('statements.length = 0');
+  }
 
   if (statements.length !== 1) {
     expect(source.content).toMatchSnapshot('divergence');

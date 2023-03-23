@@ -3,7 +3,7 @@ import * as moo from 'moo';
 const lexer = moo.states({
   main: {
     // tplStart: { match: /`/, push: 'tpl' },
-    ws: { match: /\s/, lineBreaks: true },
+    ws: { match: /\s+/, lineBreaks: true },
     newLine: { match: /\n/, lineBreaks: true },
     lineComment: /\/\/.*?$/,
     multilineCommentStart: { match: '/*', push: 'multilineComment' },

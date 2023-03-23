@@ -87,10 +87,16 @@ e_function_return_normal -> e_main {% toASTNode(ast.Function.Return.Expression) 
 #region  //*=========== sugar block ===========
 e_sugarBlock -> "^" _ e_sugarBlock_content {% args => args.at(-1) %}
 
-e_sugarBlock_content -> "{" _ (e_sugarBlock_content_block blockSeparator):+ "}" 
-    {% args => toASTNode(ast.SugarBlockExpression)([args[0], args[2].map(id), args.at(-1)]) %}
-    
-e_sugarBlock_content_block -> s_typeAlias {% id %}
+e_sugarBlock_content -> "{" _ e_sugarBlock_content_block "}" 
+    {% args => toASTNode(ast.SugarBlockExpression)([args[0], args[2], args.at(-1)]) %}
+
+e_sugarBlock_content_block -> e_sugarBlock_content_block_item
+    | (e_sugarBlock_content_block_item blockSeparator):+ 
+        {% args => args[0].map(id) %}
+    | (e_sugarBlock_content_block_item blockSeparator):+ e_sugarBlock_content_block_item 
+        {% args => [...args[0].map(id), args.at(-1)] %}
+
+e_sugarBlock_content_block_item -> s_typeAlias {% id %}
     | e_sugarBlock_if {% id %}
     | e_sugarBlock_return {% id %}
     | e_sugarBlock_for {% id %}

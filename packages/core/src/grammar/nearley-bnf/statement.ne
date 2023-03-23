@@ -3,7 +3,10 @@
 @include "./expression.ne"
 @include "./common.ne"
 
-s_block -> (s_main blockSeparator):+ {% args => args[0].map(id) %}
+s_block -> s_main
+    | (s_main blockSeparator):+ {% args => args[0].map(id) %}
+    | (s_main blockSeparator):+ s_main {% args => [...args[0].map(id), args.at(-1)] %}
+  
 
 s_main ->  s_typeAlias {% id %}
     | s_declareVariable {% id %}
