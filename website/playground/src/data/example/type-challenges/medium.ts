@@ -312,26 +312,7 @@ type KebabCase<S: string> = ^{
 type Diff<O, O1> = Omit<O & O1, keyof (O | O1)>
 `
     },
-    /*
-     AnyOf
-     IsNever
-     IsUnion
-     ReplaceKeys
-     Remove Index Signature
-     Percentage Parser
-     Drop Char
-     MinusOne
-     PickByType
-     StartsWith
-     EndsWith
-     PartialByKeys
-     RequiredByKeys
-     Mutable
-     OmitByType
-     ObiectEntries
-     Shift
-     Tuple to Nested obiect
-    */
+
     {
       key: 'type-challenges-medium-26_any-of',
       name: '26 - AnyOf',
@@ -513,6 +494,94 @@ type MinusOne<T: number> = ^{
   } else {
     return ParseInt<MinusOneForString<\`\${T}\`>>
   }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-34_pick-by-type',
+      name: '34 - PickByType',
+      zenCode: `
+type PickByType<T, U> = {
+  [K in keyof T as T[K] == U ? K : never]: T[K]
+}
+`
+    },
+    /*
+     AnyOf
+     IsNever
+     IsUnion
+     ReplaceKeys
+     Remove Index Signature
+     Percentage Parser
+     Drop Char
+     MinusOne
+     PickByType
+     StartsWith
+     EndsWith
+     PartialByKeys
+     RequiredByKeys
+     Mutable
+     OmitByType
+     ObiectEntries
+     Shift
+     Tuple to Nested obiect
+    */
+    {
+      key: 'type-challenges-medium-35_starts-with',
+      name: '35 - StartsWith',
+      zenCode: `
+type StartsWith<T: string, U: string> = ^{
+  if (T == \`\${U}\${infer R}\`) {
+    return true
+  } else {
+    return false
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-36_ends-with',
+      name: '36 - EndsWith',
+      zenCode: `
+type EndsWith<T: string, U: string> = ^{
+  if (T == \`\${string}\${U}\`) {
+    return true
+  } else {
+    return false
+  }
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-37_partial-by-keys',
+      name: '37 - PartialByKeys',
+      zenCode: `
+type PartialByKeys<T, K: keyof T = keyof T> = ^{
+  type Flatten<T> = { [key in keyof T]: T[key] };
+  
+  return Flatten<Omit<T, K> & { [P in K]?: T[P] }>
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-38_required-by-keys',
+      name: '38 - RequiredByKeys',
+      zenCode: `
+type RequiredByKeys<T, K: keyof T = keyof T> = ^{
+  type Flatten<T> = { [key in keyof T]: T[key] };
+  type A = Required<Pick<T, K>>;
+  type B = Partial<Omit<T, K>>;
+
+  return Flatten<A & B>
+}
+`
+    },
+    {
+      key: 'type-challenges-medium-39_mutable',
+      name: '39 - Mutable',
+      zenCode: `
+type Mutable<T> = {
+  -readonly [key in keyof T]: T[key];
 }
 `
     }
