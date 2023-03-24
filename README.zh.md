@@ -1,13 +1,13 @@
 # type-zen
 
-A language based on TypeScript type system, which solves a series of experience problems caused by writing complex type code.
+一个基于 TypeScript 类型层的语言，为解决编写复杂类型代码时带来的一系列体验问题。
 
-English | [简体中文](./README.zh.md)
+[English](./README.md) | 简体中文
 
 ## Helloworld
 
 TypeZen：
-    
+
 ```ts
 type Without<T: unknown[], U: number | number[]> = ^{
   if (T == [infer First, ...infer Rest]) {
@@ -24,7 +24,7 @@ type Without<T: unknown[], U: number | number[]> = ^{
 }
 ```
 
-TypeScript after conversion：
+转换后的 TypeScript：
 
 ```ts
 type Without<T extends unknown[], U extends number | number[]> = (
@@ -42,60 +42,59 @@ type Without<T extends unknown[], U extends number | number[]> = (
   : never;
 ```
 
-For more examples, please refer to [Playground](https://type-zen-playground.vercel.app)
+更多示例请查看 [Playground](https://type-zen-playground.vercel.app)
 
-## Features
+## 特性
 
-- Compatible with TypeScript type syntax
+* 兼容 TypeScript 类型语法
 
-- Unique syntax sugar
+* 独特的语法糖
 
-  - More similar to the syntax in `TS/JS` that is often written (understood in seconds~)
+  + 与常写的 `TS/JS` 中的语法较为相似（看了秒懂~）
 
-  - Writing complex type code is simpler, more efficient, and more readable
+  + 编写复杂类型代码更加简单、高效、可读
 
-- Write and use immediately (Playground, CLI, VSCode plugin)
+* 即写即用（Playground、CLI、VSCode 插件）
 
-## How to use?
+## 如何使用？
 
 ### [Playground](https://type-zen-playground.vercel.app/?code=09dX8EktUS9WSM8HAA%253D%253D)
 
-
 <img 
   src="https://user-images.githubusercontent.com/63690944/227465720-96ef3d48-1b19-458e-9f08-ca53a0779a2b.png" 
-  style="width: 98%;
+  style="width: 98%; 
     border-radius: 6px;
     box-shadow: 0px 0px 23px rgba(0,0,0,.3);
     margin-bottom: 10px;" 
 />
 
-### VSCode Plugin (To be developed)
+### VSCode 插件（待开发）
 
 ...
 
-### CLI (Under development)
+### CLI （开发中）
 
 ...
 
-## Tutorial & Examples
+## 教程&示例
 
-- [Basic](https://type-zen-playground.vercel.app/?example=basic)
+* [Basic](https://type-zen-playground.vercel.app/?example=basic)
 
-- [Sugar](https://type-zen-playground.vercel.app/?example=sugar-local-variable)
+* [Sugar](https://type-zen-playground.vercel.app/?example=sugar-local-variable)
 
-- Type Challenges
+* Type Challenges
 
-  - [Easy (13+)](https://type-zen-playground.vercel.app/?example=type-challenges-easy-1_pick)
+  + [Easy (13+)](https://type-zen-playground.vercel.app/?example=type-challenges-easy-1_pick)
 
-  - [Medium (80+)](https://type-zen-playground.vercel.app/?example=type-challenges-medium-1_get-return-type)
+  + [Medium (80+)](https://type-zen-playground.vercel.app/?example=type-challenges-medium-1_get-return-type)
 
-## Syntax
+## 语法
 
-### Expression
+### 表达式
 
-#### Basic
+#### 基本的
 
-| Name | Example | Supported |
+| 名称 | 示例 | 支持 |
 | ---- | ---- | ---- | 
 | `literal` | `number, string, ...(keyword: [any, boolean, null, never, ...])` | ✅ |
 | `condition` | `a == 1 ? 1 : 2` -> `a extends 1 ? 1 : 2`  <br /> `a extends 12 ? 13 : 233` | ✅  |
@@ -108,21 +107,21 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 | `infer` | `infer x` <br /> `infer xx == xxx1` -> `infer xx extends xxx1` <br /> `infer xx extends xxx` | ✅ | 
 | `union` | `1 \| 2 \| 3` <br /> `\| [1, 2, 3]` | ✅ |
 | `intersection` | `1 & 2 & 3` <br /> `& [11, 22, 33]` -> `11 & 22 & 33` | ✅ |
-| `generic args` | `<S: string = "S">` -> `<S extends string = "S">`  <br /> `<A extends string = "default">` | ✅ |
+| `generic args` | `<S: string = "S">` -> `<S extends string = "S">` <br /> `<A extends string = "default">` | ✅ |
 | `type reference` | `A` , `Array<1>` , `IsNumber<".">` | ✅ |
 | `element access` | `A["b"]` , `A[0][Key]` | ✅ |
 | `property access` | `A.B` , `A.B.C` | ✅ |
-| `template string` | `` `hello ${name}`  `` <br /> :warning:  **`${}`expressions only support TypeScript native expressions (Does not yet support extensions such as: `^{...}`, `\| [1, 3]`,  ...)** | ✅ |
+| `template string` | `` `hello ${name}` `` <br /> :warning:  **`${}` 中的表达式仅支持 TypeScript 原生表达式（*暂不支持扩展的，如： `^{...}`, `\| [1, 3]`, ...*）** | ✅ |
 | `comment` | `// ...`<br /> `/* ... */`| ✅ |
  
 
-#### Sugar Block
+#### 糖块（Sugar Block）
 
-Sugar Block are a special type of expression that can be used to write type logic code (if, else, for, local variable declarations, etc.)
+糖块是一种特殊的表达式，可以利用它来编写类型逻辑代码（if, else, for, 局部变量声明等）
 
-Sugar blocks are scoped to `^{` and `}`, or within `if,for` statements.
+糖块的作用域处于 `^{` 与 `}` 中，或是 `if`、`for` 语句中。
 
-| Name | Example |   Supported | 
+| 名称 | 示例 |   支持 | 
 | ---- | ---- | ---- | 
 | `local ` | `^{ type B = 1; ... }` | ✅ |
 | `only if` | `^{ if (a == 1) { do something... } }` | ✅ |
@@ -133,13 +132,13 @@ Sugar blocks are scoped to `^{` and `}`, or within `if,for` statements.
 | `return` |  `^{ ... return 1; }` | ✅ |
 | `switch` |  `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
 
-> :warning: if does not currently support \`!=\` logical symbol
+> :warning: if 暂不支持 \`!=\` 逻辑符
 
-> :warning: In a sugar block, it must contain a \`return\` statement.
+> :warning: 糖块中，必须含有 \`return\`
 
-### Statement
+### 语句
 
-| Name | Example | Supported |
+| 名称 | 示例 | 支持 |
 | ---- | ---- | ---- | 
 | `type alias` |  `type A = 1` | ✅ |
 | `interface` |   `interface A { b: 1 }` | ✅ |
@@ -150,11 +149,11 @@ Sugar blocks are scoped to `^{` and `}`, or within `if,for` statements.
 | `declare variable` |  `declare const A: 1` <br />  `declare let A: 1` <br />  `declare var A: 1` | ✅ |
 
 
-## Issues
+## 问题
 
 ...
 
-## Thanks
+## 致谢
 
 * [typetype](https://github.com/mistlog/typetype)
 
@@ -162,7 +161,7 @@ Sugar blocks are scoped to `^{` and `}`, or within `if,for` statements.
 
 * [type-challenges](https://github.com/type-challenges/type-challenges)
 
-And friends who have supported me~💛
+以及给予过支持的朋友们~💛
 
 ## License
 
