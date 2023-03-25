@@ -2,6 +2,7 @@ import { Compiler, Parser } from '@type-zen/core';
 import type { ReadonlyDeep } from 'type-fest';
 import * as vscode from 'vscode';
 
+import { tsTypeAnalyzer } from '../utils/ts-type-analyzer';
 import type { EditorInfo } from './types';
 
 export { EditorContext };
@@ -69,14 +70,57 @@ class EditorContext {
     });
 
     vscode.languages.registerHoverProvider('TypeZen', {
-      provideHover(document, position) {
-        const editor = vscode.window.activeTextEditor;
+      provideHover: (_, position) => {
+        const activedEditor = vscode.window.activeTextEditor!;
+        const editor = this._editors.get(activedEditor);
 
-        if (editor) {
-          const range = editor.document.getWordRangeAtPosition(position);
+        if (activedEditor && editor) {
+          if (editor.compiled) {
+            const currentHoverPos = {
+              line: position.line + 1,
+              col: position.character + 1
+            };
+
+            const foundNode = editor.compiled.nodes.find(n => {
+              if (!n.pos.source) return false;
+
+              if (n.pos.source.start.line === currentHoverPos.line) {
+                if (
+                  n.pos.source.start.col <= currentHoverPos.col &&
+                  n.pos.source.end.col >= currentHoverPos.col
+                ) {
+                  return true;
+                }
+              } else if (n.pos.source.start.line < currentHoverPos.line) {
+                if (n.pos.source.end.line > currentHoverPos.line) {
+                  return true;
+                } else if (n.pos.source.end.line === currentHoverPos.line) {
+                  if (n.pos.source.end.col >= currentHoverPos.col) {
+                    return true;
+                  }
+                }
+              }
+
+              return false;
+            });
+
+            if (foundNode) {
+              const type = tsTypeAnalyzer.getTypeAtPosition(
+                editor.compiled.tsCode,
+                foundNode.pos.result!.start.line,
+                foundNode.pos.result!.start.col
+              );
+
+              if (type) {
+                return new vscode.Hover(type);
+              }
+            }
+          }
+
+          const range = activedEditor.document.getWordRangeAtPosition(position);
 
           if (range) {
-            const word = editor.document.getText(range);
+            const word = activedEditor.document.getText(range);
 
             return new vscode.Hover(word);
           }
