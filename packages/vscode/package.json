@@ -1,0 +1,118 @@
+{
+  "name": "@type-zen/vscode",
+  "displayName": "TypeZen",
+  "version": "0.0.1-alpha.1",
+  "private": true,
+  "description": "TypeZen for VS Code",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xlboy/type-zen",
+    "directory": "packages/vscode"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters"
+  ],
+  "main": "./dist/index.js",
+  "preview": true,
+  "icon": "res/logo.png",
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch src",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@type-zen/core": "latest",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/vscode": "^1.76.0",
+    "@vscode/test-electron": "^2.3.0",
+    "chalk": "^5.2.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "typezen.newTypeZenFile",
+        "title": "TypeZen: New TypeZen File"
+      },
+      {
+        "command": "typezen.compileCurrentFile",
+        "title": "TypeZen: Compile Current File",
+        "enablement": "resourceLangId == 'TypeZen'"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "TypeZen",
+      "properties": {
+        "typezen.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable TypeZen"
+        },
+        "typezen.newTypeZenFile": {
+          "type": "object",
+          "description": "Options of New TypeZen File",
+          "properties": {
+            "autoCompile": {
+              "type": "boolean",
+              "default": true,
+              "description": "Auto compile when changed"
+            }
+          }
+        },
+        "typezen.compile": {
+          "type": "object",
+          "description": "Options of Compile",
+          "properties": {
+            "outputTo": {
+              "type": "string",
+              "default": "console",
+              "description": "Output to what location?",
+              "enum": [
+                "console",
+                "file"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "TypeZen",
+        "extensions": [
+          ".tzen"
+        ],
+        "aliases": [
+          "TypeZen",
+          "type-zen",
+          "typezen",
+          "tzen"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./res/logo.jpg",
+          "dark": "./res/logo.jpg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "TypeZen",
+        "scopeName": "source.typezen",
+        "path": "./syntaxes/typezen.tmLanguage.json"
+      }
+    ]
+  }
+}
