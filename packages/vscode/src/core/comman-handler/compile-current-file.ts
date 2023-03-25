@@ -1,6 +1,7 @@
 import vscode from 'vscode';
 
-import { compile } from '../utils';
+import { EditorContext } from '../editor-context';
+import { log } from '../log';
 
 export function compileCurrentFileCmdHandler() {
   const activedEditor = vscode.window.activeTextEditor;
@@ -32,5 +33,9 @@ export function compileCurrentFileCmdHandler() {
 
   if (!continueCompile) return;
 
-  compile(activedEditor!);
+  const editorInfo = EditorContext.i.getEditorInfo(activedEditor!);
+
+  log.compile.clear();
+  log.compile.show(true);
+  log.compile.appendLine(editorInfo?.compiled?.tsCode || '');
 }

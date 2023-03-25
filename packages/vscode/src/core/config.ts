@@ -1,3 +1,4 @@
+import { O } from 'ts-toolbelt';
 import type { ReadonlyDeep } from 'type-fest';
 import * as vscode from 'vscode';
 
@@ -8,12 +9,12 @@ interface ExtensionConfig {
    * @default true
    */
   enabled: boolean;
-  newTypeZenFile: {
-    /**
-     * @default true
-     */
-    autoCompile: boolean;
-  };
+  // untitledFile: {
+  //   /**
+  //    * @default true
+  //    */
+  //   autoCompile: boolean;
+  // };
   compile: {
     /**
      * @default 'console'
@@ -50,11 +51,11 @@ export class Config {
   private _initConfig() {
     const config = vscode.workspace.getConfiguration('typezen');
 
-    this._config = Object.freeze({
+    this._config = Object.freeze<ExtensionConfig>({
       enabled: config.get('enabled', true),
-      newTypeZenFile: {
-        autoCompile: config.get('newTypeZenFile.autoCompile', true)
-      },
+      // untitledFile: {
+      //   autoCompile: config.get('untitledFile.autoCompile', true)
+      // },
       compile: {
         outputTo: config.get<any>('compile.outputTo', 'console')
       }

@@ -10,47 +10,46 @@ interface DiagnosticInfo {
 export { tsTypeAnalyzer };
 
 class TSTypeAnalyzer {
-  private sourceCode: string;
-  private compilerOptions: ts.CompilerOptions;
-  private sourceFile: ts.SourceFile;
-  private program: ts.Program;
-  private checker: ts.TypeChecker;
+  private _sourceCode: string;
+  private _compilerOptions: ts.CompilerOptions;
+  private _sourceFile: ts.SourceFile;
+  private _program: ts.Program;
+  private _checker: ts.TypeChecker;
 
   constructor() {
-    this.sourceCode = '';
-    this.compilerOptions = {
+    this._sourceCode = '';
+    this._compilerOptions = {
       noEmitOnError: true,
       reportDiagnostics: true,
-      target: ts.ScriptTarget.ES5,
-      module: ts.ModuleKind.CommonJS
+      types: ['@type-zen/core/preset']
     };
 
-    this.updateSourceFileAndProgram('');
+    this._updateSourceFileAndProgram('');
   }
 
-  private updateSourceFileAndProgram(sourceCode: string): void {
-    this.sourceCode = sourceCode;
-    this.sourceFile = ts.createSourceFile(
+  private _updateSourceFileAndProgram(sourceCode: string): void {
+    this._sourceCode = sourceCode;
+    this._sourceFile = ts.createSourceFile(
       'temp.ts',
       sourceCode,
       ts.ScriptTarget.ES5,
       true
     );
-    this.program = ts.createProgram({
+    this._program = ts.createProgram({
       rootNames: ['temp.ts'],
-      options: this.compilerOptions,
+      options: this._compilerOptions,
       host: {
-        ...ts.createCompilerHost(this.compilerOptions),
+        ...ts.createCompilerHost(this._compilerOptions),
         getSourceFile: (fileName: string) =>
-          fileName === 'temp.ts' ? this.sourceFile : undefined
+          fileName === 'temp.ts' ? this._sourceFile : undefined
       }
     });
-    this.checker = this.program.getTypeChecker();
+    this._checker = this._program.getTypeChecker();
   }
-  getDiagnostics(sourceCode: string): DiagnosticInfo[] {
-    this.updateSourceFileAndProgram(sourceCode);
+  public getDiagnostics(sourceCode: string): DiagnosticInfo[] {
+    this._updateSourceFileAndProgram(sourceCode);
 
-    const diagnostics = ts.getPreEmitDiagnostics(this.program);
+    const diagnostics = ts.getPreEmitDiagnostics(this._program);
     const diagnosticInfo: DiagnosticInfo[] = diagnostics
       .filter(diagnostic => diagnostic.file)
       .map(diagnostic => {
@@ -71,18 +70,22 @@ class TSTypeAnalyzer {
     return diagnosticInfo;
   }
 
-  getTypeAtPosition(sourceCode: string, line: number, character: number): string | null {
-    this.updateSourceFileAndProgram(sourceCode);
+  public getTypeAtPosition(
+    sourceCode: string,
+    line: number,
+    character: number
+  ): string | null {
+    this._updateSourceFileAndProgram(sourceCode);
     const position = ts.getPositionOfLineAndCharacter(
-      this.sourceFile,
+      this._sourceFile,
       line - 1,
       character - 1
     );
-    const node = this.findNodeAtPosition(this.sourceFile, position);
+    const node = findNodeAtPosition(this._sourceFile, position);
 
     if (node && node.parent && ts.isTypeAliasDeclaration(node.parent)) {
-      const type = this.checker.getTypeFromTypeNode(node.parent.type);
-      const typeResult = this.checker.typeToString(
+      const type = this._checker.getTypeFromTypeNode(node.parent.type);
+      const typeResult = this._checker.typeToString(
         type,
         undefined,
         ts.TypeFormatFlags.InTypeAlias
@@ -92,24 +95,24 @@ class TSTypeAnalyzer {
     }
 
     return null;
-  }
 
-  private findNodeAtPosition(node: ts.Node, position: number): ts.Node | null {
-    if (position >= node.getStart() && position <= node.getEnd()) {
-      let result: ts.Node | null = null;
+    function findNodeAtPosition(node: ts.Node, position: number): ts.Node | null {
+      if (position >= node.getStart() && position <= node.getEnd()) {
+        let result: ts.Node | null = null;
 
-      ts.forEachChild(node, child => {
-        const found = this.findNodeAtPosition(child, position);
+        ts.forEachChild(node, child => {
+          const found = findNodeAtPosition(child, position);
 
-        if (found) {
-          result = found;
-        }
-      });
+          if (found) {
+            result = found;
+          }
+        });
 
-      return result || node;
+        return result || node;
+      }
+
+      return null;
     }
-
-    return null;
   }
 }
 

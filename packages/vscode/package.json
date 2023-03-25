@@ -60,28 +60,16 @@
           "default": true,
           "description": "Enable TypeZen"
         },
-        "typezen.newTypeZenFile": {
-          "type": "object",
-          "description": "Options of New TypeZen File",
-          "properties": {
-            "autoCompile": {
-              "type": "boolean",
-              "default": true,
-              "description": "Auto compile when changed"
-            }
-          }
-        },
         "typezen.compile": {
           "type": "object",
-          "description": "Options of Compile",
+          "description": "Options of compile",
           "properties": {
             "outputTo": {
               "type": "string",
               "default": "console",
               "description": "Output to what location?",
               "enum": [
-                "console",
-                "file"
+                "console"
               ]
             }
           }
