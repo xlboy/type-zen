@@ -1,4 +1,4 @@
-# TypeZen
+# TypeZen for VSCode
 
 ## Features
 
