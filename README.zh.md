@@ -54,23 +54,19 @@ type Without<T extends unknown[], U extends number | number[]> = (
 
   + 编写复杂类型代码更加简单、高效、可读
 
-* 即写即用（Playground、CLI、VSCode 插件）
+* 即写即用（Playground、CLI、VSCode 扩展）
 
 ## 如何使用？
 
 ### [Playground](https://type-zen-playground.vercel.app/?code=09dX8EktUS9WSM8HAA%253D%253D)
 
-<img 
-  src="https://user-images.githubusercontent.com/63690944/227465720-96ef3d48-1b19-458e-9f08-ca53a0779a2b.png" 
-  style="width: 98%; 
-    border-radius: 6px;
-    box-shadow: 0px 0px 23px rgba(0,0,0,.3);
-    margin-bottom: 10px;" 
-/>
+![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)
 
-### VSCode 插件（待开发）
+### [VSCode 扩展]((https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview))
 
-...
+![preview-1](https://user-images.githubusercontent.com/63690944/227786758-3d30bdd4-f173-4137-9253-63c8945523ec.gif)
+
+[查看扩展以了解更多信息](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
 ### CLI （开发中）
 
@@ -97,7 +93,7 @@ type Without<T extends unknown[], U extends number | number[]> = (
 | 名称 | 示例 | 支持 |
 | ---- | ---- | ---- | 
 | `literal` | `number, string, ...(keyword: [any, boolean, null, never, ...])` | ✅ |
-| `condition` | `a == 1 ? 1 : 2` -> `a extends 1 ? 1 : 2`  <br /> `a extends 12 ? 13 : 233` | ✅  |
+| `condition` | `a == 1 ? 1 : 2` -> `a extends 1 ? 1 : 2` <br /> `a extends 12 ? 13 : 233` | ✅  |
 | `bracket surround` | `(123)` | ✅  |
 | `tuple` | `[1, 2, 3]` | ✅  |
 | `array` | `number[]` <br /> `string[][]` | ✅  |
@@ -111,43 +107,41 @@ type Without<T extends unknown[], U extends number | number[]> = (
 | `type reference` | `A` , `Array<1>` , `IsNumber<".">` | ✅ |
 | `element access` | `A["b"]` , `A[0][Key]` | ✅ |
 | `property access` | `A.B` , `A.B.C` | ✅ |
-| `template string` | `` `hello ${name}` `` <br /> :warning:  **`${}` 中的表达式仅支持 TypeScript 原生表达式（*暂不支持扩展的，如： `^{...}`, `\| [1, 3]`, ...*）** | ✅ |
-| `comment` | `// ...`<br /> `/* ... */`| ✅ |
+| `template string` | ` `  ` hello ${name} `  `  ` <br /> :warning:  ** ` ${} ` 中的表达式仅支持 TypeScript 原生表达式（*暂不支持扩展的，如： ` ^{...} ` , ` \| [1, 3]` , ...*）** | ✅ |
+| `comment` | `// ...` <br /> `/* ... */` | ✅ |
  
 
 #### 糖块（Sugar Block）
 
 糖块是一种特殊的表达式，可以利用它来编写类型逻辑代码（if, else, for, 局部变量声明等）
 
-糖块的作用域处于 `^{` 与 `}` 中，或是 `if`、`for` 语句中。
+糖块的作用域处于 `^{` 与 `}` 中，或是 `if` 、 `for` 语句中。
 
 | 名称 | 示例 |   支持 | 
 | ---- | ---- | ---- | 
 | `local ` | `^{ type B = 1; ... }` | ✅ |
 | `only if` | `^{ if (a == 1) { do something... } }` | ✅ |
-| `if else` |  `^{ if (a == 1) { do something... } else { do something... } ... }` | ✅ |
-| `if else if` |  `^{ if (a == 1) { do something... } else if (a == 2) { do something... } ... }` | ✅ |
-| `multiple condition` |  `^{ if (a == 1 && b == 2) { do something... } ... }` <br />  `^{ if (a == 1 \|\| b == 2) { do something... } ... }` | 
-| `for` |  `^{ for (infer a in UnionValue) { do something... } ... }` | ✅ |
-| `return` |  `^{ ... return 1; }` | ✅ |
-| `switch` |  `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
+| `if else` | `^{ if (a == 1) { do something... } else { do something... } ... }` | ✅ |
+| `if else if` | `^{ if (a == 1) { do something... } else if (a == 2) { do something... } ... }` | ✅ |
+| `multiple condition` | `^{ if (a == 1 && b == 2) { do something... } ... }` <br /> `^{ if (a == 1 \|\| b == 2) { do something... } ... }` | 
+| `for` | `^{ for (infer a in UnionValue) { do something... } ... }` | ✅ |
+| `return` | `^{ ... return 1; }` | ✅ |
+| `switch` | `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
 
-> :warning: if 暂不支持 \`!=\` 逻辑符
+> :warning: if 暂不支持 \ `!=\` 逻辑符
 
-> :warning: 糖块中，必须含有 \`return\`
+> :warning: 糖块中，必须含有 \ `return\`
 
 ### 语句
 
 | 名称 | 示例 | 支持 |
 | ---- | ---- | ---- | 
-| `type alias` |  `type A = 1` | ✅ |
-| `interface` |   `interface A { b: 1 }` | ✅ |
-| `enum` |  `enum A { B = 1, C = "" }` | ✅ |
-| `enum` |  `enum A { B = 1, C = "" }` <br /> `const enum A { B = 1, C = "" }` | ✅ |
-| `namespace` |  `namespace A { ... }` |  |
-| `declare function` |  `declare function A(): 1` | ✅ |
-| `declare variable` |  `declare const A: 1` <br />  `declare let A: 1` <br />  `declare var A: 1` | ✅ |
-
+| `type alias` | `type A = 1` | ✅ |
+| `interface` | `interface A { b: 1 }` | ✅ |
+| `enum` | `enum A { B = 1, C = "" }` <br /> `const enum A { B = 1, C = "" }` | ✅ |
+| `namespace` | `namespace A { ... }` |  |
+| `declare function` | `declare function A(): 1` | ✅ |
+| `declare variable` | `declare const A: 1` <br /> `declare let A: 1` <br /> `declare var A: 1` | ✅ |
 
 ## 问题
 

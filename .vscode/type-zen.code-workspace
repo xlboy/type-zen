@@ -13,6 +13,10 @@
       "path": "../packages/cli"
     },
     {
+      "name": "vscode",
+      "path": "../packages/vscode"
+    },
+    {
       "name": "website/playground",
       "path": "../website/playground"
     }
