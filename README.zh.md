@@ -62,7 +62,7 @@ type Without<T extends unknown[], U extends number | number[]> = (
 
 ![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)
 
-### [VSCode 扩展]((https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview))
+### [VSCode 扩展](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
 ![preview-1](https://user-images.githubusercontent.com/63690944/227786758-3d30bdd4-f173-4137-9253-63c8945523ec.gif)
 
