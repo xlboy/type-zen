@@ -7,7 +7,9 @@ English | [简体中文](./README.zh.md)
 ## Helloworld
 
 TypeZen：
+
     
+
 ```ts
 type Without<T: unknown[], U: number | number[]> = ^{
   if (T == [infer First, ...infer Rest]) {
@@ -46,28 +48,21 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 ## Features
 
-- Compatible with TypeScript type syntax
+* Compatible with TypeScript type syntax
 
-- Unique syntax sugar
+* Unique syntax sugar
 
-  - More similar to the syntax in `TS/JS` that is often written (understood in seconds~)
+  + More similar to the syntax in `TS/JS` that is often written (understood in seconds~)
 
-  - Writing complex type code is simpler, more efficient, and more readable
+  + Writing complex type code is simpler, more efficient, and more readable
 
-- Write and use immediately (Playground, CLI, VSCode plugin)
+* Write and use immediately (Playground, CLI, VSCode plugin)
 
 ## How to use?
 
 ### [Playground](https://type-zen-playground.vercel.app/?code=09dX8EktUS9WSM8HAA%253D%253D)
 
-
-<img 
-  src="https://user-images.githubusercontent.com/63690944/227465720-96ef3d48-1b19-458e-9f08-ca53a0779a2b.png" 
-  style="width: 98%;
-    border-radius: 6px;
-    box-shadow: 0px 0px 23px rgba(0,0,0,.3);
-    margin-bottom: 10px;" 
-/>
+![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)
 
 ### VSCode Plugin (To be developed)
 
@@ -79,15 +74,15 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 ## Tutorial & Examples
 
-- [Basic](https://type-zen-playground.vercel.app/?example=basic)
+* [Basic](https://type-zen-playground.vercel.app/?example=basic)
 
-- [Sugar](https://type-zen-playground.vercel.app/?example=sugar-local-variable)
+* [Sugar](https://type-zen-playground.vercel.app/?example=sugar-local-variable)
 
-- Type Challenges
+* Type Challenges
 
-  - [Easy (13+)](https://type-zen-playground.vercel.app/?example=type-challenges-easy-1_pick)
+  + [Easy (13+)](https://type-zen-playground.vercel.app/?example=type-challenges-easy-1_pick)
 
-  - [Medium (80+)](https://type-zen-playground.vercel.app/?example=type-challenges-medium-1_get-return-type)
+  + [Medium (80+)](https://type-zen-playground.vercel.app/?example=type-challenges-medium-1_get-return-type)
 
 ## Syntax
 
@@ -98,7 +93,7 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 | Name | Example | Supported |
 | ---- | ---- | ---- | 
 | `literal` | `number, string, ...(keyword: [any, boolean, null, never, ...])` | ✅ |
-| `condition` | `a == 1 ? 1 : 2` -> `a extends 1 ? 1 : 2`  <br /> `a extends 12 ? 13 : 233` | ✅  |
+| `condition` | `a == 1 ? 1 : 2` -> `a extends 1 ? 1 : 2` <br /> `a extends 12 ? 13 : 233` | ✅  |
 | `bracket surround` | `(123)` | ✅  |
 | `tuple` | `[1, 2, 3]` | ✅  |
 | `array` | `number[]` <br /> `string[][]` | ✅  |
@@ -108,47 +103,45 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 | `infer` | `infer x` <br /> `infer xx == xxx1` -> `infer xx extends xxx1` <br /> `infer xx extends xxx` | ✅ | 
 | `union` | `1 \| 2 \| 3` <br /> `\| [1, 2, 3]` | ✅ |
 | `intersection` | `1 & 2 & 3` <br /> `& [11, 22, 33]` -> `11 & 22 & 33` | ✅ |
-| `generic args` | `<S: string = "S">` -> `<S extends string = "S">`  <br /> `<A extends string = "default">` | ✅ |
+| `generic args` | `<S: string = "S">` -> `<S extends string = "S">` <br /> `<A extends string = "default">` | ✅ |
 | `type reference` | `A` , `Array<1>` , `IsNumber<".">` | ✅ |
 | `element access` | `A["b"]` , `A[0][Key]` | ✅ |
 | `property access` | `A.B` , `A.B.C` | ✅ |
-| `template string` | `` `hello ${name}`  `` <br /> :warning:  **`${}`expressions only support TypeScript native expressions (Does not yet support extensions such as: `^{...}`, `\| [1, 3]`,  ...)** | ✅ |
-| `comment` | `// ...`<br /> `/* ... */`| ✅ |
+| `template string` | ` `  ` hello ${name} `  `  ` <br /> :warning:  ** ` ${} ` expressions only support TypeScript native expressions (Does not yet support extensions such as: ` ^{...} ` , ` \| [1, 3]` , ...)** | ✅ |
+| `comment` | `// ...` <br /> `/* ... */` | ✅ |
  
 
 #### Sugar Block
 
 Sugar Block are a special type of expression that can be used to write type logic code (if, else, for, local variable declarations, etc.)
 
-Sugar blocks are scoped to `^{` and `}`, or within `if,for` statements.
+Sugar blocks are scoped to `^{` and `}` , or within `if,for` statements.
 
 | Name | Example |   Supported | 
 | ---- | ---- | ---- | 
 | `local ` | `^{ type B = 1; ... }` | ✅ |
 | `only if` | `^{ if (a == 1) { do something... } }` | ✅ |
-| `if else` |  `^{ if (a == 1) { do something... } else { do something... } ... }` | ✅ |
-| `if else if` |  `^{ if (a == 1) { do something... } else if (a == 2) { do something... } ... }` | ✅ |
-| `multiple condition` |  `^{ if (a == 1 && b == 2) { do something... } ... }` <br />  `^{ if (a == 1 \|\| b == 2) { do something... } ... }` | 
-| `for` |  `^{ for (infer a in UnionValue) { do something... } ... }` | ✅ |
-| `return` |  `^{ ... return 1; }` | ✅ |
-| `switch` |  `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
+| `if else` | `^{ if (a == 1) { do something... } else { do something... } ... }` | ✅ |
+| `if else if` | `^{ if (a == 1) { do something... } else if (a == 2) { do something... } ... }` | ✅ |
+| `multiple condition` | `^{ if (a == 1 && b == 2) { do something... } ... }` <br /> `^{ if (a == 1 \|\| b == 2) { do something... } ... }` | 
+| `for` | `^{ for (infer a in UnionValue) { do something... } ... }` | ✅ |
+| `return` | `^{ ... return 1; }` | ✅ |
+| `switch` | `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
 
-> :warning: if does not currently support \`!=\` logical symbol
+> :warning: if does not currently support \ `!=\` logical symbol
 
-> :warning: In a sugar block, it must contain a \`return\` statement.
+> :warning: In a sugar block, it must contain a \ `return\` statement.
 
 ### Statement
 
 | Name | Example | Supported |
 | ---- | ---- | ---- | 
-| `type alias` |  `type A = 1` | ✅ |
-| `interface` |   `interface A { b: 1 }` | ✅ |
-| `enum` |  `enum A { B = 1, C = "" }` | ✅ |
-| `enum` |  `enum A { B = 1, C = "" }` <br /> `const enum A { B = 1, C = "" }` | ✅ |
-| `namespace` |  `namespace A { ... }` |  |
-| `declare function` |  `declare function A(): 1` | ✅ |
-| `declare variable` |  `declare const A: 1` <br />  `declare let A: 1` <br />  `declare var A: 1` | ✅ |
-
+| `type alias` | `type A = 1` | ✅ |
+| `interface` | `interface A { b: 1 }` | ✅ |
+| `enum` | `enum A { B = 1, C = "" }` <br /> `const enum A { B = 1, C = "" }` | ✅ |
+| `namespace` | `namespace A { ... }` |  |
+| `declare function` | `declare function A(): 1` | ✅ |
+| `declare variable` | `declare const A: 1` <br /> `declare let A: 1` <br /> `declare var A: 1` | ✅ |
 
 ## Issues
 
