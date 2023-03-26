@@ -2,7 +2,7 @@
   "name": "@type-zen/vscode",
   "publisher": "xlboy",
   "displayName": "TypeZen",
-  "version": "0.0.1-alpha.1",
+  "version": "0.1.0",
   "private": true,
   "description": "TypeZen for VS Code",
   "license": "MIT",
@@ -26,21 +26,6 @@
   ],
   "engines": {
     "vscode": "^1.76.0"
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch src",
-    "package": "vsce package"
-  },
-  "devDependencies": {
-    "@type-zen/core": "latest",
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/vscode": "^1.76.0",
-    "@vscode/test-electron": "^2.3.0",
-    "chalk": "^5.2.0",
-    "glob": "^8.1.0",
-    "mocha": "^10.2.0"
   },
   "activationEvents": [
     "onStartupFinished"
@@ -108,5 +93,23 @@
         "path": "./syntaxes/typezen.tmLanguage.json"
       }
     ]
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch src",
+    "vsce-package": "tsx scripts/vsce-package",
+    "vsce-publish": "tsx scripts/vsce-package --publish"
+  },
+  "devDependencies": {
+    "@type-zen/core": "latest",
+    "@types/fs-extra": "^11.0.1",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/vscode": "^1.76.0",
+    "@vscode/test-electron": "^2.3.0",
+    "chalk": "^5.2.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0"
   }
 }
