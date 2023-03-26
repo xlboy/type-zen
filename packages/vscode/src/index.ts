@@ -1,7 +1,7 @@
 import vscode from 'vscode';
 
 import { version } from '../package.json';
-import { compileCurrentFileCmdHandler } from './core/comman-handler/compile-current-file';
+import { compileCurrentFileCmdHandler } from './core/command-handler/compile-current-file';
 import { Config } from './core/config';
 import { EditorContext } from './core/editor-context';
 import { log } from './core/log';

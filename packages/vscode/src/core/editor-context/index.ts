@@ -258,17 +258,9 @@ class EditorContext {
           );
 
           if (type) {
-            return new vscode.Hover(type);
+            return new vscode.Hover('```typescript\n' + type + '\n```');
           }
         }
-      }
-
-      const range = activedEditor.document.getWordRangeAtPosition(position);
-
-      if (range) {
-        const word = activedEditor.document.getText(range);
-
-        return new vscode.Hover(word);
       }
     }
   }
