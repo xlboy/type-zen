@@ -56,7 +56,7 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
   + Writing complex type code is simpler, more efficient, and more readable
 
-* Write and use immediately (Playground, CLI, VSCode plugin)
+* Write and use immediately (Playground, CLI, VSCode Extension)
 
 ## How to use?
 
@@ -64,9 +64,11 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 ![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)
 
-### VSCode Plugin (To be developed)
+### [VSCode Extension](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
-...
+![preview-1](https://user-images.githubusercontent.com/63690944/227786758-3d30bdd4-f173-4137-9253-63c8945523ec.gif)
+
+[See the extension to learn more](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
 ### CLI (Under development)
 
