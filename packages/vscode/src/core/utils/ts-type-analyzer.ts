@@ -10,25 +10,31 @@ interface DiagnosticInfo {
 }
 
 class TSTypeAnalyzer {
-  private sourceCode: string;
   private compilerOptions: ts.CompilerOptions;
   private sourceFile: ts.SourceFile;
   private program: ts.Program;
   private checker: ts.TypeChecker;
+  private presetSourceFile = ts.createSourceFile(
+    'preset.d.ts',
+    `
+    // @ts-ignore
+    const unreturnSymbol: unique symbol = Symbol();
+    type UnreturnedSymbol = typeof unreturnSymbol;
+`,
+    ts.ScriptTarget.ES5,
+    true
+  );
 
   constructor() {
-    this.sourceCode = '';
     this.compilerOptions = {
       noEmitOnError: true,
-      reportDiagnostics: true,
-      types: ['@type-zen/core/preset']
+      reportDiagnostics: true
     };
 
     this.updateSourceFileAndProgram('');
   }
 
   private updateSourceFileAndProgram(sourceCode: string): void {
-    this.sourceCode = sourceCode;
     this.sourceFile = ts.createSourceFile(
       'temp.ts',
       sourceCode,
@@ -36,12 +42,15 @@ class TSTypeAnalyzer {
       true
     );
     this.program = ts.createProgram({
-      rootNames: ['temp.ts'],
+      rootNames: ['temp.ts', 'preset.d.ts'],
       options: this.compilerOptions,
       host: {
         ...ts.createCompilerHost(this.compilerOptions),
         getSourceFile: (fileName: string) =>
-          fileName === 'temp.ts' ? this.sourceFile : undefined
+          ({
+            'temp.ts': this.sourceFile,
+            'preset.d.ts': this.presetSourceFile
+          }[fileName])
       }
     });
     this.checker = this.program.getTypeChecker();
@@ -83,18 +92,23 @@ class TSTypeAnalyzer {
     );
     const node = findNodeAtPosition(this.sourceFile, position);
 
-    if (node && node.parent && ts.isTypeAliasDeclaration(node.parent)) {
-      const type = this.checker.getTypeFromTypeNode(node.parent.type);
-      const typeResult = this.checker.typeToString(
-        type,
-        undefined,
-        ts.TypeFormatFlags.InTypeAlias
-      );
+    if (!node) return null;
 
-      return typeResult;
+    if (node.parent && ts.isTypeAliasDeclaration(node.parent)) {
+      return getType.call(this, node.parent.type);
+    } else if (ts.isTypeAliasDeclaration(node)) {
+      return getType.call(this, node.type);
     }
 
     return null;
+
+    function getType(this: TSTypeAnalyzer, type: ts.TypeNode) {
+      return this.checker.typeToString(
+        this.checker.getTypeFromTypeNode(type),
+        undefined,
+        ts.TypeFormatFlags.InTypeAlias
+      );
+    }
 
     function findNodeAtPosition(node: ts.Node, position: number): ts.Node | null {
       if (position >= node.getStart() && position <= node.getEnd()) {
