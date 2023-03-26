@@ -30,28 +30,28 @@ export class Config {
     return (Config._instance ??= new Config());
   }
 
-  private _config: ExtensionConfig;
+  private config: ExtensionConfig;
 
   private constructor() {
-    this._initConfig();
-    this._watchConfig();
+    this.init();
+    this.watch();
   }
 
   public update() {
-    this._initConfig();
+    this.init();
     log.default.appendLine(`Config updated:
-    ${JSON.stringify(this._config, null, 2)}
-    `);
+${JSON.stringify(this.config, null, 2)}
+`);
   }
 
   public get(): ReadonlyDeep<ExtensionConfig> {
-    return this._config;
+    return this.config;
   }
 
-  private _initConfig() {
+  private init() {
     const config = vscode.workspace.getConfiguration('typezen');
 
-    this._config = Object.freeze<ExtensionConfig>({
+    this.config = Object.freeze<ExtensionConfig>({
       enabled: config.get('enabled', true),
       // untitledFile: {
       //   autoCompile: config.get('untitledFile.autoCompile', true)
@@ -62,7 +62,7 @@ export class Config {
     });
   }
 
-  private _watchConfig() {
+  private watch() {
     vscode.workspace.onDidChangeConfiguration(() => {
       this.update();
     });

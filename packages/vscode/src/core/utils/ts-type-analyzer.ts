@@ -10,46 +10,46 @@ interface DiagnosticInfo {
 }
 
 class TSTypeAnalyzer {
-  private _sourceCode: string;
-  private _compilerOptions: ts.CompilerOptions;
-  private _sourceFile: ts.SourceFile;
-  private _program: ts.Program;
-  private _checker: ts.TypeChecker;
+  private sourceCode: string;
+  private compilerOptions: ts.CompilerOptions;
+  private sourceFile: ts.SourceFile;
+  private program: ts.Program;
+  private checker: ts.TypeChecker;
 
   constructor() {
-    this._sourceCode = '';
-    this._compilerOptions = {
+    this.sourceCode = '';
+    this.compilerOptions = {
       noEmitOnError: true,
       reportDiagnostics: true,
       types: ['@type-zen/core/preset']
     };
 
-    this._updateSourceFileAndProgram('');
+    this.updateSourceFileAndProgram('');
   }
 
-  private _updateSourceFileAndProgram(sourceCode: string): void {
-    this._sourceCode = sourceCode;
-    this._sourceFile = ts.createSourceFile(
+  private updateSourceFileAndProgram(sourceCode: string): void {
+    this.sourceCode = sourceCode;
+    this.sourceFile = ts.createSourceFile(
       'temp.ts',
       sourceCode,
       ts.ScriptTarget.ES5,
       true
     );
-    this._program = ts.createProgram({
+    this.program = ts.createProgram({
       rootNames: ['temp.ts'],
-      options: this._compilerOptions,
+      options: this.compilerOptions,
       host: {
-        ...ts.createCompilerHost(this._compilerOptions),
+        ...ts.createCompilerHost(this.compilerOptions),
         getSourceFile: (fileName: string) =>
-          fileName === 'temp.ts' ? this._sourceFile : undefined
+          fileName === 'temp.ts' ? this.sourceFile : undefined
       }
     });
-    this._checker = this._program.getTypeChecker();
+    this.checker = this.program.getTypeChecker();
   }
   public getDiagnostics(sourceCode: string): DiagnosticInfo[] {
-    this._updateSourceFileAndProgram(sourceCode);
+    this.updateSourceFileAndProgram(sourceCode);
 
-    const diagnostics = ts.getPreEmitDiagnostics(this._program);
+    const diagnostics = ts.getPreEmitDiagnostics(this.program);
     const diagnosticInfo: DiagnosticInfo[] = diagnostics
       .filter(diagnostic => diagnostic.file)
       .map(diagnostic => {
@@ -75,17 +75,17 @@ class TSTypeAnalyzer {
     line: number,
     character: number
   ): string | null {
-    this._updateSourceFileAndProgram(sourceCode);
+    this.updateSourceFileAndProgram(sourceCode);
     const position = ts.getPositionOfLineAndCharacter(
-      this._sourceFile,
+      this.sourceFile,
       line - 1,
       character - 1
     );
-    const node = findNodeAtPosition(this._sourceFile, position);
+    const node = findNodeAtPosition(this.sourceFile, position);
 
     if (node && node.parent && ts.isTypeAliasDeclaration(node.parent)) {
-      const type = this._checker.getTypeFromTypeNode(node.parent.type);
-      const typeResult = this._checker.typeToString(
+      const type = this.checker.getTypeFromTypeNode(node.parent.type);
+      const typeResult = this.checker.typeToString(
         type,
         undefined,
         ts.TypeFormatFlags.InTypeAlias
