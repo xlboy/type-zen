@@ -1,13 +1,13 @@
 import ts from 'typescript';
 
+export { tsTypeAnalyzer };
+
 interface DiagnosticInfo {
   fileName?: string;
   line?: number;
   character?: number;
   message: string;
 }
-
-export { tsTypeAnalyzer };
 
 class TSTypeAnalyzer {
   private _sourceCode: string;
