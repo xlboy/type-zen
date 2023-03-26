@@ -1,5 +1,6 @@
 {
   "name": "@type-zen/vscode",
+  "publisher": "xlboy",
   "displayName": "TypeZen",
   "version": "0.0.1-alpha.1",
   "private": true,
@@ -17,14 +18,19 @@
   ],
   "main": "./dist/index.js",
   "preview": true,
-  "icon": "res/logo.png",
+  "icon": "res/logo.jpg",
+  "files": [
+    "dist/**/*",
+    "language-configuration.json",
+    "res/**/*"
+  ],
   "engines": {
-    "vscode": "^1.71.0"
+    "vscode": "^1.76.0"
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch src",
-    "test": "node ./out/test/runTest.js"
+    "package": "vsce package"
   },
   "devDependencies": {
     "@type-zen/core": "latest",
@@ -90,8 +96,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "light": "./res/logo.jpg",
-          "dark": "./res/logo.jpg"
+          "light": "res/logo.jpg",
+          "dark": "res/logo.jpg"
         }
       }
     ],
