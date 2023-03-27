@@ -25,7 +25,6 @@ async function main(toPublish: boolean) {
   }
 }
 
-// 获取执行脚本时传入的参数
 const args = process.argv.slice(2);
 const toPublish = args.includes('--publish');
 
