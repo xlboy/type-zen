@@ -72,6 +72,34 @@ type Without<T extends unknown[], U extends number | number[]> = (
 
 ...
 
+### TS Plugin (待开发)
+
+```bash
+# Directory structure
+- index.ts
+- tool-types.tzen
+```
+
+```typescript
+// path: index.ts
+import type { Without } from './tool-types.tzen'
+// or
+import type { Without } from './tool-types'
+
+type XX = Without<...>
+```
+
+```typescript
+// path: tool-types.tzen
+export type Without<T> = ...
+```
+
+### [Unplugin](https://github.com/unjs/unplugin) (待开发)
+
+> Contains `Webpack` , `Vite` , `Rollup` , ...
+
+Generate `.d.ts` , ...
+
 ## 教程&示例
 
 * [Basic](https://type-zen-playground.vercel.app/?example=basic)

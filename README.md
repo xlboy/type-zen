@@ -74,6 +74,34 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 ...
 
+### TS Plugin (To be developed)
+
+```bash
+# Directory structure
+- index.ts
+- tool-types.tzen
+```
+
+```typescript
+// path: index.ts
+import type { Without } from './tool-types.tzen'
+// or
+import type { Without } from './tool-types'
+
+type XX = Without<...>
+```
+
+```typescript
+// path: tool-types.tzen
+export type Without<T> = ...
+```
+
+### [Unplugin](https://github.com/unjs/unplugin) (To be developed)
+
+> Contains `Webpack` , `Vite` , `Rollup` , ...
+
+Generate `.d.ts` , ...
+
 ## Tutorial & Examples
 
 * [Basic](https://type-zen-playground.vercel.app/?example=basic)
