@@ -80,6 +80,9 @@ importers:
       replace-in-file: 6.3.5
       zod: 3.21.4
 
+  packages/preset-type:
+    specifiers: {}
+
   packages/vscode:
     specifiers:
       '@type-zen/core': latest
@@ -109,6 +112,7 @@ importers:
       '@ahooksjs/use-url-state': ^3.5.1
       '@monaco-editor/react': ^4.4.6
       '@type-zen/core': latest
+      '@type-zen/preset-type': workspace:*
       '@types/pako': ^2.0.0
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
@@ -127,6 +131,7 @@ importers:
       '@ahooksjs/use-url-state': 3.5.1_react@18.2.0
       '@monaco-editor/react': 4.4.6_waewrrayshn643ztij6zbniufy
       '@type-zen/core': 0.0.1-alpha.14
+      '@type-zen/preset-type': link:../../packages/preset-type
       ahooks: 3.7.5_react@18.2.0
       antd: 5.3.2_biqbaboplfbrettd7655fr4n2y
       immer: 9.0.19

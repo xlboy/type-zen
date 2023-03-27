@@ -47,9 +47,9 @@ type GetExampleKey<ExampleUnion> = ExampleUnion extends infer E
         ? [Children[number]] extends [infer ChildrenUnion]
           ? GetExampleKey<ChildrenUnion>
           : never
-        : UnreturnedSymbol
+        : TZ_URS
     ) extends infer r_20r2
-    ? r_20r2 extends UnreturnedSymbol
+    ? r_20r2 extends TZ_URS
       ? E extends {
           key: infer Key;
         }

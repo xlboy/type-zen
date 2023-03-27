@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["@type-zen/core/preset"]
+    "types": ["@type-zen/preset-type"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
