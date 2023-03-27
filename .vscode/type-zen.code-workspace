@@ -19,6 +19,10 @@
     {
       "name": "website/playground",
       "path": "../website/playground"
+    },
+    {
+      "name": "preset-type",
+      "path": "../packages/preset-type"
     }
   ],
   "settings": {
