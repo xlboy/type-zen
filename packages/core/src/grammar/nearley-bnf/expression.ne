@@ -154,7 +154,7 @@ e_object_content_call -> e_function_normal {% id %}
 e_object_content_constructor -> e_function_constructor[e_function_normal {% id %}] {% id %}
 
 e_object_content_key -> id {% id %}
-    | ("if" | "for" | "of" | "else" | "in" | "void" | "this" | "function" | "interface" | "namespace" | "keyof" | "typeof" | "type" | "as" | "is" | "out" | "infer" | "asserts" | "declare" | "readonly") 
+    | ("if" | "for" | "of" | "else" | "in" | "void" | "this" | "function" | "interface" | "namespace" | "keyof" | "typeof" | "type" | "as" | "is" | "out" | "infer" | "asserts" | "declare" | "readonly" | "import" | "export" "default" | "from") 
       {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
     | (%string | %number) {% args => toASTNode(ast.IdentifierExpression)([args[0][0]]) %}
 

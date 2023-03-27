@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 
 import type { CompiledNode } from '../../compiler';
-import type { ASTNodePosition, SugarBlockExpression, TypeAliasStatement } from '..';
+import type { ASTNodePosition, SugarBlockExpression } from '..';
 import { SyntaxKind } from '../constants';
 import { ExpressionBase } from './base';
 import { IdentifierExpression } from './identifier';

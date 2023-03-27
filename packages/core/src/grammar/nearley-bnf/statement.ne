@@ -29,6 +29,17 @@ s_declareVariable -> "declare" __ s_declareVariable_type __ id
 s_declareVariable_type -> ("const" | "let" | "var") {% args => args[0][0].value%}
 #endregion  //*======== declare variable ===========
 
+#region  //*=========== export/import ===========
+s_export -> "export" __ s_export_named
+
+s_export_named -> "export" __ (s_typeAlias | s_enum | s_interface)
+s_export_default -> "export" __ "default" __ e_main
+s_export_all -> "export" __ "*" __ "from" __ e_string
+    | "export" __ "type" __ "*" __ "from" __ e_string
+
+
+#endregion  //*======== export/import ===========
+
 s_declareFunction -> "declare" __ "function" __ id
     {% args => toASTNode(ast.DeclareFunctionStatement)([args[0], args.at(-1)])%}
     | "declare" __ "function" __ id _ e_function_normal

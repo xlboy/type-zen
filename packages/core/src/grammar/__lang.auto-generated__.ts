@@ -665,6 +665,12 @@ const grammar: Grammar = {
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'asserts' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'declare' }] },
     { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'readonly' }] },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'import' }] },
+    {
+      name: 'e_object_content_key$subexpression$1',
+      symbols: [{ literal: 'export' }, { literal: 'default' }]
+    },
+    { name: 'e_object_content_key$subexpression$1', symbols: [{ literal: 'from' }] },
     {
       name: 'e_object_content_key',
       symbols: ['e_object_content_key$subexpression$1'],
@@ -1617,6 +1623,44 @@ const grammar: Grammar = {
       name: 's_declareVariable_type',
       symbols: ['s_declareVariable_type$subexpression$1'],
       postprocess: args => args[0][0].value
+    },
+    { name: 's_export', symbols: [{ literal: 'export' }, '__', 's_export_named'] },
+    { name: 's_export_named$subexpression$1', symbols: ['s_typeAlias'] },
+    { name: 's_export_named$subexpression$1', symbols: ['s_enum'] },
+    { name: 's_export_named$subexpression$1', symbols: ['s_interface'] },
+    {
+      name: 's_export_named',
+      symbols: [{ literal: 'export' }, '__', 's_export_named$subexpression$1']
+    },
+    {
+      name: 's_export_default',
+      symbols: [{ literal: 'export' }, '__', { literal: 'default' }, '__', 'e_main']
+    },
+    {
+      name: 's_export_all',
+      symbols: [
+        { literal: 'export' },
+        '__',
+        { literal: '*' },
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ]
+    },
+    {
+      name: 's_export_all',
+      symbols: [
+        { literal: 'export' },
+        '__',
+        { literal: 'type' },
+        '__',
+        { literal: '*' },
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ]
     },
     {
       name: 's_declareFunction',

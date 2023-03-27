@@ -56,7 +56,11 @@ const lexer = moo.states({
           'infer',
           'asserts',
           'declare',
-          'readonly'
+          'readonly',
+          'import',
+          'export',
+          'default',
+          'from'
         ]
       })
     }
