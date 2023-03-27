@@ -128,9 +128,9 @@ type Without<T extends unknown[], U extends number | number[]> = (
 | `return` | `^{ ... return 1; }` | ✅ |
 | `switch` | `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
 
-> :warning: if 暂不支持 \ `!=\` 逻辑符
+> :warning: if 暂不支持 `!=` 逻辑符
 
-> :warning: 糖块中，必须含有 \ `return\`
+> :warning: 糖块中，必须含有 `return`
 
 ### 语句
 

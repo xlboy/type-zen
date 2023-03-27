@@ -130,9 +130,9 @@ Sugar blocks are scoped to `^{` and `}` , or within `if,for` statements.
 | `return` | `^{ ... return 1; }` | ✅ |
 | `switch` | `^{ switch (a) { case 0, case 1: do something...; case 2, case 3: do something...; } ... } ` | 
 
-> :warning: if does not currently support \ `!=\` logical symbol
+> :warning: if does not currently support `!=` logical symbol
 
-> :warning: In a sugar block, it must contain a \ `return\` statement.
+> :warning: In a sugar block, it must contain a `return` statement.
 
 ### Statement
 
