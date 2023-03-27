@@ -58,6 +58,32 @@ type Without<T extends unknown[], U extends number | number[]> = (
 
 ## 如何使用？
 
+<details>
+<summary>1. 在项目中引入预设类型文件</summary><br>
+
+1. 安装
+
+```bash
+npm i @type-zen/preset-type -D
+```
+
+2. 在 `tsconfig.json` 中引入
+
+```json
+  {
+    "compilerOptions": {
+      "types": ["@type-zen/preset-type"]
+    }
+  }
+  ```
+
+PS: 为什么要使用 `@type-zen/preset-type` 作为全局类型文件？ **因为编译后的 TypeScript 类型可能会用到一些预先定义好的类型（例如：[ `TZ_URS` ](https://github.com/xlboy/type-zen/blob/master/packages/preset-type/index.d.ts#L5), ...)**
+
+---
+</details>
+
+2. 根据不同场景采用以下不同的工具来编写
+
 ### [Playground](https://type-zen-playground.vercel.app/?code=09dX8EktUS9WSM8HAA%253D%253D)
 
 ![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)

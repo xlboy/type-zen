@@ -60,6 +60,33 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 ## How to use?
 
+<details>
+<summary>1. Import preset type file in a project</summary><br>
+
+1. Install
+
+```bash
+npm i @type-zen/preset-type -D
+```
+
+2. Import in `tsconfig.json`
+
+```json
+  {
+    "compilerOptions": {
+      "types": ["@type-zen/preset-type"]
+    }
+  }
+  ```
+
+PS: Why use `@type-zen/preset-type` as a global type file? **Because the compiled TypeScript type may use some predefined types(e.g. [ `TZ_URS` ](https://github.com/xlboy/type-zen/blob/master/packages/preset-type/index.d.ts#L5), ...)**
+
+---
+
+</details>
+
+2. Use different tools to code according to different scenarios
+
 ### [Playground](https://type-zen-playground.vercel.app/?code=09dX8EktUS9WSM8HAA%253D%253D)
 
 ![playground-image](https://user-images.githubusercontent.com/63690944/227758595-1fbab076-2422-46e3-9320-303d6db76cbf.png)
@@ -82,7 +109,7 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 - tool-types.tzen
 ```
 
-```typescript
+```ts
 // path: index.ts
 import type { Without } from './tool-types.tzen'
 // or
@@ -91,7 +118,7 @@ import type { Without } from './tool-types'
 type XX = Without<...>
 ```
 
-```typescript
+```ts
 // path: tool-types.tzen
 export type Without<T> = ...
 ```
