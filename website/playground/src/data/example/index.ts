@@ -8,10 +8,14 @@ export type { ExampleKey, Example };
 
 const examples = [basicExample, sugarExample, typeChallengesExample] as const;
 
+// 对应上 @type-zen/preset-type
 const defaultPresetTSCode = `
 //#region  //*=========== preset code ===========
-const unreturnSymbol: unique symbol = Symbol();
-type UnreturnedSymbol = typeof unreturnSymbol;
+// @ts-ignore
+const _typeZenUnreturnSymbol: unique symbol = Symbol();
+
+/** TypeZen Unreturned Symbol */
+type TZ_URS = typeof _typeZenUnreturnSymbol;
 //#endregion  //*======== preset code ===========
 `;
 

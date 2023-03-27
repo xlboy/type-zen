@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/moo": "^0.5.5",
     "@types/nearley": "^2.11.2",
+    "@type-zen/preset-type": "workspace:*",
     "moo": "^0.5.2",
     "nanoid": "^4.0.1",
     "nearley": "^2.20.1",

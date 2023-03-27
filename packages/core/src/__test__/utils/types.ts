@@ -14,25 +14,23 @@ type InsidePrototype<T> = {
   [K in keyof T as $_InsidePrototype_SugarBlock__KeyFilter__r_pebh<K>]?: [
     NonNullable<T[K]>
   ] extends [infer FilteredValue]
-    ? (
-        FilteredValue extends ASTBase ? TestNode<T[K] & any> : UnreturnedSymbol
-      ) extends infer r_sxtu
-      ? r_sxtu extends UnreturnedSymbol
-        ? (FilteredValue extends Function ? never : UnreturnedSymbol) extends infer r_3ln7
-          ? r_3ln7 extends UnreturnedSymbol
+    ? (FilteredValue extends ASTBase ? TestNode<T[K] & any> : TZ_URS) extends infer r_sxtu
+      ? r_sxtu extends TZ_URS
+        ? (FilteredValue extends Function ? never : TZ_URS) extends infer r_3ln7
+          ? r_3ln7 extends TZ_URS
             ? FilteredValue extends any[]
               ? FilteredValue[number] extends infer FValueItem
                 ? (
-                    FValueItem extends ASTBase ? Array<TestNode<any>> : UnreturnedSymbol
+                    FValueItem extends ASTBase ? Array<TestNode<any>> : TZ_URS
                   ) extends infer r_702l
-                  ? r_702l extends UnreturnedSymbol
+                  ? r_702l extends TZ_URS
                     ? Array<{
                         [_K in keyof FValueItem]?: (
                           NonNullable<FValueItem[_K]> extends ASTBase
                             ? TestNode<any>
-                            : UnreturnedSymbol
+                            : TZ_URS
                         ) extends infer r_51ma
-                          ? r_51ma extends UnreturnedSymbol
+                          ? r_51ma extends TZ_URS
                             ? FValueItem[_K] extends infer Item
                               ? Item extends ASTBase
                                 ? TestNode<any>

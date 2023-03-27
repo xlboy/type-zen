@@ -51,7 +51,8 @@ abstract class ASTCompileBase {
       createNodeFlow: createCompiledNodeFlow,
       getConstants: () =>
         ({
-          UnreturnedSymbol: 'UnreturnedSymbol'
+          // 对应上 @type-zen/preset-type
+          UnreturnedSymbol: 'TZ_URS'
         } as const),
       getNearestSugarBlockExpr(): ReadonlyDeep<SugarBlockExpression> | undefined {
         const compileChain = this.getChain();

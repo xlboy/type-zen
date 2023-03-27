@@ -18,8 +18,10 @@ class TSTypeAnalyzer {
     'preset.d.ts',
     `
     // @ts-ignore
-    const unreturnSymbol: unique symbol = Symbol();
-    type UnreturnedSymbol = typeof unreturnSymbol;
+    const _typeZenUnreturnSymbol: unique symbol = Symbol();
+    
+    /** TypeZen Unreturned Symbol */
+    type TZ_URS = typeof _typeZenUnreturnSymbol;
 `,
     ts.ScriptTarget.ES5,
     true

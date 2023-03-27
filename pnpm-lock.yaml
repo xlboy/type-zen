@@ -60,6 +60,7 @@ importers:
 
   packages/core:
     specifiers:
+      '@type-zen/preset-type': workspace:*
       '@types/moo': ^0.5.5
       '@types/nearley': ^2.11.2
       moo: ^0.5.2
@@ -70,6 +71,7 @@ importers:
       replace-in-file: ^6.3.5
       zod: ^3.20.6
     devDependencies:
+      '@type-zen/preset-type': link:../preset-type
       '@types/moo': 0.5.5
       '@types/nearley': 2.11.2
       moo: 0.5.2

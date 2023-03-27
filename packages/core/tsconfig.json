@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "types": ["@type-zen/preset-type"]
   },
   "include": ["./src", "./scripts", "./*.ts"],
   "exclude": ["./src/grammar/__lang.auto-generated__.ts"]

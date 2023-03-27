@@ -214,7 +214,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
         })
       ],
       outputReg: new RegExp(
-        `\\[3\\] extends \\[infer B\\] \\? \\(B extends 3 \\? 1 : B extends 4 \\? \\['sdfsfd'\\] extends \\[infer C\\] \\? \\(C extends 'sss' \\? 'ssss' : UnreturnedSymbol\\) extends infer r_.+? \\? r_.+? extends UnreturnedSymbol \\? 2 : r_.+? : never : never : UnreturnedSymbol\\) extends infer r_.+? \\? r_.+? extends UnreturnedSymbol \\? 3 \\| 4 : r_.+? : never : never`
+        `\\[3\\] extends \\[infer B\\] \\? \\(B extends 3 \\? 1 : B extends 4 \\? \\['sdfsfd'\\] extends \\[infer C\\] \\? \\(C extends 'sss' \\? 'ssss' : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 2 : r_.+? : never : never : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 3 \\| 4 : r_.+? : never : never`
       )
     })
   });
