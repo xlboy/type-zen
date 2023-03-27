@@ -142,6 +142,8 @@ type Without<T extends unknown[], U extends number | number[]> = (
 | `namespace` | `namespace A { ... }` |  |
 | `declare function` | `declare function A(): 1` | ✅ |
 | `declare variable` | `declare const A: 1` <br /> `declare let A: 1` <br /> `declare var A: 1` | ✅ |
+| `import` | `import type {} from '...'` <br /> ... |  |
+| `export` | `export type { ... }` <br /> ... |  |
 
 ## 问题
 
