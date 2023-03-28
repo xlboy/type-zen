@@ -4,7 +4,7 @@
 
 [English](./README.md) | 简体中文
 
-## Helloworld
+## [HelloWorld](https://type-zen-playground.vercel.app/?code=XY%252FBDoIwEETv%252FYo5akLgjoIHEj%252BggXho6sFYpFFbU7YxRvl3KQgmHDbZzc6b2aXXQ%252BGgqbGetmUKb67GPo2QEaoUxt9PyuHza4TMkeH4ZoCusSqRZRDa1L1kr11LEeI4HmeuWpJrBClAIYQXPVsFZDLDDpUYB4kU1QZJAq4vDaGw5qxJW8MGg5A2JAScF5Mv4BR5Z%252BYHQmp%252FeD5sO6hbq5ZS8b90SckRY6HYDJSs%252BwI%253D)
 
 TypeZen：
 
@@ -34,11 +34,11 @@ type Without<T extends unknown[], U extends number | number[]> = (
         ? Without<Rest, U>
         : [First, ...Without<Rest, U>]
       : never
-    : UnreturnedSymbol
-) extends infer r_8o98
-  ? r_8o98 extends UnreturnedSymbol
+    : TZ_URS
+) extends infer r_czl5
+  ? r_czl5 extends TZ_URS
     ? T
-    : r_8o98
+    : r_czl5
   : never;
 ```
 
