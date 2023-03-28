@@ -18,6 +18,10 @@ Create a new untitled file:
 
 ![preview-2](https://user-images.githubusercontent.com/63690944/227786971-d9a68b7e-86bd-4b90-a9f1-a9012a903a5f.gif)
 
+## CHANGELOG
+
+[CHANGELOG.md](./CHANGELOG.md)
+
 ## License
 
 MIT License © 2023-PRESENT  [xlboy](https://github.com/xlboy)
