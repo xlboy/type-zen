@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "Node",
+    "lib": ["DOM", "ESNext"],
     "types": ["@type-zen/preset-type"]
   },
   "include": ["./src", "./scripts", "./*.ts"],
