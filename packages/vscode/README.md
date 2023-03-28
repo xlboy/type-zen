@@ -20,7 +20,7 @@ Create a new untitled file:
 
 ## CHANGELOG
 
-[CHANGELOG.md](./CHANGELOG.md)
+[CHANGELOG.md](https://github.com/xlboy/type-zen/blob/master/packages/vscode/CHANGELOG.md)
 
 ## License
 
