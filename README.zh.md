@@ -101,7 +101,7 @@ PS: 为什么要使用 `@type-zen/preset-type` 作为全局类型文件？ **因
 ### TS Plugin (待开发)
 
 ```bash
-# Directory structure
+# 目录结构
 - index.ts
 - tool-types.tzen
 ```
@@ -122,9 +122,9 @@ export type Without<T> = ...
 
 ### [Unplugin](https://github.com/unjs/unplugin) (待开发)
 
-> Contains `Webpack` , `Vite` , `Rollup` , ...
+> 包含 `Webpack` , `Vite` , `Rollup` , ...
 
-Generate `.d.ts` , ...
+生成 `.d.ts` , ...
 
 ## 教程&示例
 
