@@ -41,25 +41,7 @@ try {
   $_A_a_s_arrow_fn_rt_ 
    */
   const content = `
-  type Name = "xlboy"
-
-  type A<T> = ^{
-    if (T == Name) {
-      return "这是我的名称"
-    } else if (T == number) {
-      if (T == 1) {
-        return "传了个 数字1 进来"
-      }
-      return "传了个其他数字进来"
-    }
-
-    return ["即不是 number 也不是名？…是 ->", T]
-  }
-
-  type Test1 = A<"xlboy">
-  type Test2 = A<1>
-  type Test3 = A<2333>
-  type Test4 = A<| [":)", "酷酷酷"]>
+  type B = A.C<T, 3, 3333>
   `;
 
   //

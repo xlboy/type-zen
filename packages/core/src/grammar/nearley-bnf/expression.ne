@@ -222,8 +222,18 @@ e_genericArgs_group ->
 e_elementAccess -> e_main _ "[" _ e_main _ "]" 
     {% (...args) => filterAndToASTNode(args, ast.ElementAccessExpression) %}
 
-e_propertyAccess -> id _ ("." _ id):+ 
-    {% args => toASTNode(ast.PropertyAccessExpression)([args[0], ...args[2].map(item => item.at(-1))]) %}
+e_propertyAccess -> id _ ("." _ id):+ ("<" 
+        (_ e_main (_ "," _ e_main):* {% args => [args[1], ...args[2].map(item => item[3])] %}) 
+     _ ">"):?
+    {% args => {
+      const propertyChain = [args[0], ...args[2].map(item => item.at(-1))]
+      if (args[3]) {
+        const genericArguments = args[3][1]
+        return toASTNode(ast.PropertyAccessExpression)([propertyChain, genericArguments])
+      } else {
+        return toASTNode(ast.PropertyAccessExpression)(propertyChain)
+      }
+    } %}
 
 #region  //*=========== tuple ===========
 e_tuple -> 

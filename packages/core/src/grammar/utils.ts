@@ -322,5 +322,3 @@ function filterTemplateStringContent(
 
   return result;
 }
-
-function filterAtFinish() {}

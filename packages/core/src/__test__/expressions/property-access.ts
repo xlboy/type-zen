@@ -22,6 +22,15 @@ for (let i = 0; i < 100; i++) {
     output += `.${id}`;
   }
 
+  const hasGenericArguments = _.random(0, 1) === 1;
+
+  if (hasGenericArguments) {
+    const genericArguments = _.sampleSize(identifierTemplates, _.random(1, 5));
+
+    content += `<${genericArguments.join(', ')}>`;
+    output += `<${genericArguments.join(', ')}>`;
+  }
+
   expressions.push({
     content,
     node: utils.createNode({

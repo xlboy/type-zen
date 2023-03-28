@@ -987,13 +987,62 @@ const grammar: Grammar = {
       postprocess: d => d[0].concat([d[1]])
     },
     {
+      name: 'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1',
+      symbols: []
+    },
+    {
+      name: 'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1$subexpression$1',
+      symbols: ['_', { literal: ',' }, '_', 'e_main']
+    },
+    {
+      name: 'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1',
+      symbols: [
+        'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1',
+        'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1$subexpression$1'
+      ],
+      postprocess: d => d[0].concat([d[1]])
+    },
+    {
+      name: 'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1',
+      symbols: [
+        '_',
+        'e_main',
+        'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1$ebnf$1'
+      ],
+      postprocess: args => [args[1], ...args[2].map(item => item[3])]
+    },
+    {
+      name: 'e_propertyAccess$ebnf$2$subexpression$1',
+      symbols: [
+        { literal: '<' },
+        'e_propertyAccess$ebnf$2$subexpression$1$subexpression$1',
+        '_',
+        { literal: '>' }
+      ]
+    },
+    {
+      name: 'e_propertyAccess$ebnf$2',
+      symbols: ['e_propertyAccess$ebnf$2$subexpression$1'],
+      postprocess: id
+    },
+    { name: 'e_propertyAccess$ebnf$2', symbols: [], postprocess: () => null },
+    {
       name: 'e_propertyAccess',
-      symbols: ['id', '_', 'e_propertyAccess$ebnf$1'],
-      postprocess: args =>
-        toASTNode(ast.PropertyAccessExpression)([
-          args[0],
-          ...args[2].map(item => item.at(-1))
-        ])
+      symbols: ['id', '_', 'e_propertyAccess$ebnf$1', 'e_propertyAccess$ebnf$2'],
+      postprocess: args => {
+        const propertyChain = [args[0], ...args[2].map(item => item.at(-1))];
+
+        if (args[3]) {
+          const genericArguments = args[3][1];
+
+          return toASTNode(ast.PropertyAccessExpression)([
+            propertyChain,
+            genericArguments
+          ]);
+        } else {
+          return toASTNode(ast.PropertyAccessExpression)(propertyChain);
+        }
+      }
     },
     {
       name: 'e_tuple',
