@@ -2,7 +2,7 @@
   "name": "@type-zen/vscode",
   "publisher": "xlboy",
   "displayName": "TypeZen",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "TypeZen for VS Code",
   "license": "MIT",
