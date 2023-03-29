@@ -6,7 +6,7 @@
   <a href="https://www.npmjs.com/package/@type-zen/cli"><img src="https://img.shields.io/npm/l/@type-zen/cli.svg?style=flat-square" alt="License"></a>
 </p>
 
-## Installation
+## Installation 
 
 ```bash
 npm install -g @type-zen/cli
@@ -15,7 +15,7 @@ npm install -g @type-zen/cli
 ## Usage
 
 ```bash
-# Directory structure
+# Directory structure 
 - a.tzen
 - b.tzen
 ```
