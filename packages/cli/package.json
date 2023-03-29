@@ -1,6 +1,6 @@
 {
   "name": "@type-zen/cli",
-  "version": "0.0.1-alpha.1",
+  "version": "0.1.0",
   "description": "CLI for TypeZen",
   "bin": {
     "tzc": "bin/index.js"
@@ -23,14 +23,10 @@
     "test": "vitest run",
     "build": "run-s test && tsup"
   },
-  "dependencies": {
+  "devDependencies": {
     "@type-zen/core": "latest",
     "cac": "^6.7.14",
-    "esbuild": "^0.17.11",
-    "fast-glob": "^3.2.12"
-  },
-  "devDependencies": {
-    "fs-jetpack": "^5.1.0",
+    "fast-glob": "^3.2.12",
     "unconfig": "^0.3.7"
   }
 }
