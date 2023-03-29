@@ -95,9 +95,11 @@ PS: Why use `@type-zen/preset-type` as a global type file? **Because the compile
 
 [See the extension to learn more](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
-### CLI (Under development)
-
-...
+### [CLI](https://github.com/xlboy/type-zen/tree/master/packages/cli)
+```bash
+npm i @type-zen/cli -D
+tzc -h
+```
 
 ### TS Plugin (To be developed)
 
@@ -162,9 +164,8 @@ Generate `.d.ts` , ...
 | `type reference` | `A` , `Array<1>` , `IsNumber<".">` | ✅ |
 | `element access` | `A["b"]` , `A[0][Key]` | ✅ |
 | `property access` | `A.B` , `A.B.C` | ✅ |
-| `template string` | ` `  ` hello ${name} `  `  ` <br /> :warning:  ** ` ${} ` expressions only support TypeScript native expressions (Does not yet support extensions such as: ` ^{...} ` , ` \| [1, 3]` , ...)** | ✅ |
+| `template string` | `` `hello ${name}`  `` <br /> :warning:  **`${}` expressions only support TypeScript native expressions (Does not yet support extensions such as: ` ^{...} ` , ` \| [1, 3]` , ...)** | ✅ |
 | `comment` | `// ...` <br /> `/* ... */` | ✅ |
- 
 
 #### Sugar Block
 

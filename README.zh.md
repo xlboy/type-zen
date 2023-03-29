@@ -94,9 +94,11 @@ PS: 为什么要使用 `@type-zen/preset-type` 作为全局类型文件？ **因
 
 [查看扩展以了解更多信息](https://marketplace.visualstudio.com/items?itemName=xlboy.TypeZen&ssr=false#overview)
 
-### CLI （开发中）
-
-...
+### [CLI](https://github.com/xlboy/type-zen/tree/master/packages/cli)
+```bash
+npm i @type-zen/cli -D
+tzc -h
+```
 
 ### TS Plugin (待开发)
 
@@ -161,7 +163,7 @@ export type Without<T> = ...
 | `type reference` | `A` , `Array<1>` , `IsNumber<".">` | ✅ |
 | `element access` | `A["b"]` , `A[0][Key]` | ✅ |
 | `property access` | `A.B` , `A.B.C` | ✅ |
-| `template string` | ` `  ` hello ${name} `  `  ` <br /> :warning:  ** ` ${} ` 中的表达式仅支持 TypeScript 原生表达式（*暂不支持扩展的，如： ` ^{...} ` , ` \| [1, 3]` , ...*）** | ✅ |
+| `template string` | ``  `hello ${name}`  `` <br /> :warning:  **`${}` 中的表达式仅支持 TypeScript 原生表达式（*暂不支持扩展的，如： ` ^{...} ` , ` \| [1, 3]` , ...*）** | ✅ |
 | `comment` | `// ...` <br /> `/* ... */` | ✅ |
  
 
