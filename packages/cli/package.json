@@ -1,18 +1,36 @@
 {
   "name": "@type-zen/cli",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.1-alpha.1",
+  "description": "CLI for TypeZen",
   "bin": {
     "tzc": "bin/index.js"
   },
-  "scripts": {
-    "build": "tsup"
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "type-zen",
+    "type-zen-cli",
+    "TypeZen Cli",
+    "TypeZen"
+  ],
+  "author": "xlboy, martin-yin",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "dev": "tsup --watch src",
+    "test": "vitest run",
+    "build": "run-s test && tsup"
+  },
   "dependencies": {
+    "@type-zen/core": "latest",
     "cac": "^6.7.14",
-    "esbuild": "^0.17.11"
+    "esbuild": "^0.17.11",
+    "fast-glob": "^3.2.12"
+  },
+  "devDependencies": {
+    "fs-jetpack": "^5.1.0",
+    "unconfig": "^0.3.7"
   }
 }
