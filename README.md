@@ -215,6 +215,12 @@ Sugar blocks are scoped to `^{` and `}` , or within `if,for` statements.
 
 And friends who have supported me~💛
 
+## Plan
+
+The current stage is in the initial phase (version `0.x`), with the goal of being usable and having a basic ecosystem (Playground, Cli, TS Plugin, ...)
+
+However, there may be some shortcomings, including those related to deep implementation issues in TypeScript or limitations in the current design of `@type-zen/core`, among others. These shortcomings are expected to be addressed and improved in version `1.0.0`
+
 ## License
 
 MIT
