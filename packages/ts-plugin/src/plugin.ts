@@ -137,9 +137,10 @@ class TypeZenPlugin implements tsModule.server.PluginModule {
           return moduleNames.map((moduleName, index) => {
             if (this.utils.isTypeZenFile(moduleName)) {
               return {
-                resolvedFileName: path.resolve(path.dirname(containingFile), moduleName),
-                isExternalLibraryImport: false
-              };
+                extension: this.ts.Extension.Dts,
+                isExternalLibraryImport: false,
+                resolvedFileName: path.resolve(path.dirname(containingFile), moduleName)
+              } as tsModule.ResolvedModuleFull;
             }
 
             return resolvedModules[index];
