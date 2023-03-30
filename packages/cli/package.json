@@ -13,6 +13,10 @@
     "TypeZen Cli",
     "TypeZen"
   ],
+  "files": [
+    "dist",
+    "bin"
+  ],
   "author": "xlboy, martin-yin",
   "license": "MIT",
   "publishConfig": {
