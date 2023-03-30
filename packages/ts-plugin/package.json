@@ -1,6 +1,6 @@
 {
   "name": "@type-zen/ts-plugin",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.1",
   "description": "TypeScript Plugin for TypeZen",
   "main": "./dist/index.js",
   "keywords": [
@@ -15,11 +15,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsup",
     "dev": "tsup --watch src",
     "type-check": "tsc"
   },
-  "dependencies": {
+  "devDependencies": {
     "@type-zen/core": "latest"
   }
 }
