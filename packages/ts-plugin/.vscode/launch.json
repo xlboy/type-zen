@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to VS Code TS Server via Port",
+      "processId": "${command:PickProcess}"
+    }
+  ]
+}

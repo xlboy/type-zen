@@ -17,6 +17,10 @@
       "path": "../packages/vscode"
     },
     {
+      "name": "ts-plugin",
+      "path": "../packages/ts-plugin"
+    },
+    {
       "name": "website/playground",
       "path": "../website/playground"
     },

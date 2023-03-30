@@ -1,0 +1,25 @@
+{
+  "name": "@type-zen/ts-plugin",
+  "version": "0.0.1",
+  "description": "TypeScript Plugin for TypeZen",
+  "main": "./dist/index.js",
+  "keywords": [
+    "type-zen for typescript-plugin",
+    "type-zen-typescript-plugin",
+    "type-zen-ts-plugin",
+    "TypeZen TypeScript Plugin",
+    "TypeZen TS Plugin"
+  ],
+  "author": "xlboy",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsup --watch src",
+    "type-check": "tsc"
+  },
+  "dependencies": {
+    "@type-zen/core": "latest"
+  }
+}
