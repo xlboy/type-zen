@@ -21,7 +21,8 @@
   "scripts": {
     "dev": "tsup --watch src",
     "test": "vitest run",
-    "build": "run-s test && tsup"
+    "build": "run-s test && tsup",
+    "type-check": "tsc"
   },
   "devDependencies": {
     "@type-zen/core": "latest",

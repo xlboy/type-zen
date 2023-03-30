@@ -97,6 +97,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch src",
+    "type-check": "tsc",
     "vsce-package": "tsx scripts/vsce-package",
     "vsce-publish": "tsx scripts/vsce-package --publish"
   },

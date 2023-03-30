@@ -5,7 +5,8 @@
     "node": ">=17.0.0"
   },
   "scripts": {
-    "clean": "rimraf ./**/node_modules"
+    "clean": "rimraf ./**/node_modules",
+    "type-check": "pnpm recursive run type-check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
