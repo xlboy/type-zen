@@ -91,6 +91,12 @@ importers:
   packages/preset-type:
     specifiers: {}
 
+  packages/ts-plugin:
+    specifiers:
+      '@type-zen/core': latest
+    dependencies:
+      '@type-zen/core': 0.0.1-alpha.16
+
   packages/vscode:
     specifiers:
       '@type-zen/core': latest

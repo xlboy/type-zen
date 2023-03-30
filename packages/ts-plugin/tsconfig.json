@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "resolveJsonModule": true
+  },
+  "include": ["./src"],
+  "exclude": ["./example"]
+}

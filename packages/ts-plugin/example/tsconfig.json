@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "plugins": [{ "name": "@type-zen/ts-plugin" }],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  }
+}
