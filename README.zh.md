@@ -200,8 +200,8 @@ export type Without<T> = ...
 | `declare variable` | `declare const A: 1` <br /> `declare let A: 1` <br /> `declare var A: 1` | ✅ |
 | `declare module` | `declare module '...' { ... }` |  |
 | `declare global { ... }` | `declare global { ... }` |  |
-| `import` | `import type {} from '...'` <br /> ... |  |
-| `export` | `export type { ... }` <br /> ... |  |
+| `import` | `import type {} from '...'` <br /> ... |✅|
+| `export` | `export type { ... }` <br /> ... |✅|
 
 ## 问题
 
