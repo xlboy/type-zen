@@ -1872,19 +1872,39 @@ const grammar: Grammar = {
     },
     {
       name: 's_export_aggregation_content',
-      symbols: ['id', '__', { literal: 'as' }, '__', 'id'],
+      symbols: [
+        's_export_aggregation_content_id',
+        '__',
+        { literal: 'as' },
+        '__',
+        's_export_aggregation_content_id'
+      ],
       postprocess: args => ({ id: args[0], asTarget: args.at(-1) })
     },
     {
       name: 's_export_aggregation_content',
-      symbols: [{ literal: 'type' }, '__', 'id'],
+      symbols: [{ literal: 'type' }, '__', 's_export_aggregation_content_id'],
       postprocess: args => ({ id: args.at(-1), type: true })
     },
     {
       name: 's_export_aggregation_content',
-      symbols: [{ literal: 'type' }, '__', 'id', '__', { literal: 'as' }, '__', 'id'],
+      symbols: [
+        { literal: 'type' },
+        '__',
+        's_export_aggregation_content_id',
+        '__',
+        { literal: 'as' },
+        '__',
+        's_export_aggregation_content_id'
+      ],
       postprocess: args => ({ id: args[2], asTarget: args.at(-1), type: true })
     },
+    {
+      name: 's_export_aggregation_content_id',
+      symbols: [{ literal: 'default' }],
+      postprocess: args => toASTNode(ast.IdentifierExpression)(args)
+    },
+    { name: 's_export_aggregation_content_id', symbols: ['id'], postprocess: id },
     {
       name: 's_declareFunction',
       symbols: [{ literal: 'declare' }, '__', { literal: 'function' }, '__', 'id'],

@@ -88,6 +88,36 @@ const statements = {
           }
         ]
       })
+    },
+    {
+      content: `export type { A, B as default }`,
+      node: utils.createNode({
+        instance: ast.Export.MultipleNamedStatement,
+        kind: SyntaxKind.S.ExportMultipleNamed,
+        outputStr: 'export type { A, B as default }',
+        hasType: true,
+        aggregation: [
+          {
+            id: utils.createNode({
+              instance: ast.IdentifierExpression,
+              outputStr: 'A'
+            }),
+            type: void 0,
+            asTarget: void 0
+          },
+          {
+            id: utils.createNode({
+              instance: ast.IdentifierExpression,
+              outputStr: 'B'
+            }),
+            type: void 0,
+            asTarget: utils.createNode({
+              instance: ast.IdentifierExpression,
+              outputStr: 'default'
+            })
+          }
+        ]
+      })
     }
   ];
 

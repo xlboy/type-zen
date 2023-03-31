@@ -77,10 +77,16 @@ s_export_aggregation -> "{" _ "}" {% args => [[], args.at(-1)]%}
         {% args => [args[2].map(id), args.at(-1)] %}
 s_export_aggregation_eof -> ("," _) | null
 s_export_aggregation_content -> id {% args => ({ id: args[0] }) %}
-    | id __ "as" __ id {% args => ({ id: args[0], asTarget: args.at(-1) }) %}
-    | "type" __ id {% args => ({ id: args.at(-1), type: true }) %}
-    | "type" __ id __ "as" __ id {% args => ({ id: args[2], asTarget: args.at(-1), type: true }) %}
+    | s_export_aggregation_content_id __ "as" __ s_export_aggregation_content_id {% args => ({ id: args[0], asTarget: args.at(-1) }) %}
+    | "type" __ s_export_aggregation_content_id {% args => ({ id: args.at(-1), type: true }) %}
+    | "type" __ s_export_aggregation_content_id __ "as" __ s_export_aggregation_content_id {% args => ({ id: args[2], asTarget: args.at(-1), type: true }) %}
+s_export_aggregation_content_id -> "default" {% args => toASTNode(ast.IdentifierExpression)(args) %}
+  | id {% id %}
 #endregion  //*======== export ===========
+    
+#region  //*=========== import ===========
+
+#endregion  //*======== import ===========
 
 s_declareFunction -> "declare" __ "function" __ id
     {% args => toASTNode(ast.DeclareFunctionStatement)([args[0], args.at(-1)])%}
