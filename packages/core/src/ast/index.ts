@@ -29,6 +29,7 @@ export { DeclareVariableStatement } from './statements/declare-variable';
 export { EnumMemberExpression, EnumStatement } from './statements/enum';
 export { TypeAliasStatement } from './statements/type-alias';
 export { InterfaceStatement } from './statements/interface';
+export { Export } from './statements/export';
 
 export { StatementBase } from './statements/base';
 export { ExpressionBase } from './expressions/base';

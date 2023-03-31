@@ -13,6 +13,7 @@ s_main ->  s_typeAlias {% id %}
     | s_declareFunction {% id %}
     | s_enum {% id %}
     | s_interface {% id %}
+    | s_export {% id %}
 
 s_typeAlias -> "type" __ id _ (e_genericArgs _):? "=" _ e_main 
     {% args => toASTNode(ast.TypeAliasStatement)([args[0], args[2], args[4]?.[0] || void 0, args.at(-1)]) %}
@@ -29,16 +30,57 @@ s_declareVariable -> "declare" __ s_declareVariable_type __ id
 s_declareVariable_type -> ("const" | "let" | "var") {% args => args[0][0].value%}
 #endregion  //*======== declare variable ===========
 
-#region  //*=========== export/import ===========
-s_export -> "export" __ s_export_named
+#region  //*=========== export ===========
+s_export -> s_export_named {% id %}
+    | s_export_default {% id %}
+    | s_export_multipleNamed {% id %}
+    | s_export_re {% id %}
 
+# export type $id = ...
+# export interface $id { ... }
 s_export_named -> "export" __ (s_typeAlias | s_enum | s_interface)
-s_export_default -> "export" __ "default" __ e_main
-s_export_all -> "export" __ "*" __ "from" __ e_string
+    {% args => toASTNode(ast.Export.NamedStatement)([args[0], args.at(-1)[0]]) %}
+
+s_export_multipleNamed -> "export" _ s_export_aggregation
+    {% args => toASTNode(ast.Export.MultipleNamedStatement)([args[0], { aggregation: args.at(-1)[0] }, args.at(-1)[1]]) %}
+    | "export" __ "type" __ s_export_aggregation
+        {% args => toASTNode(ast.Export.MultipleNamedStatement)([args[0], { type: true, aggregation: args.at(-1)[0] }, args.at(-1)[1]]) %}
+
+# export default $id
+s_export_default -> "export" __ "default" __ id
+    {% args => toASTNode(ast.Export.DefaultStatement)([args[0], args.at(-1)]) %}
+    
+s_export_re -> 
+      # export * from '...'
+      "export" __ "*" __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], {}, args.at(-1)]) %}
+      # export type * from '...'
     | "export" __ "type" __ "*" __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], { type: true }, args.at(-1)]) %}
 
+      # export * as $id from '...'
+    | "export" __ "*" __ "as" __ id __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], { asTarget: args[6] }, args.at(-1)]) %}
+      # export type * as $id from '...'
+    | "export" __ "type" __ "*" __ "as" __ id __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], { type: true, asTarget: args[8] }, args.at(-1)]) %}
 
-#endregion  //*======== export/import ===========
+      # export { ... } from '...'
+    | "export" __ s_export_aggregation __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], { aggregation: args[2][0] }, args.at(-1)]) %}
+      # export type { ... } from '...'
+    | "export" __ "type" __ s_export_aggregation __ "from" __ e_string
+        {% args => toASTNode(ast.Export.ReStatement)([args[0], { type: true, aggregation: args[4][0] }, args.at(-1)]) %}
+
+s_export_aggregation -> "{" _ "}" {% args => [[], args.at(-1)]%}
+    | "{" _ (s_export_aggregation_content _ s_export_aggregation_eof):+ "}" 
+        {% args => [args[2].map(id), args.at(-1)] %}
+s_export_aggregation_eof -> ("," _) | null
+s_export_aggregation_content -> id {% args => ({ id: args[0] }) %}
+    | id __ "as" __ id {% args => ({ id: args[0], asTarget: args.at(-1) }) %}
+    | "type" __ id {% args => ({ id: args.at(-1), type: true }) %}
+    | "type" __ id __ "as" __ id {% args => ({ id: args[2], asTarget: args.at(-1), type: true }) %}
+#endregion  //*======== export ===========
 
 s_declareFunction -> "declare" __ "function" __ id
     {% args => toASTNode(ast.DeclareFunctionStatement)([args[0], args.at(-1)])%}

@@ -50,6 +50,10 @@ namespace SyntaxKind {
     DeclareVariable = 'DeclareVariable',
     DeclareFunction = 'DeclareFunction',
     Enum = 'Enum',
-    Interface = 'Interface'
+    Interface = 'Interface',
+    ExportNamed = 'ExportNamed',
+    ExportDefault = 'ExportDefault',
+    ExportMultipleNamed = 'ExportMultipleNamed',
+    ExportRe = 'ExportRe'
   }
 }
