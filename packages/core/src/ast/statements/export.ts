@@ -2,9 +2,7 @@ import * as zod from 'zod';
 
 import type { ASTNodePosition } from '..';
 import { SyntaxKind } from '../constants';
-import type { ExpressionBase } from '../expressions/base';
 import { IdentifierExpression } from '../expressions/identifier';
-import { NumberLiteralExpression } from '../expressions/literals/number';
 import { StringLiteralExpression } from '../expressions/literals/string';
 import { StatementBase } from './base';
 
