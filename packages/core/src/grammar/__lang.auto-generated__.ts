@@ -1592,6 +1592,7 @@ const grammar: Grammar = {
     { name: 's_main', symbols: ['s_enum'], postprocess: id },
     { name: 's_main', symbols: ['s_interface'], postprocess: id },
     { name: 's_main', symbols: ['s_export'], postprocess: id },
+    { name: 's_main', symbols: ['s_import'], postprocess: id },
     { name: 's_typeAlias$ebnf$1$subexpression$1', symbols: ['e_genericArgs', '_'] },
     {
       name: 's_typeAlias$ebnf$1',
@@ -1688,7 +1689,7 @@ const grammar: Grammar = {
     },
     {
       name: 's_export_multipleNamed',
-      symbols: [{ literal: 'export' }, '_', 's_export_aggregation'],
+      symbols: [{ literal: 'export' }, '_', 's_aggregation'],
       postprocess: args =>
         toASTNode(ast.Export.MultipleNamedStatement)([
           args[0],
@@ -1698,13 +1699,7 @@ const grammar: Grammar = {
     },
     {
       name: 's_export_multipleNamed',
-      symbols: [
-        { literal: 'export' },
-        '__',
-        { literal: 'type' },
-        '__',
-        's_export_aggregation'
-      ],
+      symbols: [{ literal: 'export' }, '__', { literal: 'type' }, '__', 's_aggregation'],
       postprocess: args =>
         toASTNode(ast.Export.MultipleNamedStatement)([
           args[0],
@@ -1721,9 +1716,9 @@ const grammar: Grammar = {
       name: 's_export_re',
       symbols: [
         { literal: 'export' },
-        '__',
+        '_',
         { literal: '*' },
-        '__',
+        '_',
         { literal: 'from' },
         '__',
         'e_string'
@@ -1750,9 +1745,9 @@ const grammar: Grammar = {
       name: 's_export_re',
       symbols: [
         { literal: 'export' },
-        '__',
+        '_',
         { literal: '*' },
-        '__',
+        '_',
         { literal: 'as' },
         '__',
         'id',
@@ -1770,9 +1765,9 @@ const grammar: Grammar = {
         { literal: 'export' },
         '__',
         { literal: 'type' },
-        '__',
+        '_',
         { literal: '*' },
-        '__',
+        '_',
         { literal: 'as' },
         '__',
         'id',
@@ -1792,9 +1787,9 @@ const grammar: Grammar = {
       name: 's_export_re',
       symbols: [
         { literal: 'export' },
-        '__',
-        's_export_aggregation',
-        '__',
+        '_',
+        's_aggregation',
+        '_',
         { literal: 'from' },
         '__',
         'e_string'
@@ -1812,9 +1807,9 @@ const grammar: Grammar = {
         { literal: 'export' },
         '__',
         { literal: 'type' },
-        '__',
-        's_export_aggregation',
-        '__',
+        '_',
+        's_aggregation',
+        '_',
         { literal: 'from' },
         '__',
         'e_string'
@@ -1827,84 +1822,213 @@ const grammar: Grammar = {
         ])
     },
     {
-      name: 's_export_aggregation',
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        'id',
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([args[0], { id: args[2] }, args.at(-1)])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        { literal: '*' },
+        '__',
+        { literal: 'as' },
+        '__',
+        'id',
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([args[0], { asTarget: args[6] }, args.at(-1)])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        's_aggregation',
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([
+          args[0],
+          { aggregation: args[2][0] },
+          args.at(-1)
+        ])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        { literal: 'type' },
+        '__',
+        'id',
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([
+          args[0],
+          { type: true, id: args[4] },
+          args.at(-1)
+        ])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        { literal: 'type' },
+        '_',
+        { literal: '*' },
+        '__',
+        { literal: 'as' },
+        '__',
+        'id',
+        '__',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([
+          args[0],
+          { type: true, asTarget: args[8] },
+          args.at(-1)
+        ])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        { literal: 'type' },
+        '_',
+        's_aggregation',
+        '_',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([
+          args[0],
+          { type: true, aggregation: args[4][0] },
+          args.at(-1)
+        ])
+    },
+    {
+      name: 's_import',
+      symbols: [
+        { literal: 'import' },
+        '__',
+        'id',
+        '_',
+        { literal: ',' },
+        '_',
+        's_aggregation',
+        '_',
+        { literal: 'from' },
+        '__',
+        'e_string'
+      ],
+      postprocess: args =>
+        toASTNode(ast.ImportStatement)([
+          args[0],
+          { id: args[2], aggregation: args[6][0] },
+          args.at(-1)
+        ])
+    },
+    {
+      name: 's_import',
+      symbols: [{ literal: 'import' }, '__', 'e_string'],
+      postprocess: args => toASTNode(ast.ImportStatement)([args[0], {}, args.at(-1)])
+    },
+    {
+      name: 's_aggregation',
       symbols: [{ literal: '{' }, '_', { literal: '}' }],
       postprocess: args => [[], args.at(-1)]
     },
     {
-      name: 's_export_aggregation$ebnf$1$subexpression$1',
-      symbols: ['s_export_aggregation_content', '_', 's_export_aggregation_eof']
+      name: 's_aggregation$ebnf$1$subexpression$1',
+      symbols: ['s_aggregation_content', '_', 's_aggregation_eof']
+    },
+    { name: 's_aggregation$ebnf$1', symbols: ['s_aggregation$ebnf$1$subexpression$1'] },
+    {
+      name: 's_aggregation$ebnf$1$subexpression$2',
+      symbols: ['s_aggregation_content', '_', 's_aggregation_eof']
     },
     {
-      name: 's_export_aggregation$ebnf$1',
-      symbols: ['s_export_aggregation$ebnf$1$subexpression$1']
-    },
-    {
-      name: 's_export_aggregation$ebnf$1$subexpression$2',
-      symbols: ['s_export_aggregation_content', '_', 's_export_aggregation_eof']
-    },
-    {
-      name: 's_export_aggregation$ebnf$1',
-      symbols: [
-        's_export_aggregation$ebnf$1',
-        's_export_aggregation$ebnf$1$subexpression$2'
-      ],
+      name: 's_aggregation$ebnf$1',
+      symbols: ['s_aggregation$ebnf$1', 's_aggregation$ebnf$1$subexpression$2'],
       postprocess: d => d[0].concat([d[1]])
     },
     {
-      name: 's_export_aggregation',
-      symbols: [{ literal: '{' }, '_', 's_export_aggregation$ebnf$1', { literal: '}' }],
+      name: 's_aggregation',
+      symbols: [{ literal: '{' }, '_', 's_aggregation$ebnf$1', { literal: '}' }],
       postprocess: args => [args[2].map(id), args.at(-1)]
     },
+    { name: 's_aggregation_eof$subexpression$1', symbols: [{ literal: ',' }, '_'] },
+    { name: 's_aggregation_eof', symbols: ['s_aggregation_eof$subexpression$1'] },
+    { name: 's_aggregation_eof', symbols: [] },
     {
-      name: 's_export_aggregation_eof$subexpression$1',
-      symbols: [{ literal: ',' }, '_']
-    },
-    {
-      name: 's_export_aggregation_eof',
-      symbols: ['s_export_aggregation_eof$subexpression$1']
-    },
-    { name: 's_export_aggregation_eof', symbols: [] },
-    {
-      name: 's_export_aggregation_content',
+      name: 's_aggregation_content',
       symbols: ['id'],
       postprocess: args => ({ id: args[0] })
     },
     {
-      name: 's_export_aggregation_content',
+      name: 's_aggregation_content',
       symbols: [
-        's_export_aggregation_content_id',
+        's_aggregation_content_id',
         '__',
         { literal: 'as' },
         '__',
-        's_export_aggregation_content_id'
+        's_aggregation_content_id'
       ],
       postprocess: args => ({ id: args[0], asTarget: args.at(-1) })
     },
     {
-      name: 's_export_aggregation_content',
-      symbols: [{ literal: 'type' }, '__', 's_export_aggregation_content_id'],
+      name: 's_aggregation_content',
+      symbols: [{ literal: 'type' }, '__', 's_aggregation_content_id'],
       postprocess: args => ({ id: args.at(-1), type: true })
     },
     {
-      name: 's_export_aggregation_content',
+      name: 's_aggregation_content',
       symbols: [
         { literal: 'type' },
         '__',
-        's_export_aggregation_content_id',
+        's_aggregation_content_id',
         '__',
         { literal: 'as' },
         '__',
-        's_export_aggregation_content_id'
+        's_aggregation_content_id'
       ],
       postprocess: args => ({ id: args[2], asTarget: args.at(-1), type: true })
     },
     {
-      name: 's_export_aggregation_content_id',
+      name: 's_aggregation_content_id',
       symbols: [{ literal: 'default' }],
       postprocess: args => toASTNode(ast.IdentifierExpression)(args)
     },
-    { name: 's_export_aggregation_content_id', symbols: ['id'], postprocess: id },
+    { name: 's_aggregation_content_id', symbols: ['id'], postprocess: id },
     {
       name: 's_declareFunction',
       symbols: [{ literal: 'declare' }, '__', { literal: 'function' }, '__', 'id'],

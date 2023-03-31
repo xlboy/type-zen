@@ -177,10 +177,8 @@ namespace Export {
         } else {
           nodeFlow.add('{ ');
 
-          for (let i = 0; i < this.content.aggregation.length; i++) {
-            const item = this.content.aggregation[i];
-
-            if (i !== 0) {
+          this.content.aggregation.forEach((item, i) => {
+            if (i > 0) {
               nodeFlow.add(', ');
             }
 
@@ -193,7 +191,7 @@ namespace Export {
             if (item.asTarget) {
               nodeFlow.add(' as ').add(item.asTarget.compile());
             }
-          }
+          });
 
           nodeFlow.add(' }');
         }

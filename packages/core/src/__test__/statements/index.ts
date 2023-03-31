@@ -5,6 +5,7 @@ export { declareFunctionStatements } from './declare-function';
 export { enumStatements } from './enum';
 export { interfaceStatements } from './interface';
 export { exportStatements } from './export';
+export { importStatements } from './import';
 
 export type { Statement };
 
