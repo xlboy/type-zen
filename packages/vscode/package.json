@@ -2,7 +2,7 @@
   "name": "@type-zen/vscode",
   "publisher": "xlboy",
   "displayName": "TypeZen",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "TypeZen for VS Code",
   "license": "MIT",
@@ -102,7 +102,7 @@
     "vsce-publish": "tsx scripts/vsce-package --publish"
   },
   "devDependencies": {
-    "@type-zen/core": "latest",
+    "@type-zen/core": "*",
     "@types/fs-extra": "^11.0.1",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",

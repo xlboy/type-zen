@@ -1,3 +1,7 @@
+# 0.2.3 (2023-04-02)
+
+chore: updated alongside the [@type-zen/core v0.0.1-alpha.17](../core/)
+
 # 0.2.2 (2023-03-28)
 
 chore: updated alongside the [@type-zen/core v0.0.1-alpha.16](../core/)
