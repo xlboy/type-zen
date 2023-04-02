@@ -2,46 +2,37 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { version as corePackageVersion } from '@type-zen/core/package.json';
-import type tsModule from 'typescript/lib/tsserverlibrary';
+import type ts from 'typescript/lib/tsserverlibrary';
 
 import { version } from '../package.json';
-import { getTSSnapshot } from './helpers/get-ts-snapshot';
+import { Logger } from './logger';
+import { SnapshotManager } from './snapshot';
 
 export { TypeZenPlugin };
 
-class Logger {
-  constructor(private readonly info: tsModule.server.PluginCreateInfo) {}
+let isFirst = true;
 
-  public log(message: string) {
-    this.info.project.projectService.logger.info(`[@type-zen/ts-plugin] ${message}`);
-  }
-
-  public error(message: string) {
-    this.info.project.projectService.logger.info(
-      `[@type-zen/ts-plugin] Error: ${message}`
-    );
-  }
-}
-
-class TypeZenPlugin implements tsModule.server.PluginModule {
-  private readonly ts: typeof tsModule;
+class TypeZenPlugin implements ts.server.PluginModule {
+  private readonly ts: typeof ts;
   private logger: Logger;
   private projectDirPath!: string;
+  private snapshotManager: SnapshotManager;
 
-  constructor(ts: typeof tsModule) {
-    this.ts = ts;
+  constructor(_ts: typeof ts) {
+    this.ts = _ts;
   }
 
-  public create(info: tsModule.server.PluginCreateInfo): tsModule.LanguageService {
+  public create(info: ts.server.PluginCreateInfo): ts.LanguageService {
     this.logger = new Logger(info);
     this.logger.log(`Plugin version: ${version}`);
     this.logger.log(`Core package version: ${corePackageVersion}`);
     this.projectDirPath = path.dirname(info.project.getProjectName());
     this.logger.log(`Project path: ${this.projectDirPath}`);
+    this.snapshotManager = new SnapshotManager(this.ts, this.logger);
 
-    const languageServiceHost = {} as Partial<tsModule.LanguageServiceHost>;
+    const languageServiceHost = {} as Partial<ts.LanguageServiceHost>;
     const languageServiceHostProxy = new Proxy(info.languageServiceHost, {
-      get(target, key: keyof tsModule.LanguageServiceHost) {
+      get(target, key: keyof ts.LanguageServiceHost) {
         return languageServiceHost[key] ?? target[key];
       }
     });
@@ -50,36 +41,67 @@ class TypeZenPlugin implements tsModule.server.PluginModule {
     languageServiceHost.getScriptKind = getScriptKindHandler.bind(this);
     languageServiceHost.getScriptSnapshot = getScriptSnapshotHandler.bind(this);
 
+    languageService.getQuickInfoAtPosition = getQuickInfoAtPositionHandler.bind(this);
+
     resolveModuleName.call(this);
 
     return languageService;
 
-    function getScriptSnapshotHandler(
+    function getQuickInfoAtPositionHandler(
       this: TypeZenPlugin,
-      fileName: string
-    ): tsModule.IScriptSnapshot | undefined {
-      if (this.utils.isTypeZenFile(fileName) && fs.existsSync(fileName)) {
-        this.logger.log(`[ScriptSnapshot]: ${fileName.replace(this.projectDirPath, '')}`);
+      filePath: string,
+      position: number
+    ) {
+      this.logger.log(`[getQuickInfoAtPosition]: ${filePath}`);
 
-        return getTSSnapshot(this.ts, fileName);
+      const tzenDefinitionInfo = this.utils.getTzenDefinitionAtCurPos(
+        filePath,
+        position,
+        info
+      );
+
+      if (tzenDefinitionInfo) {
+        const quickInfo = this.snapshotManager
+          .getOrCreate(tzenDefinitionInfo.filePath)
+          .getQuickInfo(
+            tzenDefinitionInfo.pos.line + 1,
+            tzenDefinitionInfo.pos.character + 1
+          );
+
+        if (quickInfo) {
+          return quickInfo;
+        }
       }
 
-      return info.languageServiceHost.getScriptSnapshot(fileName);
+      return info.languageService.getQuickInfoAtPosition(filePath, position);
     }
 
-    function getScriptKindHandler(
+    function getScriptSnapshotHandler(
       this: TypeZenPlugin,
-      fileName: string
-    ): tsModule.ScriptKind {
+      filePath: string
+    ): ts.IScriptSnapshot | undefined {
+      if (this.utils.isTypeZenFile(filePath) && fs.existsSync(filePath)) {
+        this.logger.log(`[getScriptSnapshot]: ${filePath}`);
+        try {
+          return this.snapshotManager.getOrCreate(filePath).getScriptSnapshot();
+        } catch (error) {
+          this.logger.error(JSON.stringify(error));
+        }
+      }
+
+      return info.languageServiceHost.getScriptSnapshot(filePath);
+    }
+
+    function getScriptKindHandler(this: TypeZenPlugin, filePath: string): ts.ScriptKind {
       if (!info.languageServiceHost.getScriptKind) {
         return this.ts.ScriptKind.Unknown;
       }
 
-      if (this.utils.isTypeZenFile(fileName)) {
+      if (this.utils.isTypeZenFile(filePath)) {
         return this.ts.ScriptKind.TS;
       }
 
-      return info.languageServiceHost.getScriptKind(fileName);
+      return info.languageServiceHost.getScriptKind(filePath);
     }
 
     function resolveModuleName(this: TypeZenPlugin) {
@@ -140,7 +162,7 @@ class TypeZenPlugin implements tsModule.server.PluginModule {
                 extension: this.ts.Extension.Dts,
                 isExternalLibraryImport: false,
                 resolvedFileName: path.resolve(path.dirname(containingFile), moduleName)
-              } as tsModule.ResolvedModuleFull;
+              } as ts.ResolvedModuleFull;
             }
 
             return resolvedModules[index];
@@ -150,13 +172,57 @@ class TypeZenPlugin implements tsModule.server.PluginModule {
     }
   }
 
-  public getExternalFiles(project: tsModule.server.ConfiguredProject) {
-    return project.getFileNames().filter(filePath => this.utils.isTypeZenFile(filePath));
+  public getExternalFiles(project: ts.server.Project) {
+    const tzenFilePaths = project
+      .getFileNames()
+      .filter(filePath => this.utils.isTypeZenFile(filePath));
+
+    if (!isFirst) {
+      return tzenFilePaths;
+    }
+
+    if (isFirst) {
+      isFirst = false;
+      project.projectService.reloadProjects();
+    }
+
+    return tzenFilePaths;
   }
 
   private utils = {
-    isTypeZenFile(fileName: string) {
-      return fileName.endsWith('.tzen');
+    isTypeZenFile(filePath: string) {
+      return filePath.endsWith('.tzen');
+    },
+    getTzenDefinitionAtCurPos: (
+      currentFilePath: string,
+      currentPos: number,
+      info: ts.server.PluginCreateInfo
+    ): { pos: ts.LineAndCharacter; filePath: string } | undefined => {
+      const definitionInfos = info.languageService.getDefinitionAtPosition(
+        currentFilePath,
+        currentPos
+      );
+
+      if (definitionInfos) {
+        const [definitionInfo] = definitionInfos;
+
+        if (this.utils.isTypeZenFile(definitionInfo.fileName)) {
+          const definitionSourceFile = info.project.getSourceFile(
+            info.project.projectService.toPath(definitionInfo.fileName)
+          );
+          const definitionPosition = definitionInfo.textSpan.start;
+
+          if (definitionSourceFile) {
+            return {
+              pos: this.ts.getLineAndCharacterOfPosition(
+                definitionSourceFile!,
+                definitionPosition
+              ),
+              filePath: definitionInfo.fileName
+            };
+          }
+        }
+      }
     }
   };
 }
