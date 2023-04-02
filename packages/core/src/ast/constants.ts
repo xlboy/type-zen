@@ -55,6 +55,6 @@ namespace SyntaxKind {
     ExportDefault = 'ExportDefault',
     ExportMultipleNamed = 'ExportMultipleNamed',
     ExportRe = 'ExportRe',
-    ImportStatement = 'ImportStatement'
+    Import = 'Import'
   }
 }

@@ -30,7 +30,7 @@ const schema = zod.tuple([
 type Schema = zod.infer<typeof schema>;
 
 class ImportStatement extends StatementBase {
-  public kind = SyntaxKind.S.ImportStatement;
+  public kind = SyntaxKind.S.Import;
 
   public content: Schema[1];
   public sourcePath: StringLiteralExpression;

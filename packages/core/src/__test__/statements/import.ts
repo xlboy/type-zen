@@ -14,7 +14,7 @@ statements.simple = [
     content: `import a from 'a'`,
     node: utils.createNode({
       instance: ast.ImportStatement,
-      kind: SyntaxKind.S.ImportStatement,
+      kind: SyntaxKind.S.Import,
       outputStr: "import a from 'a'",
       content: {
         aggregation: void 0,
@@ -31,7 +31,7 @@ statements.simple = [
     content: `import * as a from 'a'`,
     node: utils.createNode({
       instance: ast.ImportStatement,
-      kind: SyntaxKind.S.ImportStatement,
+      kind: SyntaxKind.S.Import,
       outputStr: "import * as a from 'a'",
       content: {
         aggregation: void 0,
@@ -48,7 +48,7 @@ statements.simple = [
     content: `import type *   /* 1 */  as b  from 'a'`,
     node: utils.createNode({
       instance: ast.ImportStatement,
-      kind: SyntaxKind.S.ImportStatement,
+      kind: SyntaxKind.S.Import,
       outputStr: "import type * as b from 'a'",
       content: {
         aggregation: void 0,
@@ -65,7 +65,7 @@ statements.simple = [
     content: `import type { type A, B as C } from './';`,
     node: utils.createNode({
       instance: ast.ImportStatement,
-      kind: SyntaxKind.S.ImportStatement,
+      kind: SyntaxKind.S.Import,
       outputStr: "import type { type A, B as C } from './'",
       content: {
         aggregation: [
@@ -99,7 +99,7 @@ statements.simple = [
     content: `import A, { type C, B as D } from 'a'`,
     node: utils.createNode({
       instance: ast.ImportStatement,
-      kind: SyntaxKind.S.ImportStatement,
+      kind: SyntaxKind.S.Import,
       outputStr: "import A, { type C, B as D } from 'a'",
       content: {
         aggregation: [
