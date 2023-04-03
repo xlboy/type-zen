@@ -1,6 +1,6 @@
 {
   "name": "@type-zen/core",
-  "version": "0.0.1-alpha.17",
+  "version": "0.0.1-alpha.18",
   "description": "A language based on TypeScript type system",
   "keywords": [
     "type-language",
@@ -11,8 +11,7 @@
   ],
   "license": "MIT",
   "files": [
-    "dist",
-    "preset.d.ts"
+    "dist"
   ],
   "main": "./dist/index.node.js",
   "types": "./dist/index.d.ts",
