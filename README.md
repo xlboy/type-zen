@@ -48,6 +48,8 @@ For more examples, please refer to [Playground](https://type-zen-playground.verc
 
 * Compatible with TypeScript type syntax
 
+* Import and use in `*.ts` files via [TypeScript Plugin](https://github.com/xlboy/type-zen/tree/master/packages/ts-plugin)
+
 * Unique syntax sugar
 
   + More similar to the syntax in `TS/JS` that is often written (understood in seconds~)
@@ -101,27 +103,9 @@ npm i @type-zen/cli -D
 tzc -h
 ```
 
-### TS Plugin (To be developed)
+### [TypeScript Plugin](https://github.com/xlboy/type-zen/tree/master/packages/ts-plugin)
 
-```bash
-# Directory structure
-- index.ts
-- tool-types.tzen
-```
-
-```ts
-// path: index.ts
-import type { Without } from './tool-types.tzen'
-// or
-import type { Without } from './tool-types'
-
-type XX = Without<...>
-```
-
-```ts
-// path: tool-types.tzen
-export type Without<T> = ...
-```
+![preview](https://user-images.githubusercontent.com/63690944/229493017-9a114a1c-357d-4db7-9b96-51715a3228b0.png)
 
 ### [Unplugin](https://github.com/unjs/unplugin) (To be developed)
 

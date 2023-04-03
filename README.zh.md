@@ -48,6 +48,8 @@ type Without<T extends unknown[], U extends number | number[]> = (
 
 * 兼容 TypeScript 类型语法
 
+* 通过 [TypeScript Plugin](https://github.com/xlboy/type-zen/tree/master/packages/ts-plugin) 在 `*.ts` 中引入使用
+
 * 独特的语法糖
 
   + 与常写的 `TS/JS` 中的语法较为相似（看了秒懂~）
@@ -100,27 +102,9 @@ npm i @type-zen/cli -D
 tzc -h
 ```
 
-### TS Plugin (待开发)
+### [TypeScript Plugin](https://github.com/xlboy/type-zen/tree/master/packages/ts-plugin)
 
-```bash
-# 目录结构
-- index.ts
-- tool-types.tzen
-```
-
-```typescript
-// path: index.ts
-import type { Without } from './tool-types.tzen'
-// or
-import type { Without } from './tool-types'
-
-type XX = Without<...>
-```
-
-```typescript
-// path: tool-types.tzen
-export type Without<T> = ...
-```
+![preview](https://user-images.githubusercontent.com/63690944/229493017-9a114a1c-357d-4db7-9b96-51715a3228b0.png)
 
 ### [Unplugin](https://github.com/unjs/unplugin) (待开发)
 
