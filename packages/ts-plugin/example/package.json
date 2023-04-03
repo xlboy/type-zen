@@ -1,6 +1,7 @@
 {
-  "name": "example-tsc-codebase",
-  "dependencies": {
+  "name": "type-zen-ts-plugin-example",
+  "devDependencies": {
+    "@type-zen/preset-type": "^0.2.0",
     "@type-zen/ts-plugin": "file:..",
     "typescript": "^5.0.2"
   }

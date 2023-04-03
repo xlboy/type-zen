@@ -1,8 +1,7 @@
-import type {} from './bb.tzen';
+import type { Test, Test2, Utils } from './bb.tzen';
 
-// export type C = [A, B];
-//              ^?
+type DDDDD = Test<'1'>;
+//      ^?
 
-// declare type A = 1;
-//
-export function a(): void;
+type T = Utils<'dssdds'>;
+//    ^?

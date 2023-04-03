@@ -1,4 +1,17 @@
-// type A = 1;
-// type B = 2;
+export type { Utils } from './cc.tzen'
+// 
+export type Test<S: string> = ^{
+  if (S == '1') {
+    return '111111'
+  }
 
-declare function C(): void;
+  return '....'
+}
+
+export type DDD<S: string> = Test<S>
+
+
+export type Test2<S: string> = ^{
+  return S == '1' ? '111111' : '....'
+}
+export type B2 = [123123, 333]

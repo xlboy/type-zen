@@ -1,0 +1,12 @@
+type A = 1;
+type B = 2;
+type C = 3;
+
+
+export type Utils<T> = ^{
+  if (T == 2) {
+    return '2'
+  }
+  
+  return '3'
+};
