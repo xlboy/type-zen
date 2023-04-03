@@ -22,38 +22,55 @@ class TypeZenPlugin implements ts.server.PluginModule {
     this.ts = _ts;
   }
 
-  public create(info: ts.server.PluginCreateInfo): ts.LanguageService {
+  create(info: ts.server.PluginCreateInfo): ts.LanguageService {
     this.logger = new Logger(info);
+    this.snapshotManager = new SnapshotManager(this.ts, this.logger);
+    this.projectDirPath = path.dirname(info.project.getProjectName());
+
     this.logger.log(`Plugin version: ${version}`);
     this.logger.log(`Core package version: ${corePackageVersion}`);
-    this.projectDirPath = path.dirname(info.project.getProjectName());
     this.logger.log(`Project path: ${this.projectDirPath}`);
-    this.snapshotManager = new SnapshotManager(this.ts, this.logger);
 
-    const languageServiceHost = {} as Partial<ts.LanguageServiceHost>;
     const languageServiceHostProxy = new Proxy(info.languageServiceHost, {
-      get(target, key: keyof ts.LanguageServiceHost) {
-        return languageServiceHost[key] ?? target[key];
+      get: (target, key: keyof ts.LanguageServiceHost) => {
+        const proxyHandler: Partial<ts.LanguageServiceHost> = {
+          getScriptKind: getScriptKindHandler.bind(this),
+          getScriptSnapshot: getScriptSnapshotHandler.bind(this),
+          resolveModuleNames: getResolveModuleNameHandler.call(this, '4', target) as any,
+          resolveModuleNameLiterals: getResolveModuleNameHandler.call(
+            this,
+            '5',
+            target
+          ) as any
+        };
+
+        return proxyHandler[key] ?? target[key];
       }
     });
-    const languageService = this.ts.createLanguageService(languageServiceHostProxy);
 
-    languageServiceHost.getScriptKind = getScriptKindHandler.bind(this);
-    languageServiceHost.getScriptSnapshot = getScriptSnapshotHandler.bind(this);
+    const languageServiceProxy = new Proxy(
+      this.ts.createLanguageService(languageServiceHostProxy),
+      {
+        get: (target, key: keyof ts.LanguageService) => {
+          const proxyHandler: Partial<ts.LanguageService> = {
+            getQuickInfoAtPosition: getQuickInfoAtPositionHandler.bind(this, target),
+            getDefinitionAndBoundSpan: getDefinitionAndBoundSpanHandler.bind(this, target)
+          };
 
-    languageService.getQuickInfoAtPosition = getQuickInfoAtPositionHandler.bind(this);
+          return proxyHandler[key] ?? target[key];
+        }
+      }
+    );
 
-    resolveModuleName.call(this);
-
-    return languageService;
+    return languageServiceProxy;
 
     function getQuickInfoAtPositionHandler(
       this: TypeZenPlugin,
+      languageService: ts.LanguageService,
       filePath: string,
       position: number
-    ) {
-      this.logger.log(`[getQuickInfoAtPosition]: ${filePath}`);
-
+    ): ts.QuickInfo | undefined {
+      const defaultQuickInfo = languageService.getQuickInfoAtPosition(filePath, position);
       const tzenDefinitionInfo = this.utils.getTzenDefinitionAtCurPos(
         filePath,
         position,
@@ -73,20 +90,48 @@ class TypeZenPlugin implements ts.server.PluginModule {
         }
       }
 
-      return info.languageService.getQuickInfoAtPosition(filePath, position);
+      return defaultQuickInfo;
+    }
+
+    // TODO: 目前仅能跳转到 tzen 文件中的头部位置，不能跳转到具体的位置
+    function getDefinitionAndBoundSpanHandler(
+      this: TypeZenPlugin,
+      languageService: ts.LanguageService,
+      filePath: string,
+      position: number
+    ): ts.DefinitionInfoAndBoundSpan | undefined {
+      const defaultDIBS = languageService.getDefinitionAndBoundSpan(filePath, position);
+      const tzenDefinitionInfo = this.utils.getTzenDefinitionAtCurPos(
+        filePath,
+        position,
+        info
+      );
+
+      if (tzenDefinitionInfo) {
+        const tzenDIBS = this.snapshotManager
+          .getOrCreate(tzenDefinitionInfo.filePath)
+          .getDefinitionAndBoundSpan(
+            tzenDefinitionInfo.pos.line + 1,
+            tzenDefinitionInfo.pos.character + 1
+          );
+
+        if (tzenDIBS) {
+          return {
+            textSpan: defaultDIBS?.textSpan ?? tzenDIBS.textSpan,
+            definitions: tzenDIBS.definitions
+          };
+        }
+      }
+
+      return defaultDIBS;
     }
 
     function getScriptSnapshotHandler(
       this: TypeZenPlugin,
       filePath: string
     ): ts.IScriptSnapshot | undefined {
-      if (this.utils.isTypeZenFile(filePath) && fs.existsSync(filePath)) {
-        this.logger.log(`[getScriptSnapshot]: ${filePath}`);
-        try {
-          return this.snapshotManager.getOrCreate(filePath).getScriptSnapshot();
-        } catch (error) {
-          this.logger.error(JSON.stringify(error));
-        }
+      if (this.utils.isTzenFile(filePath) && fs.existsSync(filePath)) {
+        return this.snapshotManager.getOrCreate(filePath).getScriptSnapshot();
       }
 
       return info.languageServiceHost.getScriptSnapshot(filePath);
@@ -97,85 +142,67 @@ class TypeZenPlugin implements ts.server.PluginModule {
         return this.ts.ScriptKind.Unknown;
       }
 
-      if (this.utils.isTypeZenFile(filePath)) {
-        return this.ts.ScriptKind.TS;
-      }
-
-      return info.languageServiceHost.getScriptKind(filePath);
+      return this.utils.isTzenFile(filePath)
+        ? this.ts.ScriptKind.TS
+        : info.languageServiceHost.getScriptKind(filePath);
     }
 
-    function resolveModuleName(this: TypeZenPlugin) {
-      // TypeScript 5.x
-      if (info.languageServiceHost.resolveModuleNameLiterals) {
-        const _resolveModuleNameLiterals =
-          info.languageServiceHost.resolveModuleNameLiterals.bind(
-            info.languageServiceHost
-          );
+    function getResolveModuleNameHandler(
+      this: TypeZenPlugin,
+      version: '5' | '4',
+      languageServiceHost: ts.LanguageServiceHost
+    ) {
+      const createTzenModuleInfo = (moduleName: string, containingFile: string) =>
+        ({
+          extension: this.ts.Extension.Dts,
+          isExternalLibraryImport: false,
+          resolvedFileName: path.resolve(path.dirname(containingFile), moduleName)
+        } as ts.ResolvedModuleFull);
 
-        languageServiceHost.resolveModuleNameLiterals = (
-          moduleNames,
-          containingFile,
-          ...rest
-        ) => {
-          const resolvedModules = _resolveModuleNameLiterals(
-            moduleNames,
-            containingFile,
-            ...rest
-          );
+      return version === '5' ? ts5Handler.bind(this) : ts4Handler.bind(this);
 
-          return moduleNames.map(({ text: moduleName }, index) => {
-            if (this.utils.isTypeZenFile(moduleName)) {
-              return {
-                resolvedModule: {
-                  extension: this.ts.Extension.Dts,
-                  isExternalLibraryImport: false,
-                  resolvedFileName: path.resolve(path.dirname(containingFile), moduleName)
-                }
-              };
-            }
-
-            return resolvedModules[index];
-          });
-        };
-      }
-
-      // TypeScript 4.x
-      else if (info.languageServiceHost.resolveModuleNames) {
-        const _resolveModuleNames = info.languageServiceHost.resolveModuleNames.bind(
-          info.languageServiceHost
+      type TS5Fn = NonNullable<ts.LanguageServiceHost['resolveModuleNameLiterals']>;
+      type TS5Args = Parameters<TS5Fn>;
+      type TS5Return = ReturnType<TS5Fn>;
+      function ts5Handler(this: TypeZenPlugin, ...args: TS5Args): TS5Return {
+        if (!languageServiceHost.resolveModuleNameLiterals) return [];
+        const [moduleNames, containingFile] = args;
+        const defaultResolvedModules = languageServiceHost.resolveModuleNameLiterals(
+          ...args
         );
 
-        languageServiceHost.resolveModuleNames = (
-          moduleNames,
-          containingFile,
-          ...rest
-        ) => {
-          const resolvedModules = _resolveModuleNames(
-            moduleNames,
-            containingFile,
-            ...rest
-          );
+        return moduleNames.map(({ text: moduleName }, index) => {
+          if (this.utils.isTzenFile(moduleName)) {
+            return { resolvedModule: createTzenModuleInfo(moduleName, containingFile) };
+          }
 
-          return moduleNames.map((moduleName, index) => {
-            if (this.utils.isTypeZenFile(moduleName)) {
-              return {
-                extension: this.ts.Extension.Dts,
-                isExternalLibraryImport: false,
-                resolvedFileName: path.resolve(path.dirname(containingFile), moduleName)
-              } as ts.ResolvedModuleFull;
-            }
+          return defaultResolvedModules[index];
+        });
+      }
 
-            return resolvedModules[index];
-          });
-        };
+      type TS4Fn = NonNullable<ts.LanguageServiceHost['resolveModuleNames']>;
+      type TS4Args = Parameters<TS4Fn>;
+      type TS4Return = ReturnType<TS4Fn>;
+      function ts4Handler(this: TypeZenPlugin, ...args: TS4Args): TS4Return {
+        if (!languageServiceHost.resolveModuleNames) return [];
+        const [moduleNames, containingFile] = args;
+        const defaultResolvedModules = languageServiceHost.resolveModuleNames(...args);
+
+        return moduleNames.map((moduleName, index) => {
+          if (this.utils.isTzenFile(moduleName)) {
+            return createTzenModuleInfo(moduleName, containingFile);
+          }
+
+          return defaultResolvedModules[index];
+        });
       }
     }
   }
 
-  public getExternalFiles(project: ts.server.Project) {
+  getExternalFiles(project: ts.server.Project) {
     const tzenFilePaths = project
       .getFileNames()
-      .filter(filePath => this.utils.isTypeZenFile(filePath));
+      .filter(filePath => this.utils.isTzenFile(filePath));
 
     if (!isFirst) {
       return tzenFilePaths;
@@ -183,6 +210,7 @@ class TypeZenPlugin implements ts.server.PluginModule {
 
     if (isFirst) {
       isFirst = false;
+      // 如果不采用这种方式（reloadProjects）。在后续工作中（getDefinitionAtPosition, ...），会出现上下文中无 `*.tzen` 文件的情况
       project.projectService.reloadProjects();
     }
 
@@ -190,7 +218,7 @@ class TypeZenPlugin implements ts.server.PluginModule {
   }
 
   private utils = {
-    isTypeZenFile(filePath: string) {
+    isTzenFile(filePath: string) {
       return filePath.endsWith('.tzen');
     },
     getTzenDefinitionAtCurPos: (
@@ -206,7 +234,7 @@ class TypeZenPlugin implements ts.server.PluginModule {
       if (definitionInfos) {
         const [definitionInfo] = definitionInfos;
 
-        if (this.utils.isTypeZenFile(definitionInfo.fileName)) {
+        if (this.utils.isTzenFile(definitionInfo.fileName)) {
           const definitionSourceFile = info.project.getSourceFile(
             info.project.projectService.toPath(definitionInfo.fileName)
           );
