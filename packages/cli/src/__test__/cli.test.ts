@@ -6,9 +6,9 @@ import { describe, expect, it } from 'vitest';
 import { defineConfig } from '../config';
 import { TempFileManager, testCLI } from './helpers';
 
-describe('Compile specified files', () => {
-  it('No glob', async () => {
-    const { tempDirPath, tempFile } = createTemp();
+describe('compile specified files', () => {
+  it('no glob', async () => {
+    const { tempDirPath, tempFileManager } = createTemp();
     const testSource = [
       {
         inputPath: '1.tzen',
@@ -28,7 +28,7 @@ type C = ^{
       }
     ];
 
-    testSource.forEach(item => tempFile.add(item.inputPath, item.inputContent));
+    testSource.forEach(item => tempFileManager.add(item.inputPath, item.inputContent));
 
     await testCLI(
       tempDirPath,
@@ -44,11 +44,11 @@ type C = ^{
       expect(fileContent).toBe(item.outputContent);
     });
 
-    tempFile.destroy();
+    tempFileManager.destroy();
   });
 
-  it('Glob', async () => {
-    const { tempDirPath, tempFile } = createTemp();
+  it('glob', async () => {
+    const { tempDirPath, tempFileManager } = createTemp();
 
     const testSource = [
       {
@@ -67,7 +67,7 @@ type C = ^{
       }
     ];
 
-    testSource.forEach(item => tempFile.add(item.inputPath, item.inputContent));
+    testSource.forEach(item => tempFileManager.add(item.inputPath, item.inputContent));
 
     await testCLI(tempDirPath, ['*.test.tzen']);
 
@@ -81,15 +81,15 @@ type C = ^{
     });
 
     expect(fs.existsSync(path.resolve(tempDirPath, '3.tzen.d.ts'))).toBe(false);
-    tempFile.destroy();
+    tempFileManager.destroy();
   });
 });
 
-describe('Compile by config', () => {
-  it('`include.tzen=[]`, No files should be output', async () => {
-    const { tempDirPath, tempFile } = createTemp();
+describe('compile by config', () => {
+  it('`include.tzen=[]`, no files should be output', async () => {
+    const { tempDirPath, tempFileManager } = createTemp();
 
-    tempFile
+    tempFileManager
       .add('tzen.config.json', JSON.stringify(defineConfig({ include: { tzen: [] } })))
       .add('1.tzen', 'type A = 1;')
       .add('2.tzen', 'type B = 2;');
@@ -101,13 +101,13 @@ describe('Compile by config', () => {
 
     expect(newFileLength).toBe(oldFileLength);
 
-    tempFile.destroy();
+    tempFileManager.destroy();
   });
 
-  it('Include/Exclude files', async () => {
-    const { tempDirPath, tempFile } = createTemp();
+  it('include/exclude files', async () => {
+    const { tempDirPath, tempFileManager } = createTemp();
 
-    tempFile
+    tempFileManager
       .add(
         'tzen.config.json',
         JSON.stringify(
@@ -127,14 +127,14 @@ describe('Compile by config', () => {
       'type B = 2;'
     );
 
-    tempFile.destroy();
+    tempFileManager.destroy();
   });
 
-  describe('Specify compiler options', () => {
+  describe('specify compiler options', () => {
     it('case-1', async () => {
-      const { tempDirPath, tempFile } = createTemp();
+      const { tempDirPath, tempFileManager } = createTemp();
 
-      tempFile
+      tempFileManager
         .add(
           'tzen.config.json',
           JSON.stringify(
@@ -156,7 +156,7 @@ describe('Compile by config', () => {
         `// @ts-nocheck\ntype A = 1;`
       );
 
-      tempFile.destroy();
+      tempFileManager.destroy();
     });
   });
 });
@@ -164,7 +164,7 @@ describe('Compile by config', () => {
 function createTemp() {
   const tempDirName = nanoid();
   const tempDirPath = path.resolve(__dirname, tempDirName);
-  const tempFile = new TempFileManager(tempDirPath);
+  const tempFileManager = new TempFileManager(tempDirPath);
 
-  return { tempDirPath, tempDirName, tempFile };
+  return { tempDirPath, tempDirName, tempFileManager };
 }

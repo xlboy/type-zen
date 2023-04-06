@@ -1,65 +1,89 @@
-import fs from 'node:fs';
+import path from 'node:path';
 
-import { Compiler, Parser } from '@type-zen/core';
 import cac from 'cac';
+import chokidar from 'chokidar';
+import * as colorette from 'colorette';
+import consola from 'consola';
 import fg from 'fast-glob';
 
 import { version } from '../package.json';
 import { loadConfig } from './config';
+import { output } from './helpers';
 
 export { startCLI };
 
 interface Options {
   config?: string;
-  // watch?: boolean;
+  watch?: boolean;
 }
 
-async function startCLI(cwd: string = process.cwd(), argv: string[] = process.argv) {
+async function startCLI(cwd = process.cwd(), argv = process.argv) {
   const cli = cac('tzc');
 
   cli
     .command('[...files]', 'TypeZen file, Supports glob patterns')
     .option('-c, --config [path]', '[string] Config file')
-    // .option('-w, --watch', 'Watch for file changes')
+    .option('-w, --watch', 'Enable watch mode')
     .action(async (files: string[], options: Options) => {
-      const config = await loadConfig({
+      const { config, filePath: configFilePath } = await loadConfig({
         configPath: options.config,
         cwd
       });
 
-      const tzenFiles = fg.sync(files.length ? files : config.include.tzen, {
+      if (options.watch) {
+        config.watch = true;
+      }
+
+      if (configFilePath) {
+        consola.info(
+          `Using config file: ${colorette.blue(path.relative(cwd, configFilePath))}`
+        );
+      }
+
+      if (config.watch) {
+        consola.info('Watch mode enabled');
+      }
+
+      const tzenFilePatterns = files.length ? files : config.include.tzen;
+
+      fg.sync(tzenFilePatterns, {
         ignore: [...config.exclude.tzen],
         cwd,
         absolute: true
-      });
+      }).forEach(tzenFilePath => output({ config, cwd, tzenFilePath }));
 
-      tzenFiles.forEach(tzFilePath => {
-        try {
-          const tzenFileContent = fs.readFileSync(tzFilePath, { encoding: 'utf-8' });
+      if (config.watch) {
+        chokidar
+          .watch(tzenFilePatterns, {
+            ignoreInitial: true,
+            cwd,
+            ignorePermissionErrors: true
+          })
+          .on('all', (type, filePath) => {
+            switch (type) {
+              case 'unlink':
+              case 'unlinkDir':
+              case 'addDir':
+                return;
 
-          fs.writeFileSync(tzFilePath.replace('.tzen', '.ts'), compile(tzenFileContent));
-        } catch (e) {
-          const cleanFilePath = tzFilePath.replace(cwd, '');
+              case 'change': {
+                consola.info(`File ${colorette.blue(filePath)} changed`);
+                break;
+              }
 
-          console.error(`[${cleanFilePath}]: ${e}`);
-        }
-      });
+              case 'add': {
+                consola.info(`File ${colorette.blue(filePath)} added`);
+                break;
+              }
+            }
+
+            output({ config, cwd, tzenFilePath: filePath });
+          });
+      }
     });
 
   cli.help();
   cli.version(version);
   cli.parse(argv, { run: false });
   await cli.runMatchedCommand();
-}
-
-function compile(tzenFileContent: string) {
-  const ast = new Parser().parse(tzenFileContent);
-
-  if (ast && ast.length !== 0) {
-    const compiledResult = new Compiler().compile(ast);
-
-    return compiledResult.toText();
-  }
-
-  return '';
 }
