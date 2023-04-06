@@ -9,8 +9,8 @@
   "types": "./dist/index.d.ts",
   "keywords": [
     "type-zen",
-    "type-zen-cli",
-    "TypeZen Cli",
+    "type-zen cli",
+    "TypeZen CLI",
     "TypeZen"
   ],
   "files": [
@@ -28,10 +28,13 @@
     "build": "run-s test && tsup",
     "type-check": "tsc"
   },
-  "devDependencies": {
-    "@type-zen/core": "latest",
+  "dependencies": {
+    "@type-zen/core": "^0.0.1-alpha.18",
     "cac": "^6.7.14",
+    "colorette": "^2.0.19",
+    "consola": "^2.15.3",
     "fast-glob": "^3.2.12",
     "unconfig": "^0.3.7"
-  }
+  },
+  "devDependencies": {}
 }
