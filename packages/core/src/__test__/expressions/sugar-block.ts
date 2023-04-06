@@ -16,7 +16,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
     node: utils.createNode({
       instance: ast.SugarBlockExpression,
       kind: SyntaxKind.E.SugarBlock,
-      outputStr: '1'
+      outputStr: '(1)'
     })
   });
 
@@ -47,7 +47,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
           outputStr: '[a]'
         })
       ],
-      outputStr: '[1] extends [infer a] ? [a] : never'
+      outputStr: '([1] extends [infer a] ? [a] : never)'
     })
   });
 
@@ -94,7 +94,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
           outputStr: 'A | "and" | B'
         })
       ],
-      outputStr: `[1 | 2 | 3, AA & BB & CC] extends [infer A, infer B] ? A | "and" | B : never`
+      outputStr: `([1 | 2 | 3, AA & BB & CC] extends [infer A, infer B] ? A | "and" | B : never)`
     })
   });
 
@@ -147,7 +147,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
           },
           then: utils.createNode({
             instance: ast.SugarBlockExpression,
-            outputStr: '1'
+            outputStr: '(1)'
           }),
           else: utils.createNode({
             instance: ast.SugarBlockIfExpression,
@@ -189,7 +189,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
                   },
                   then: utils.createNode({
                     instance: ast.SugarBlockExpression,
-                    outputStr: `'ssss'`
+                    outputStr: `('ssss')`
                   })
                 }),
                 utils.createNode({
@@ -214,7 +214,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
         })
       ],
       outputReg: new RegExp(
-        `\\[3\\] extends \\[infer B\\] \\? \\(B extends 3 \\? 1 : B extends 4 \\? \\['sdfsfd'\\] extends \\[infer C\\] \\? \\(C extends 'sss' \\? 'ssss' : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 2 : r_.+? : never : never : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 3 \\| 4 : r_.+? : never : never`
+        `\\(\\[3\\] extends \\[infer B\\] \\? \\(B extends 3 \\? \\(1\\) : B extends 4 \\? \\(\\['sdfsfd'\\] extends \\[infer C\\] \\? \\(C extends 'sss' \\? \\('ssss'\\) : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 2 : r_.+? : never : never\\) : TZ_URS\\) extends infer r_.+? \\? r_.+? extends TZ_URS \\? 3 | 4 : r_.+? : never : never\\)`
       )
     })
   });
@@ -270,7 +270,7 @@ const expressions: Record<'simple' | 'complex', Expression[]> = {
           })
         })
       ],
-      outputStr: `['->>>>'] extends [infer B] ? Union extends infer Item ? [B, Item] : never : never`
+      outputStr: `(['->>>>'] extends [infer B] ? Union extends infer Item ? ([B, Item]) : never : never)`
     })
   });
 })();

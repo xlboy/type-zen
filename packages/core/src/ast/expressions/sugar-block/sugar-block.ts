@@ -56,6 +56,8 @@ class SugarBlockExpression extends ExpressionBase {
   public compile() {
     const compileChain = this.compileUtils.getChain();
     const rootNodeFlow = this.compileUtils.createNodeFlow();
+
+    rootNodeFlow.add('(');
     let insideNodeFlow = rootNodeFlow;
 
     let localVarNames: CompiledNode[][] = [];
@@ -95,6 +97,8 @@ class SugarBlockExpression extends ExpressionBase {
         }
       }
     }
+
+    rootNodeFlow.add(')');
 
     return rootNodeFlow.get();
 

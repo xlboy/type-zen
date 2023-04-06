@@ -47,7 +47,7 @@ it('nested references to local variables to be promoted', () => {
     new RegExp(`type \\${hoistedTypeAlias}<N> = \\[N, 'filter'\\];`)
   );
 
-  const sugarBlockOutputReg = `'1' | '2' extends infer Item ? \\['filtered ->', \\${hoistedTypeAlias}<Item>\\] : never;`;
+  const sugarBlockOutputReg = `\\('1' | '2' extends infer Item ? \\['filtered ->', \\${hoistedTypeAlias}<Item>\\] : never\\);`;
 
   expect(typeAliasBStmt).toMatch(new RegExp(sugarBlockOutputReg));
 });
@@ -64,6 +64,6 @@ it('reference brother - local variable', () => {
   const compiledText = new Compiler().compile(new Parser().parse(content)!).toText();
 
   expect(compiledText).toBe(
-    'type T = ["xlboy", ["xlboy", "Other"]] extends [infer MyName, infer TeamMembers] ? [true] : never;'
+    'type T = (["xlboy", ["xlboy", "Other"]] extends [infer MyName, infer TeamMembers] ? [true] : never);'
   );
 });
