@@ -1,7 +1,7 @@
-import watch from 'node-watch';
+import chokidar from 'chokidar';
 
 import { build } from './build';
 
-build();
-
-watch('src/grammar/', { recursive: true, filter: /.ne$/ }, build);
+chokidar.watch('src/grammar/**/*.ne', { ignoreInitial: true }).on('all', () => {
+  build();
+});

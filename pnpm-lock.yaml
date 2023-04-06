@@ -11,6 +11,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.54.0
       '@typescript-eslint/parser': ^5.54.0
       '@vitest/ui': ^0.28.5
+      chokidar: ^3.5.3
       eslint: ^8.35.0
       eslint-config-prettier: ^8.6.0
       eslint-plugin-prettier: ^4.2.1
@@ -37,6 +38,7 @@ importers:
       '@typescript-eslint/eslint-plugin': 5.57.0_z24sz2fazj3bxoipp6m4s7b2mi
       '@typescript-eslint/parser': 5.57.0_vwh6htx42aidho2qgfca5u5rwm
       '@vitest/ui': 0.28.5
+      chokidar: 3.5.3
       eslint: 8.37.0
       eslint-config-prettier: 8.8.0_eslint@8.37.0
       eslint-plugin-prettier: 4.2.1_ybb3aapb7235womryl2tm5ze2u
@@ -58,12 +60,13 @@ importers:
 
   packages/cli:
     specifiers:
-      '@type-zen/core': latest
+      '@type-zen/core': ^0.0.1-alpha.18
       cac: ^6.7.14
       fast-glob: ^3.2.12
       unconfig: ^0.3.7
-    devDependencies:
+    dependencies:
       '@type-zen/core': 0.0.1-alpha.18
+    devDependencies:
       cac: 6.7.14
       fast-glob: 3.2.12
       unconfig: 0.3.7
@@ -76,7 +79,6 @@ importers:
       moo: ^0.5.2
       nanoid: ^4.0.1
       nearley: ^2.20.1
-      node-watch: ^0.7.3
       randexp: ^0.5.3
       replace-in-file: ^6.3.5
       zod: ^3.20.6
@@ -87,7 +89,6 @@ importers:
       moo: 0.5.2
       nanoid: 4.0.2
       nearley: 2.20.1
-      node-watch: 0.7.3
       randexp: 0.5.3
       replace-in-file: 6.3.5
       zod: 3.21.4
@@ -3606,11 +3607,6 @@ packages:
 
   /node-releases/2.0.10:
     resolution: {integrity: sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==}
-    dev: true
-
-  /node-watch/0.7.3:
-    resolution: {integrity: sha512-3l4E8uMPY1HdMMryPRUAl+oIHtXtyiTlIiESNSVSNxcPfzAFzeTbXFQkZfAwBbo0B1qMSG8nUABx+Gd+YrbKrQ==}
-    engines: {node: '>=6'}
     dev: true
 
   /normalize-package-data/2.5.0:
